@@ -20,13 +20,8 @@ theme = 'LoveIt'
   
   # 开启搜索功能
   [params.search]
-    enable = false
-    type = "algolia"
-    # Algolia搜索配置
-    [params.search.algolia]
-      appID = "W1XAFJV7NB"
-      indexName = "hugo-blog-loveit-theme"
-      searchKey = "d47677b96694c4f866eb47cd39a83888"
+    enable = true
+    type = "lunr"
   
   # 页面头部导航栏
   [params.header]
