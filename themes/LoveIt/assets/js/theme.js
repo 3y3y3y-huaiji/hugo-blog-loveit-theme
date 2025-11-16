@@ -337,17 +337,16 @@ class Theme {
                   this._indexData[record.objectID] = record;
                   indexData.push({
                     id: record.objectID,
-                    content: `${record.title} ${record.content} ${record.tags ? record.tags.join(' ') : ''} ${record.categories ? record.categories.join(' ') : ''}`
+                    content: `${record.title} ${record.content} ${Array.isArray(record.tags) ? record.tags.join(' ') : ''} ${Array.isArray(record.categories) ? record.categories.join(' ') : ''}`
                   });
                 });
                 
                 // Create FlexSearch index
                 this._flexIndex = new FlexSearch.Index({
                   tokenize: 'full',
-                  charset: 'latin:advanced',
+                  charset: 'cjk',
                   optimize: true,
                   cache: true,
-                  language: 'zh',
                   encode: false
                 });
                 
