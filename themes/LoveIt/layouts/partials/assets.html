@@ -27,16 +27,8 @@
         {{- with .Site.Home.OutputFormats.Get "json" -}}
             {{- $config = dict "type" "flexsearch" "flexsearchIndexURL" "/flexsearch/index.json" | dict "search" | merge $config -}}
         {{- end -}}
-        {{- $source := $cdn.flexsearchJS | default "lib/flexsearch/flexsearch.min.js" -}}
-        {{- if not (urls.Parse $source).Host -}}
-            {{- $resource := resources.Get $source -}}
-            {{- if $resource -}}
-                {{- $source = $resource.RelPermalink -}}
-            {{- else -}}
-                {{- $source = "/lib/flexsearch/flexsearch.min.js" -}}
-            {{- end -}}
-        {{- end -}}
-        {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
+        {{- $source := $cdn.flexsearchJS | default "/lib/flexsearch/flexsearch.min.js" -}}
+        {{- dict "Source" $source "Minify" true "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}
     {{- else if eq $search.type "algolia" -}}
         {{- $source := $cdn.algoliasearchJS | default "lib/algoliasearch/algoliasearch-lite.umd.min.js" -}}
         {{- dict "Source" $source "Fingerprint" $fingerprint | dict "Scratch" .Scratch "Data" | partial "scratch/script.html" -}}

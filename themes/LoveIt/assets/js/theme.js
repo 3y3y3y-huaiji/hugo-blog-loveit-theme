@@ -283,15 +283,16 @@ class Theme {
           } else if (searchConfig.type === 'flexsearch') {
             const search = () => {
               if (!this._flexIndex) {
-                console.error('FlexSearch index not loaded');
-                return [];
-              }
-              
-              const results = {};
-              const searchResults = this._flexIndex.search(query, maxResultLength * 2);
-              
-              searchResults.forEach(ref => {
-                const matchData = this._indexData[ref];
+              console.error('FlexSearch index not loaded');
+              return [];
+            }
+            
+            const results = {};
+            const searchResults = this._flexIndex.search(query, maxResultLength * 2);
+            
+            if (searchResults && searchResults.length > 0) {
+              searchResults.forEach(docId => {
+                const matchData = this._indexData[docId];
                 if (!matchData) return;
                 
                 let { uri, title, content: context } = matchData;
@@ -322,8 +323,9 @@ class Theme {
                   'context': context
                 };
               });
-              
-              return Object.values(results).slice(0, maxResultLength);
+            }
+            
+            return Object.values(results).slice(0, maxResultLength);
             };
 
             if (!this._flexIndex) {
@@ -340,17 +342,18 @@ class Theme {
                 });
                 
                 // Create FlexSearch index
-                this._flexIndex = new FlexSearch.Document({
-                  index: ['content'],
+                this._flexIndex = new FlexSearch.Index({
                   tokenize: 'full',
-                  charset: 'latin:simple',
+                  charset: 'latin:advanced',
                   optimize: true,
-                  cache: true
+                  cache: true,
+                  language: 'zh',
+                  encode: false
                 });
                 
                 // Add documents to index
                 indexData.forEach(doc => {
-                  this._flexIndex.add(doc);
+                  this._flexIndex.add(doc.id, doc.content);
                 });
                 
                 finish(search());
