@@ -1,0 +1,202 @@
+baseURL = 'https://example.org/'
+languageCode = 'zh-cn'
+title = '我的Hugo博客'
+theme = 'LoveIt'
+
+[params]
+  # LoveIt主题版本
+  version = "0.3.X"
+  
+  # 网站描述
+  description = "这是一个使用Hugo和LoveIt主题构建的博客"
+  # 网站关键词
+  keywords = ["博客", "Hugo", "LoveIt"]
+  
+  # 网站作者
+  [params.author]
+    name = "安卓人"
+    email = "sumingkai1@outlook.com"
+    link = ""
+  
+  # 开启搜索功能
+  [params.search]
+    enable = true
+    type = "algolia"
+  
+  # 页面头部导航栏
+  [params.header]
+    # 桌面端导航栏模式
+    desktopMode = "fixed"
+    # 移动端导航栏模式
+    mobileMode = "auto"
+    # 主题切换模式
+    themeChangeMode = "switch"
+    # 页面头部导航栏标题
+    [params.header.title]
+      # LOGO的URL
+      logo = ""
+      # 标题名称
+      name = "我的Hugo博客"
+      # 你可以在名称（允许HTML格式）之前添加其他信息, 例如图标
+      pre = ""
+      # 你可以在名称（允许HTML格式）之后添加其他信息, 例如图标
+      post = ""
+  
+  # 页面底部信息配置
+  [params.footer]
+    enable = true
+    # 自定义内容（支持HTML格式）
+    custom = ''
+    # 是否显示Hugo和主题信息
+    hugo = true
+    # 是否显示版权信息
+    copyright = true
+    # 是否显示作者
+    author = true
+    # 网站创立年份
+    since = 2025
+    # ICP备案信息，仅在中国使用（支持HTML格式）
+    icp = ""
+    # 许可协议信息（支持HTML格式）
+    license = '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
+  
+  # Section（所有文章）页面配置
+  [params.section]
+    # section页面的每页显示文章数量
+    paginate = 20
+    # 日期格式（月和日）
+    dateFormat = "01-02"
+    # RSS文章数目
+    rss = 10
+  
+  # List（目录或标签）页面配置
+  [params.list]
+    # list页面的每页显示文章数量
+    paginate = 20
+    # 日期格式（月和日）
+    dateFormat = "01-02"
+    # RSS文章数目
+    rss = 10
+  
+  # 主页配置
+  [params.home]
+    # RSS文章数目
+    rss = 10
+    # 主页个人信息
+    [params.home.profile]
+      enable = true
+      # Gravatar邮箱，用于优先在主页显示的头像
+      gravatarEmail = ""
+      # 主页显示头像的URL
+      avatarURL = "/images/avatar.webp"
+      # 主页显示的网站标题（支持HTML格式）
+      title = ""
+      # 主页显示的网站副标题
+      subtitle = "这是我的个人博客"
+      # 是否为副标题显示打字机效果
+      typeit = true
+      # 是否显示社交账号
+      social = true
+      # 免责声明（支持HTML格式）
+      disclaimer = ""
+    # 主页文章列表
+    [params.home.posts]
+      enable = true
+      # 主页每页显示文章数量
+      paginate = 6
+
+# 菜单配置
+[menu]
+  [[menu.main]]
+    weight = 1
+    identifier = "posts"
+    pre = ""
+    post = ""
+    name = "文章"
+    url = "/posts/"
+    title = ""
+  [[menu.main]]
+    weight = 2
+    identifier = "tags"
+    pre = ""
+    post = ""
+    name = "标签"
+    url = "/tags/"
+    title = ""
+  [[menu.main]]
+    weight = 3
+    identifier = "categories"
+    pre = ""
+    post = ""
+    name = "分类"
+    url = "/categories/"
+    title = ""
+
+# Hugo解析文档的配置
+[markup]
+  # 语法高亮设置
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    lineNumbersInTable = true
+    # false是必要的设置（详情见 https://github.com/dillonzq/LoveIt/issues/158）
+    noClasses = false
+  # Goldmark是Hugo的Markdown解析器
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      definitionList = true
+      footnote = true
+      linkify = true
+      strikethrough = true
+      table = true
+      taskList = true
+      typographer = true
+    [markup.goldmark.renderer]
+      # 是否在文档中直接使用HTML标签
+      unsafe = true
+  # 目录设置
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 6
+    ordered = false
+
+# 网站地图配置
+[sitemap]
+  changefreq = "weekly"
+  filename = "sitemap.xml"
+  priority = 0.5
+
+# Permalinks配置（即永久链接）
+[permalinks]
+  posts = "/:year/:month/:day/:filename/"
+  tags = "/tags/:slug/"
+  categories = "/categories/:slug/"
+
+# 隐私设置（适用于Google Analytics等）
+[privacy]
+  [privacy.googleAnalytics]
+    anonymizeIP = true
+    disable = false
+    respectDoNotTrack = true
+    useSessionStorage = false
+  [privacy.twitter]
+    disable = false
+    enableDNT = true
+    simple = false
+  [privacy.youtube]
+    disable = false
+    enhancedPrivacy = true
+
+# 用于输出Markdown格式的文章的设置
+[mediaTypes]
+  [mediaTypes."text/plain"]
+    suffixes = ["md"]
+
+# 用于输出HTML格式的网站设置
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  taxonomyTerm = ["HTML"]
