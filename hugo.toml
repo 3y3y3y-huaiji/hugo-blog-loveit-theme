@@ -102,7 +102,7 @@ theme = 'LoveIt'
       # Gravatar邮箱，用于优先在主页显示的头像
       gravatarEmail = ""
       # 主页显示头像的URL
-      avatarURL = "/images/avatar.webp"
+      avatarURL = "/images/avatar.png"
       # 主页显示的网站标题（支持HTML格式）
       title = ""
       # 主页显示的网站副标题
@@ -144,6 +144,14 @@ theme = 'LoveIt'
     post = ""
     name = "分类"
     url = "/categories/"
+    title = ""
+  [[menu.main]]
+    weight = 4
+    identifier = "about"
+    pre = ""
+    post = ""
+    name = "关于"
+    url = "/about/"
     title = ""
 
 # Hugo解析文档的配置
