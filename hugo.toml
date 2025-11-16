@@ -24,9 +24,9 @@ theme = 'LoveIt'
     type = "algolia"
     # Algolia搜索配置
     [params.search.algolia]
-      appID = ""
-      indexName = ""
-      searchKey = ""
+      appID = "W1XAFJV7NB"
+      indexName = "hugo-blog-loveit-theme"
+      searchKey = "d47677b96694c4f866eb47cd39a83888"
   
   # 页面头部导航栏
   [params.header]
