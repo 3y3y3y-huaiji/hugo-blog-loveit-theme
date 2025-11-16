@@ -20,7 +20,7 @@ theme = 'LoveIt'
   
   # 开启搜索功能
   [params.search]
-    enable = true
+    enable = false
     type = "algolia"
     # Algolia搜索配置
     [params.search.algolia]
