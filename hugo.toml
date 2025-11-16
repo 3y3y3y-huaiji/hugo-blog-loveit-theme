@@ -22,6 +22,11 @@ theme = 'LoveIt'
   [params.search]
     enable = true
     type = "algolia"
+    # Algolia搜索配置
+    [params.search.algolia]
+      appID = ""
+      indexName = ""
+      searchKey = ""
   
   # 页面头部导航栏
   [params.header]
