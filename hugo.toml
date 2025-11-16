@@ -21,7 +21,21 @@ theme = 'LoveIt'
   # 开启搜索功能
   [params.search]
     enable = true
-    type = "lunr"
+    type = "flexsearch"
+    # 文章内容最长索引长度
+    contentLength = 10000
+    # 搜索框的占位提示语
+    placeholder = "搜索文章..."
+    # 最大结果数目
+    maxResultLength = 50
+    # 结果内容片段长度
+    snippetLength = 300
+    # HTML标签名称的突出显示部分在结果中
+    highlightTag = "em"
+    # 是否在搜索索引中使用基于 baseURL 的绝对路径
+    absoluteURL = false
+    # FlexSearch索引URL
+    flexsearchIndexURL = "/flexsearch/index.json"
   
   # 页面头部导航栏
   [params.header]
@@ -200,3 +214,10 @@ theme = 'LoveIt'
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
   taxonomyTerm = ["HTML"]
+
+# 用于包含静态资源的配置
+[params.static]
+  # 包含Lunr.js相关文件
+  [params.static.lunr]
+    target = "lib/lunr"
+    include = "*.js"

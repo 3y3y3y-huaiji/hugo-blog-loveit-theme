@@ -280,6 +280,85 @@ class Theme {
                 finish([]);
               });
             } else finish(search());
+          } else if (searchConfig.type === 'flexsearch') {
+            const search = () => {
+              if (!this._flexIndex) {
+                console.error('FlexSearch index not loaded');
+                return [];
+              }
+              
+              const results = {};
+              const searchResults = this._flexIndex.search(query, maxResultLength * 2);
+              
+              searchResults.forEach(ref => {
+                const matchData = this._indexData[ref];
+                if (!matchData) return;
+                
+                let { uri, title, content: context } = matchData;
+                if (results[uri]) return;
+                
+                // Create context snippet
+                const queryLower = query.toLowerCase();
+                const contentLower = context.toLowerCase();
+                const matchIndex = contentLower.indexOf(queryLower);
+                
+                if (matchIndex >= 0) {
+                  const start = Math.max(0, matchIndex - snippetLength / 2);
+                  const end = Math.min(context.length, matchIndex + query.length + snippetLength / 2);
+                  context = (start > 0 ? '...' : '') + context.substring(start, end) + (end < context.length ? '...' : '');
+                } else {
+                  context = context.substring(0, snippetLength) + (content.length > snippetLength ? '...' : '');
+                }
+                
+                // Highlight matching terms
+                const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                title = title.replace(regex, `<${highlightTag}>$1</${highlightTag}>`);
+                context = context.replace(regex, `<${highlightTag}>$1</${highlightTag}>`);
+                
+                results[uri] = {
+                  'uri': uri,
+                  'title': title,
+                  'date': matchData.date,
+                  'context': context
+                };
+              });
+              
+              return Object.values(results).slice(0, maxResultLength);
+            };
+
+            if (!this._flexIndex) {
+              fetch(searchConfig.flexsearchIndexURL).then(response => response.json()).then(data => {
+                this._indexData = {};
+                const indexData = [];
+                
+                data.forEach(record => {
+                  this._indexData[record.objectID] = record;
+                  indexData.push({
+                    id: record.objectID,
+                    content: `${record.title} ${record.content} ${record.tags ? record.tags.join(' ') : ''} ${record.categories ? record.categories.join(' ') : ''}`
+                  });
+                });
+                
+                // Create FlexSearch index
+                this._flexIndex = new FlexSearch.Document({
+                  index: ['content'],
+                  tokenize: 'full',
+                  charset: 'latin:simple',
+                  optimize: true,
+                  cache: true
+                });
+                
+                // Add documents to index
+                indexData.forEach(doc => {
+                  this._flexIndex.add(doc);
+                });
+                
+                finish(search());
+              }).catch(err => {
+                console.error(err);
+                finish([]);
+              });
+            } else finish(search());
           } else if (searchConfig.type === 'algolia') {
             this._algoliaIndex = this._algoliaIndex || algoliasearch(searchConfig.algoliaAppID, searchConfig.algoliaSearchKey).initIndex(searchConfig.algoliaIndex);
 
@@ -346,6 +425,10 @@ class Theme {
               searchType: 'algolia',
               icon: '<i class="fab fa-algolia fa-fw" aria-hidden="true"></i>',
               href: 'https://www.algolia.com/'
+            } : searchConfig.type === 'flexsearch' ? {
+              searchType: 'FlexSearch',
+              icon: '<i class="fas fa-search fa-fw" aria-hidden="true"></i>',
+              href: 'https://github.com/nextapps-de/flexsearch'
             } : {
               searchType: 'Lunr.js',
               icon: '',
@@ -366,6 +449,28 @@ class Theme {
       script.id = 'lunr-segmentit';
       script.type = 'text/javascript';
       script.src = searchConfig.lunrSegmentitURL;
+      script.async = true;
+
+      if (script.readyState) {
+        script.onreadystatechange = () => {
+          if (script.readyState == 'loaded' || script.readyState == 'complete') {
+            script.onreadystatechange = null;
+            initAutosearch();
+          }
+        };
+      } else {
+        script.onload = () => {
+          initAutosearch();
+        };
+      }
+
+      document.body.appendChild(script);
+    } else if (searchConfig.type === 'flexsearch' && typeof FlexSearch === 'undefined') {
+      // Load FlexSearch if not already loaded
+      const script = document.createElement('script');
+      script.id = 'flexsearch';
+      script.type = 'text/javascript';
+      script.src = searchConfig.flexsearchURL || '/lib/flexsearch/flexsearch.min.js';
       script.async = true;
 
       if (script.readyState) {
