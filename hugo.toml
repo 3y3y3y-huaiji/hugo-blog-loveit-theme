@@ -114,10 +114,35 @@ theme = 'LoveIt'
       # 免责声明（支持HTML格式）
       disclaimer = ""
     # 主页文章列表
-    [params.home.posts]
+  [params.home.posts]
       enable = true
       # 主页每页显示文章数量
       paginate = 6
+
+[params.page.comment]
+  enable = true
+  [params.page.comment.utterances]
+    enable = false
+    repo = "3y3y3y-huaiji/hugo-blog-loveit-theme"
+    issueTerm = "pathname"
+    label = "comment"
+    lightTheme = "github-light"
+    darkTheme = "github-dark"
+
+  [params.page.comment.giscus]
+    enable = true
+    repo = "3y3y3y-huaiji/Giscus-Comment-Repository"
+    repoId = "R_kgDOQXU1Sg"
+    category = "Announcements"
+    categoryId = "DIC_kwDOQXU1Ss4Cx4Z7"
+    lang = "zh-CN"
+    mapping = "pathname"
+    reactionsEnabled = "1"
+    emitMetadata = "1"
+    inputPosition = "top"
+    lazyLoading = true
+    lightTheme = "github-light"
+    darkTheme = "github-dark"
 
 # 菜单配置
 [menu]
