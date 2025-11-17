@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Title }} - {{ .Site.Title }}</title>
+  <meta name="description" content="{{ .Description | default .Site.Params.description }}">
+  <meta name="keywords" content="{{ .Site.Params.keywords }}">
+  <meta name="author" content="{{ .Site.Params.author }}">
+  <link rel="canonical" href="{{ .Permalink }}">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ .Title }} - {{ .Site.Title }}">
+  <meta property="og:description" content="{{ .Description | default .Site.Params.description }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="og:site_name" content="{{ .Site.Title }}">
+  <meta property="og:type" content="website">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{ .Title }} - {{ .Site.Title }}">
+  <meta name="twitter:description" content="{{ .Description | default .Site.Params.description }}">
+  
+  <!-- RSS -->
+  {{ with .OutputFormats.Get "rss" }}
+    <link href="{{ .RelPermalink }}" rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}">
+  {{ end }}
+  
+  <!-- Favicon -->
+  <link rel="icon" href="{{ "favicon.ico" | relURL }}">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Custom Head -->
+  {{ partial "head/custom.html" . }}
+</head>
+<body>
+  {{ partial "header.html" . }}
+  
+  <main class="main">
+    <div class="container">
+      {{ block "main" . }}{{ end }}
+    </div>
+  </main>
+  
+  {{ partial "footer.html" . }}
+  
+  <!-- JavaScript -->
+  <script src="{{ "js/main.js" | relURL }}"></script>
+  
+  <!-- Custom JavaScript -->
+  {{ partial "footer/custom.html" . }}
+</body>
+</html>

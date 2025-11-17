@@ -131,7 +131,8 @@ theme = 'LoveIt'
 
   [params.page.comment.giscus]
     enable = true
-    repo = "3y3y3y-huaiji/Giscus-Comment-Repository"
+    repo = "hugo-blog-loveit-theme"
+    repoOwner = "3y3y3y-huaiji"
     repoId = "R_kgDOQXU1Sg"
     category = "Announcements"
     categoryId = "DIC_kwDOQXU1Ss4Cx4Z7"
@@ -143,8 +144,6 @@ theme = 'LoveIt'
     lazyLoading = true
     lightTheme = "github-light"
     darkTheme = "github-dark"
-    # GitHub访问令牌，用于API访问
-    accessToken = ""
 
 # 菜单配置
 [menu]
@@ -174,19 +173,19 @@ theme = 'LoveIt'
     title = ""
   [[menu.main]]
     weight = 4
-    identifier = "stats"
-    pre = ""
-    post = ""
-    name = "统计"
-    url = "/stats/"
-    title = ""
-  [[menu.main]]
-    weight = 5
     identifier = "about"
     pre = ""
     post = ""
     name = "关于"
     url = "/about/"
+    title = ""
+  [[menu.main]]
+    weight = 5
+    identifier = "statistics"
+    pre = ""
+    post = ""
+    name = "统计"
+    url = "/statistics/"
     title = ""
 
 # Hugo解析文档的配置

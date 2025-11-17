@@ -1,0 +1,30 @@
+<!-- 自定义头部内容 -->
+{{- if not .Site.Params.customJS }}
+  {{- .Scratch.Set "customJS" slice }}
+{{- end }}
+
+{{- range .Site.Params.customJS }}
+  {{- $.Scratch.Add "customJS" . }}
+{{- end }}
+
+{{- $customJS := .Scratch.Get "customJS" }}
+{{- if $customJS }}
+  {{- range $customJS }}
+    <script src="{{ . | relURL }}"></script>
+  {{- end }}
+{{- end }}
+
+{{- if not .Site.Params.customCSS }}
+  {{- .Scratch.Set "customCSS" slice }}
+{{- end }}
+
+{{- range .Site.Params.customCSS }}
+  {{- $.Scratch.Add "customCSS" . }}
+{{- end }}
+
+{{- $customCSS := .Scratch.Get "customCSS" }}
+{{- if $customCSS }}
+  {{- range $customCSS }}
+    <link rel="stylesheet" href="{{ . | relURL }}">
+  {{- end }}
+{{- end }}
