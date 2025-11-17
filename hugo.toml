@@ -214,6 +214,27 @@ theme = 'LoveIt'
   filename = "sitemap.xml"
   priority = 0.5
 
+# 不同页面类型的网站地图配置
+[sitemap.page]
+  changefreq = "monthly"
+  priority = 0.8
+
+[sitemap.posts]
+  changefreq = "weekly"
+  priority = 1.0
+
+[sitemap.home]
+  changefreq = "daily"
+  priority = 1.0
+
+[sitemap.section]
+  changefreq = "weekly"
+  priority = 0.9
+
+[sitemap.taxonomy]
+  changefreq = "monthly"
+  priority = 0.7
+
 # Permalinks配置（即永久链接）
 [permalinks]
   posts = "/:year/:month/:day/:filename/"
