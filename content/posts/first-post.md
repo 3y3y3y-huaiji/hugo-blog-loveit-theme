@@ -7,8 +7,7 @@ categories = ["技术"]
 author = "安卓人"
 description = "这是使用Hugo和LoveIt主题创建的第一篇博客文章"
 summary = "这篇文章介绍了如何使用Hugo静态网站生成器和LoveIt主题创建个人博客"
-keywords = ["Hugo", "LoveIt", "博客", "静态网站", "个人博客", "技术分享"]
-images = ["/images/first-post-cover.jpg"]
+keywords = ["Hugo", "LoveIt", "博客", "静态网站"]
 +++
 
 

@@ -1,4 +1,4 @@
-baseURL = 'https://sumingkai1.github.io/hugo-blog-loveit-theme/'
+baseURL = 'https://example.org/'
 languageCode = 'zh-cn'
 title = '我的Hugo博客'
 theme = 'LoveIt'
@@ -8,9 +8,9 @@ theme = 'LoveIt'
   version = "0.3.X"
   
   # 网站描述
-  description = "这是一个使用Hugo和LoveIt主题构建的博客，分享技术文章、学习笔记和个人见解"
+  description = "这是一个使用Hugo和LoveIt主题构建的博客"
   # 网站关键词
-  keywords = ["博客", "Hugo", "LoveIt", "技术分享", "AI", "大模型", "编程", "个人博客"]
+  keywords = ["博客", "Hugo", "LoveIt"]
   
   # 网站作者
   [params.author]
@@ -212,7 +212,7 @@ theme = 'LoveIt'
 [sitemap]
   changefreq = "weekly"
   filename = "sitemap.xml"
-  priority = 0.8
+  priority = 0.5
 
 # Permalinks配置（即永久链接）
 [permalinks]
@@ -234,15 +234,6 @@ theme = 'LoveIt'
   [privacy.youtube]
     disable = false
     enhancedPrivacy = true
-
-# Google Analytics配置
-[params.analytics]
-  enable = true
-  # Google Analytics
-  [params.analytics.google]
-    id = "G-XXXXXXXXXX"  # 请替换为您的Google Analytics跟踪ID
-    # 是否在本地开发环境中启用
-    localhost = false
 
 # 用于输出Markdown格式的文章的设置
 [mediaTypes]
