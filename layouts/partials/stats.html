@@ -2,56 +2,205 @@
 <script src="{{ $js.RelPermalink }}"></script>
 
 <style>
+.stats-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.stats-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.stats-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    position: relative;
+    display: inline-block;
+}
+
+.stats-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-color), transparent);
+    border-radius: 3px;
+}
+
+.stats-header p {
+    font-size: 1.1rem;
+    color: var(--card-text-color-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
 .blog-stats-container {
-    display: flex;
-    justify-content: space-around;
-    margin: 2rem 0;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
 }
 
 .stat-item {
-    text-align: center;
-    padding: 1.5rem;
-    border-radius: 8px;
-    background-color: var(--card-background);
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 2rem;
     box-shadow: var(--shadow-l1);
-    min-width: 150px;
-    margin: 1rem;
-    transition: transform 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid var(--color-toc-border);
+}
+
+.stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
 }
 
 .stat-item:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-l2);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
 }
 
 .stat-number {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: bold;
     color: var(--accent-color);
     margin-bottom: 0.5rem;
+    font-family: var(--font-family-mono);
 }
 
 .stat-label {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    color: var(--card-text-color-main);
+    font-weight: 500;
+}
+
+.stats-info {
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: var(--shadow-l1);
+    border: 1px solid var(--color-toc-border);
+}
+
+.stats-info h3 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.stats-info p {
     color: var(--card-text-color-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.stats-footer {
+    text-align: center;
+    margin-top: 3rem;
+    color: var(--card-text-color-secondary);
+    font-style: italic;
 }
 
 #last-updated {
-    font-style: italic;
-    color: var(--card-text-color-secondary);
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-weight: 500;
 }
 
-@media (max-width: 600px) {
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--accent-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .stats-page {
+        padding: 1rem;
+    }
+    
+    .stats-header h1 {
+        font-size: 2rem;
+    }
+    
     .blog-stats-container {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
     
     .stat-item {
-        width: 80%;
+        padding: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
     }
 }
 </style>
+
+<div class="stats-page">
+    <div class="stats-header">
+        <h1>博客统计</h1>
+        <p>欢迎查看我的博客统计数据，这里展示了博客的文章数量和评论数量等基本信息。</p>
+    </div>
+    
+    <div class="blog-stats-container">
+        <div class="stat-item">
+            <div class="stat-icon">📝</div>
+            <div class="stat-number" id="posts-count">
+                <div class="loading"></div>
+            </div>
+            <div class="stat-label">文章总数</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-icon">💬</div>
+            <div class="stat-number" id="comments-count">
+                <div class="loading"></div>
+            </div>
+            <div class="stat-label">评论总数</div>
+        </div>
+    </div>
+    
+    <div class="stats-info">
+        <h3>数据说明</h3>
+        <p><strong>文章总数：</strong>显示博客中已发布的文章数量，不包括草稿和未来发布的文章。</p>
+        <p><strong>评论总数：</strong>显示通过Giscus评论系统发表的所有评论数量，数据来源于GitHub Discussions。</p>
+        <p>统计数据会在页面加载时自动更新，也可以通过刷新页面获取最新数据。</p>
+    </div>
+    
+    <div class="stats-footer">
+        最后更新时间：<span id="last-updated">加载中...</span>
+    </div>
+</div>
 
 <script>
 // 获取文章总数
