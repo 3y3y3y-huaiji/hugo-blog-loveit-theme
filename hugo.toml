@@ -263,7 +263,3 @@ theme = 'LoveIt'
   [params.static.lunr]
     target = "lib/lunr"
     include = "*.js"
-  # 自定义CSS
-  [params.static.css]
-    target = "css"
-    include = "*.css"
