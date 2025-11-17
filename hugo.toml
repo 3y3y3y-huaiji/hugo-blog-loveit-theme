@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://sumingkai.dpdns.org/'
 languageCode = 'zh-cn'
 title = '我的Hugo博客'
 theme = 'LoveIt'
