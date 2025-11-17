@@ -1,16 +1,40 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>All Posts - 我的Hugo博客</title>
-        <link>http://localhost:1313/posts/</link>
+        <link>http://localhost:1313/hugo-blog-loveit-theme/posts/</link>
         <description>All Posts | 我的Hugo博客</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><managingEditor>sumingkai1@outlook.com (安卓人)</managingEditor>
-            <webMaster>sumingkai1@outlook.com (安卓人)</webMaster><lastBuildDate>Wed, 18 Jun 2025 19:46:43 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>sumingkai1@outlook.com (安卓人)</webMaster><lastBuildDate>Wed, 18 Jun 2025 21:00:00 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/hugo-blog-loveit-theme/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>个人博客运营经验分享</title>
+    <link>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/blog-operation-experience/</link>
+    <pubDate>Wed, 18 Jun 2025 21:00:00 &#43;0800</pubDate>
+    <author>安卓人</author>
+    <guid>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/blog-operation-experience/</guid>
+    <description><![CDATA[从内容创作到读者互动，全面分享个人博客运营的实用经验]]></description>
+</item>
+<item>
+    <title>AI大模型微调技术详解</title>
+    <link>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/ai-fine-tuning/</link>
+    <pubDate>Wed, 18 Jun 2025 20:30:00 &#43;0800</pubDate>
+    <author>安卓人</author>
+    <guid>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/ai-fine-tuning/</guid>
+    <description><![CDATA[全面介绍AI大模型微调的概念、方法和实践指南]]></description>
+</item>
+<item>
     <title>我的第一篇博客</title>
-    <link>http://localhost:1313/2025/06/18/first-post/</link>
+    <link>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/first-post/</link>
     <pubDate>Wed, 18 Jun 2025 19:46:43 &#43;0800</pubDate>
     <author>安卓人</author>
-    <guid>http://localhost:1313/2025/06/18/first-post/</guid>
+    <guid>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/first-post/</guid>
     <description><![CDATA[这篇文章介绍了如何使用Hugo静态网站生成器和LoveIt主题创建个人博客]]></description>
+</item>
+<item>
+    <title>Hugo静态网站生成器入门指南</title>
+    <link>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/hugo-tutorial/</link>
+    <pubDate>Wed, 18 Jun 2025 10:00:00 &#43;0800</pubDate>
+    <author>安卓人</author>
+    <guid>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/hugo-tutorial/</guid>
+    <description><![CDATA[本文将带你了解Hugo静态网站生成器的核心概念，并指导你如何快速搭建个人博客]]></description>
 </item>
 </channel>
 </rss>

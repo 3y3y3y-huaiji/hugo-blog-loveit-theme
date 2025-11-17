@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Sitemap: https://sumingkai1.github.io/hugo-blog-loveit-theme/sitemap.xml
+
+# 禁止爬取特定目录
+User-agent: *
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
