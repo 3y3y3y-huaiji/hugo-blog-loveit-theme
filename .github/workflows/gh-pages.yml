@@ -1,0 +1,32 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # 设置为你的默认分支名称
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: true  # 如果使用子模块，请启用此选项
+        fetch-depth: 0    # 获取完整历史记录，以便Hugo获取git信息
+    
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v3
+      with:
+        hugo-version: 'latest'
+        extended: true
+    
+    - name: Build
+      run: hugo --minify
+    
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
