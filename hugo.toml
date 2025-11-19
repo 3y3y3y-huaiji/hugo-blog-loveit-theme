@@ -20,7 +20,7 @@ theme = 'LoveIt'
   
   # 开启搜索功能
   [params.search]
-    enable = false
+    enable = true
     type = "flexsearch"
     # 文章内容最长索引长度
     contentLength = 10000
@@ -102,7 +102,7 @@ theme = 'LoveIt'
       # Gravatar邮箱，用于优先在主页显示的头像
       gravatarEmail = ""
       # 主页显示头像的URL
-      avatarURL = "/images/avatar.png"
+      avatarURL = "/images/新头像.png"
       # 主页显示的网站标题（支持HTML格式）
       title = ""
       # 主页显示的网站副标题
