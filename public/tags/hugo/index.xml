@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Hugo on 我的Hugo博客</title>
-    <link>http://localhost:1313/hugo-blog-loveit-theme/tags/hugo/</link>
+    <link>http://localhost:1315/hugo-blog-loveit-theme/tags/hugo/</link>
     <description>Recent content in Hugo on 我的Hugo博客</description>
     <generator>Hugo</generator>
     <language>zh-cn</language>
     <managingEditor>sumingkai1@outlook.com (安卓人)</managingEditor>
     <webMaster>sumingkai1@outlook.com (安卓人)</webMaster>
     <lastBuildDate>Wed, 18 Jun 2025 19:46:43 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/hugo-blog-loveit-theme/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1315/hugo-blog-loveit-theme/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>我的第一篇博客</title>
-      <link>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/first-post/</link>
+      <link>http://localhost:1315/hugo-blog-loveit-theme/2025/06/18/first-post/</link>
       <pubDate>Wed, 18 Jun 2025 19:46:43 +0800</pubDate><author>sumingkai1@outlook.com (安卓人)</author>
-      <guid>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/first-post/</guid>
+      <guid>http://localhost:1315/hugo-blog-loveit-theme/2025/06/18/first-post/</guid>
       <description>这篇文章介绍了如何使用Hugo静态网站生成器和LoveIt主题创建个人博客</description>
     </item>
     <item>
       <title>Hugo博客性能优化指南</title>
-      <link>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/hugo-performance-optimization/</link>
+      <link>http://localhost:1315/hugo-blog-loveit-theme/2025/06/18/hugo-performance-optimization/</link>
       <pubDate>Wed, 18 Jun 2025 10:30:00 +0800</pubDate><author>sumingkai1@outlook.com (安卓人)</author>
-      <guid>http://localhost:1313/hugo-blog-loveit-theme/2025/06/18/hugo-performance-optimization/</guid>
+      <guid>http://localhost:1315/hugo-blog-loveit-theme/2025/06/18/hugo-performance-optimization/</guid>
       <description>本文详细介绍了多种Hugo博客性能优化技巧，包括资源压缩、图片优化、缓存策略等</description>
     </item>
   </channel>

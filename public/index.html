@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
     <head>
-	<meta name="generator" content="Hugo 0.152.2"><script src="/hugo-blog-loveit-theme/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=hugo-blog-loveit-theme/livereload" data-no-instant defer></script>
+	<meta name="generator" content="Hugo 0.152.2"><script src="/hugo-blog-loveit-theme/livereload.js?mindelay=10&amp;v=2&amp;port=1315&amp;path=hugo-blog-loveit-theme/livereload" data-no-instant defer></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>我的Hugo博客</title><meta name="Description" content="这是一个使用Hugo和LoveIt主题构建的博客"><meta property="og:url" content="http://localhost:1313/hugo-blog-loveit-theme/">
+        <title>我的Hugo博客</title><meta name="Description" content="这是一个使用Hugo和LoveIt主题构建的博客"><meta property="og:url" content="http://localhost:1315/hugo-blog-loveit-theme/">
   <meta property="og:site_name" content="我的Hugo博客">
   <meta property="og:title" content="我的Hugo博客">
   <meta property="og:description" content="这是一个使用Hugo和LoveIt主题构建的博客">
@@ -18,14 +18,14 @@
 <meta name="application-name" content="My cool site">
 <meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/hugo-blog-loveit-theme/" /><link rel="alternate" href="/hugo-blog-loveit-theme/index.xml" type="application/rss+xml" title="我的Hugo博客">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1315/hugo-blog-loveit-theme/" /><link rel="alternate" href="/hugo-blog-loveit-theme/index.xml" type="application/rss+xml" title="我的Hugo博客">
     <link rel="feed" href="/hugo-blog-loveit-theme/index.xml" type="application/rss+xml" title="我的Hugo博客"><link rel="stylesheet" href="/hugo-blog-loveit-theme/css/style.min.css"><link rel="preload" href="/hugo-blog-loveit-theme/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/hugo-blog-loveit-theme/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/hugo-blog-loveit-theme/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/hugo-blog-loveit-theme/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "WebSite",
-        "url": "http:\/\/localhost:1313\/hugo-blog-loveit-theme\/","inLanguage": "zh-cn","author": {
+        "url": "http:\/\/localhost:1315\/hugo-blog-loveit-theme\/","inLanguage": "zh-cn","author": {
                 "@type": "Person",
                 "name": "安卓人"
             },"description": "这是一个使用Hugo和LoveIt主题构建的博客","name": "我的Hugo博客"
@@ -69,12 +69,80 @@
                 <div class="container"><div class="page home" data-home="posts"><div class="home-profile"><div class="home-avatar"><a href="/hugo-blog-loveit-theme/posts/" title="文章"><img
         class="lazyload"
         src="/hugo-blog-loveit-theme/svg/loading.min.svg"
-        data-src="/images/avatar.jpg"
-        data-srcset="/images/avatar.jpg, /images/avatar.jpg 1.5x, /images/avatar.jpg 2x"
+        data-src="/images/avatar.png"
+        data-srcset="/images/avatar.png, /images/avatar.png 1.5x, /images/avatar.png 2x"
         data-sizes="auto"
-        alt="/images/avatar.jpg"
-        title="/images/avatar.jpg" /></a></div><div class="home-subtitle"><div id="id-1" class="typeit"></div></div><div class="links"></div></div>
+        alt="/images/avatar.png"
+        title="/images/avatar.png" /></a></div><div class="home-subtitle"><div id="id-1" class="typeit"></div></div><div class="links"></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/hugo-blog-loveit-theme/2025/11/17/blog-repository-optimization/">博客仓库优化实践</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/hugo-blog-loveit-theme/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>安卓人</a></span>&nbsp;<span class="post-publish">published on <time datetime="2025-11-17">2025-11-17</time></span>&nbsp;<span class="post-category">included in <a href="/hugo-blog-loveit-theme/categories/%E6%8A%80%E6%9C%AF/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div><div class="content"><h2 id="引言">引言</h2>
+<p>在维护个人博客的过程中，保持项目结构清晰和代码规范是至关重要的。本文将分享我在优化Hugo博客仓库时的一些实践经验和具体操作。</p>
+<h2 id="问题发现">问题发现</h2>
+<p>在对博客进行例行检查时，我发现了一些可以改进的地方：</p>
+<ol>
+<li>头像文件同时存在JPEG和PNG两种格式，造成资源冗余</li>
+<li>部分配置文件中的路径指向已废弃的资源文件</li>
+<li>缺少对关键功能（如评论系统）的错误处理机制</li>
+</ol>
+<h2 id="优化措施">优化措施</h2>
+<h3 id="1-清理冗余资源文件">1. 清理冗余资源文件</h3>
+<p>首先，我检查了<code>static/images</code>目录中的文件，发现同时存在<code>avatar.jpg</code>和<code>avatar.png</code>两个头像文件。通过查看配置文件，确认博客实际使用的是PNG格式的头像，因此删除了JPEG格式的冗余文件。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 删除冗余的JPEG格式头像文件</span>
+</span></span><span class="line"><span class="cl">rm static/images/avatar.jpg
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="2-统一资源配置路径">2. 统一资源配置路径</h3>
+<p>接下来，我更新了配置文件中的头像路径，确保所有引用都指向正确的PNG格式文件。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">home</span><span class="p">.</span><span class="nx">profile</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">avatarURL</span> <span class="p">=</span> <span class="s2">&#34;/images/avatar.png&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="3-增强错误处理机制">3. 增强错误处理机制</h3>
+<p>为了提高评论系统的稳定性，我在Giscus评论系统的JavaScript代码中添加了错误处理和加载状态检查。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">giscusScript</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Giscus script failed to load&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nx">giscusScript</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Giscus script loaded successfully&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="验证效果">验证效果</h2>
+<p>完成上述优化后，我重新启动了本地开发服务器，并验证了以下几点：</p>
+<ol>
+<li>头像能够正常显示，且只加载PNG格式的文件</li>
+<li>评论系统功能正常，且在脚本加载失败时能记录错误信息</li>
+<li>项目结构更加清晰，冗余文件已被清理</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>通过这次优化实践，我不仅解决了具体的技术问题，还建立了定期检查和优化博客仓库的习惯。保持项目整洁和代码规范不仅能提高开发效率，也有助于长期维护。</p>
+<p>未来，我计划进一步完善自动化测试和部署流程，以确保博客的稳定性和可靠性。</p></div><div class="post-footer">
+        <a href="/hugo-blog-loveit-theme/2025/11/17/blog-repository-optimization/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/hugo-blog-loveit-theme/tags/%E5%8D%9A%E5%AE%A2/">博客</a>,&nbsp;<a href="/hugo-blog-loveit-theme/tags/%E4%BC%98%E5%8C%96/">优化</a>,&nbsp;<a href="/hugo-blog-loveit-theme/tags/hugo/">Hugo</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/hugo-blog-loveit-theme/2025/06/18/first-post/">我的第一篇博客</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/hugo-blog-loveit-theme/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>安卓人</a></span>&nbsp;<span class="post-publish">published on <time datetime="2025-06-18">2025-06-18</time></span>&nbsp;<span class="post-category">included in <a href="/hugo-blog-loveit-theme/categories/%E6%8A%80%E6%9C%AF/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>技术</a></span></div><div class="content">这篇文章介绍了如何使用Hugo静态网站生成器和LoveIt主题创建个人博客</div><div class="post-footer">
         <a href="/hugo-blog-loveit-theme/2025/06/18/first-post/">Read More</a><div class="post-tags">

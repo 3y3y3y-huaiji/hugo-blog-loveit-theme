@@ -906,6 +906,13 @@ class Theme {
         giscusScript.setAttribute('data-theme', this.isDark ? giscusConfig.darkTheme : giscusConfig.lightTheme);
         giscusScript.crossOrigin = 'anonymous';
         giscusScript.async = true;
+        // 添加错误处理和加载状态检查
+        giscusScript.onerror = function() {
+            console.error('Giscus script failed to load');
+        };
+        giscusScript.onload = function() {
+            console.log('Giscus script loaded successfully');
+        };
         document.getElementById('giscus').appendChild(giscusScript);
 
         this._giscusOnSwitchTheme = this._giscusOnSwitchTheme || (() => {
