@@ -35,7 +35,7 @@ theme = 'LoveIt'
     # 是否在搜索索引中使用基于 baseURL 的绝对路径
     absoluteURL = false
     # FlexSearch索引URL
-    flexsearchIndexURL = "/flexsearch/index.json"
+    flexsearchIndexURL = "/lib/flexsearch/index.json"
   
   # 页面头部导航栏
   [params.header]
