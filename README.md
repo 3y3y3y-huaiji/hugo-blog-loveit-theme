@@ -1,238 +1,113 @@
-# Hugo博客项目
+# Hugo Blog with LoveIt Theme
 
-一个使用Hugo静态网站生成器和LoveIt主题构建的个人博客项目，通过GitHub Actions自动部署到GitHub Pages。
+This is a personal blog built with [Hugo](https://gohugo.io/) static site generator and the [LoveIt theme](https://github.com/dillonzq/LoveIt).
 
-## 🚀 在线预览
+## Features
 
-博客已部署到GitHub Pages，可通过以下地址访问：
+- Responsive design
+- Dark mode support
+- Comment system (Giscus)
+- Search functionality
+- SEO optimization
+- Social media integration
+- Analytics integration
 
-[https://3y3y3y-huaiji.github.io/hugo-blog-loveit-theme/](https://3y3y3y-huaiji.github.io/hugo-blog-loveit-theme/)
+## Prerequisites
 
-## 📋 目录
+- [Hugo](https://gohugo.io/getting-started/installing/) (extended version)
+- Git
 
-- [功能特点](#功能特点)
-- [安装和使用](#安装和使用)
-- [项目结构](#项目结构)
-- [配置](#配置)
-- [部署指南](#部署指南)
-- [贡献指南](#贡献指南)
-- [许可证](#许可证)
-- [联系方式](#联系方式)
+## Getting Started
 
-## 🚀 功能特点
-
-- 📝 基于Markdown的轻量级内容管理
-- 🎨 采用美观的LoveIt主题，支持暗色模式
-- 📱 完全响应式设计，适配各种设备
-- � 通过GitHub Actions自动部署到GitHub Pages
-- � 集成Giscus评论系统
-- 🔍 内置搜索功能（本地已禁用以避免错误）
-- 📊 SEO优化，提升搜索引擎可见性
-- 🌐 多语言支持（目前仅配置中文）
-
-## 📁 项目结构
-
-```
-hugo博客(loveit主题）/
-├── archetypes/          # 内容模板
-├── content/             # 网站内容
-│   ├── about/           # 关于页面
-│   │   └── index.md     # 关于页面内容
-│   └── posts/           # 文章
-│       ├── digital-minimalism.md
-│       ├── effective-note-taking.md
-│       ├── first-post.md
-│       └── hugo-performance-optimization.md
-├── static/              # 静态资源
-│   ├── images/          # 图片资源
-│   │   ├── avatar.jpg   # 头像文件
-│   │   └── avatar.png   # 备用头像文件
-│   ├── css/             # 样式文件
-│   ├── js/              # JavaScript文件
-│   └── lib/             # 第三方库
-│       └── flexsearch/   # FlexSearch搜索库
-├── themes/              # 主题
-│   └── LoveIt/          # LoveIt主题
-├── .github/             # GitHub配置
-│   └── workflows/       # 工作流
-│       └── gh-pages.yml # GitHub Pages部署工作流
-├── docs/                # 项目文档
-│   ├── 需求文档.md      # 需求文档
-│   ├── 待办清单.md      # 待办清单
-│   └── 项目状态.md      # 项目状态
-├── hugo.toml            # Hugo配置文件
-└── README.md            # 项目说明
-```
-
-## 📦 安装和使用
-
-### 环境要求
-
-- [Hugo](https://gohugo.io/getting-started/installing/) v0.152.2+extended
-- [Git](https://git-scm.com/)
-
-### 本地开发
-
-1. 克隆仓库
-```bash
-git clone https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme.git
-cd hugo-blog-loveit-theme
-```
-
-2. 启动本地开发服务器
-```bash
-hugo server -D --bind 0.0.0.0 --port 1313
-```
-
-3. 在浏览器中访问 http://localhost:1313/hugo-blog-loveit-theme/
-
-### 创建新文章
-
-1. 使用Hugo命令创建新文章
-```bash
-hugo new posts/my-new-post.md
-```
-
-2. 编辑生成的Markdown文件，添加内容和元数据
-
-### 构建和部署
-
-项目使用GitHub Actions自动部署，当推送代码到main分支时会自动触发部署。如需手动构建：
-
-```bash
-hugo -D
-```
-
-构建后的静态文件将生成在`public`目录中。
-
-## ⚙️ 配置
-
-### 基本配置
-
-主要配置在`hugo.toml`文件中：
-
-- 网站基本信息（标题、描述、关键词）
-- 主题参数
-- 导航菜单
-- 社交链接
-- 评论系统配置
-
-### 主题配置
-
-LoveIt主题提供了丰富的配置选项，详情请参考[LoveIt主题文档](https://hugoloveit.com/theme-documentation-basics/)。
-
-## 🚀 部署指南
-
-### GitHub Pages部署
-
-1. Fork或克隆此仓库
-2. 在GitHub仓库设置中启用GitHub Pages
-3. 确保GitHub Actions工作流`.github/workflows/gh-pages.yml`已正确配置
-4. 推送代码到main分支，GitHub Actions将自动构建和部署
-
-### 其他平台部署
-
-项目可以部署到任何支持静态网站的托管平台，如Netlify、Vercel、Cloudflare Pages等。
-
-## 🤝 贡献指南
-
-欢迎提交问题和改进建议！如果您想为此项目做出贡献：
-
-1. Fork此仓库
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建Pull Request
-
-## 📄 许可证
-
-本项目采用MIT许可证 - 查看[LICENSE](LICENSE)文件了解详情。
-
-## 📞 联系方式
-
-- GitHub: [3y3y3y-huaiji](https://github.com/3y3y3y-huaiji)
-- 邮箱: sumingkai1@outlook.com
-
----
-
-⭐ 如果这个项目对您有帮助，请给它一个星标！
-   npm install
-   npm update
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme.git
+   cd hugo-blog-loveit-theme
    ```
 
-### 性能优化
+2. Initialize and update the theme submodule:
+   ```bash
+   git submodule init
+   git submodule update
+   ```
 
-1. **图片优化**：
-   - 使用适当的图片格式（WebP、AVIF）
-   - 压缩图片大小
-   - 使用响应式图片
+3. Start the development server:
+   ```bash
+   hugo server -D
+   ```
 
-2. **CSS/JS优化**：
-   - 启用资源压缩（Hugo默认启用）
-   - 使用CDN加载第三方资源
+4. Open your browser and navigate to `http://localhost:1313` to view the site.
 
-3. **缓存策略**：
-   - 配置适当的缓存头
-   - 使用Service Worker缓存静态资源
+## Deployment
 
-### SEO优化
+This blog is automatically deployed to GitHub Pages using GitHub Actions. The workflow is defined in `.github/workflows/gh-pages.yml`.
 
-1. **元数据优化**：
-   - 为每篇文章添加描述和关键词
-   - 使用适当的标题结构（H1、H2、H3等）
+To deploy manually, build the site and push the `public` directory to the `gh-pages` branch:
+```bash
+hugo -D
+# Then deploy the public directory to your hosting service
+```
 
-2. **站点地图**：
-   - Hugo自动生成sitemap.xml
-   - 确保在搜索引擎中提交站点地图
+## Project Structure
 
-3. **结构化数据**：
-   - 添加适当的微数据和JSON-LD
+```
+hugo-blog-loveit-theme/
+├── .github/
+│   └── workflows/
+│       └── gh-pages.yml      # GitHub Actions workflow
+├── content/
+│   ├── about/
+│   │   └── index.md          # About page
+│   ├── posts/
+│   │   ├── first-post.md     # Sample posts
+│   │   └── ...
+│   └── _index.md             # Homepage content
+├── static/
+│   └── images/
+│       └── avatar.png        # Avatar image
+├── themes/
+│   └── LoveIt/               # LoveIt theme submodule
+├── hugo.toml                 # Hugo configuration
+├── README.md                 # This file
+└── docs/                     # Project documentation
+    ├── 需求文档.md
+    ├── 待办清单.md
+    └── 项目状态.md
+```
 
-## ❓ 常见问题
+## Configuration
 
-### Q: 如何修改网站颜色主题？
+The main configuration file is `hugo.toml`. Key settings include:
 
-A: 在 `hugo.toml` 中修改 `[params]` 部分的颜色配置，或者在 `assets/css/` 目录下创建自定义CSS文件。
+- Site metadata (title, description, etc.)
+- Theme parameters
+- Menu configuration
+- Social media links
+- Comment system (Giscus) settings
 
-### Q: 如何添加自定义页面？
+## Customization
 
-A: 在 `content/` 目录下创建新的Markdown文件，例如 `content/contact/index.md`，然后在 `hugo.toml` 中添加菜单项。
+You can customize the theme by modifying the following:
 
-### Q: 如何配置域名？
+- `hugo.toml`: Site configuration
+- `content/`: Blog posts and pages
+- `static/`: Static assets like images
+- `themes/LoveIt/`: Theme files (be careful when updating the theme)
 
-A: 在GitHub仓库的Settings > Pages中配置自定义域名，并在 `static/` 目录下添加CNAME文件。
+## Contributing
 
-### Q: 如何备份网站内容？
+1. Fork the repository
+2. Create a new branch for your feature
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
 
-A: 定期备份 `content/` 目录和 `hugo.toml` 配置文件，这些是网站的核心内容。
+## License
 
-## 🤝 贡献指南
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-欢迎提交Issue和Pull Request来改进这个项目！
+## Acknowledgments
 
-1. Fork 本仓库
-2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交你的更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开一个Pull Request
-
-## 📄 许可证
-
-本项目采用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) 许可证。
-
-## 🙏 致谢
-
-- [Hugo](https://gohugo.io/) - 强大的静态网站生成器
-- [LoveIt](https://github.com/dillonzq/LoveIt) - 美观的主题
-- [Giscus](https://giscus.app/) - 基于GitHub Discussions的评论系统
-- [GitHub Pages](https://pages.github.com/) - 免费的静态网站托管服务
-
-## 📞 联系方式
-
-- 作者：安卓人
-- 邮箱：sumingkai1@outlook.com
-- GitHub：[3y3y3y-huaiji](https://github.com/3y3y3y-huaiji)
-
----
-
-⭐ 如果这个项目对你有帮助，请给它一个星标！
+- [Hugo](https://gohugo.io/) - The world's fastest framework for building websites
+- [LoveIt Theme](https://github.com/dillonzq/LoveIt) - A clean, elegant but advanced blog theme for Hugo
+- [Giscus](https://giscus.app/) - A comments system powered by GitHub Discussions
