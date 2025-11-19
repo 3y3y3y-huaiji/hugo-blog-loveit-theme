@@ -20,7 +20,7 @@ theme = 'LoveIt'
   
   # 开启搜索功能
   [params.search]
-    enable = true
+    enable = false
     type = "flexsearch"
     # 文章内容最长索引长度
     contentLength = 10000
@@ -102,7 +102,7 @@ theme = 'LoveIt'
       # Gravatar邮箱，用于优先在主页显示的头像
       gravatarEmail = ""
       # 主页显示头像的URL
-      avatarURL = "/images/avatar.png"
+      avatarURL = "/images/avatar.jpg"
       # 主页显示的网站标题（支持HTML格式）
       title = ""
       # 主页显示的网站副标题
@@ -245,16 +245,18 @@ theme = 'LoveIt'
 [privacy]
   [privacy.googleAnalytics]
     anonymizeIP = true
-    disable = false
+    disable = true
     respectDoNotTrack = true
     useSessionStorage = false
   [privacy.twitter]
-    disable = false
+    disable = true
     enableDNT = true
     simple = false
   [privacy.youtube]
-    disable = false
+    disable = true
     enhancedPrivacy = true
+  [privacy.msClarity]
+    disable = true
 
 # 用于输出Markdown格式的文章的设置
 [mediaTypes]
@@ -271,6 +273,10 @@ theme = 'LoveIt'
 
 # 用于包含静态资源的配置
 [params.static]
+  # 包含FlexSearch相关文件
+  [params.static.flexsearch]
+    target = "lib/flexsearch"
+    include = "*.js"
   # 包含Lunr.js相关文件
   [params.static.lunr]
     target = "lib/lunr"
