@@ -1,16 +1,27 @@
-{{- $resource := 0 -}}
-{{- $url := urls.Parse .Path -}}
-{{- if not $url.Host | and $url.Path | and (strings.HasSuffix $url.Path "/" | not) -}}
-    {{- if .Resources -}}
-        {{- with .Resources.GetMatch $url.Path -}}
-            {{- $resource = . -}}
-        {{- end -}}
+{{- /*
+  resource.html 用于获取资源
+  输入参数:
+    Path: 资源路径
+    Resources: 页面资源集合
+*/ -}}
+{{- $resource := false -}}
+{{- with .Path -}}
+  {{- $url := urls.Parse . -}}
+  {{- /* Check if path is valid */ -}}
+  {{- if and (not $url.Host) $url.Path (not (strings.HasSuffix $url.Path "/")) -}}
+    {{- /* Try to get resource from page resources */ -}}
+    {{- if $.Resources -}}
+      {{- with $.Resources.GetMatch $url.Path -}}
+        {{- $resource = . -}}
+      {{- end -}}
     {{- end -}}
+    
+    {{- /* Try to get resource from global resources */ -}}
     {{- if not $resource -}}
-        {{- with resources.Get $url.Path -}}
-            {{- $resource = . -}}
-        {{- end -}}
+      {{- with resources.Get $url.Path -}}
+        {{- $resource = . -}}
+      {{- end -}}
     {{- end -}}
+  {{- end -}}
 {{- end -}}
-
 {{- return $resource -}}

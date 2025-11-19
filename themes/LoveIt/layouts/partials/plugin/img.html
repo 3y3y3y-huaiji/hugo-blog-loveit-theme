@@ -1,21 +1,21 @@
 {{- /* lazysizes and lightgallery */ -}}
-{{- $src := .Src -}}
+{{- $src := .Src | absURL -}}
 {{- $width := .Width -}}
 {{- $height := .Height -}}
-{{- with dict "Path" $src "Resources" .Resources | partial "function/resource.html" -}}
-    {{- $src = .RelPermalink -}}
+{{- with dict "Path" .Src "Resources" .Resources | partial "function/resource.html" -}}
+    {{- $src = .Permalink -}}
     {{- $width = $width | default .Width -}}
     {{- $height = $height | default .Height -}}
 {{- end -}}
 
-{{- $small := .SrcSmall | default $src -}}
+{{- $small := .SrcSmall | default $src | absURL -}}
 {{- with dict "Path" .SrcSmall "Resources" .Resources | partial "function/resource.html" -}}
-    {{- $small = .RelPermalink -}}
+    {{- $small = .Permalink -}}
 {{- end -}}
 
-{{- $large := .SrcLarge | default $src -}}
+{{- $large := .SrcLarge | default $src | absURL -}}
 {{- with dict "Path" .SrcLarge "Resources" .Resources | partial "function/resource.html" -}}
-    {{- $large = .RelPermalink -}}
+    {{- $large = .Permalink -}}
 {{- end -}}
 
 {{- $alt := .Alt | default $src -}}
