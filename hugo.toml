@@ -102,7 +102,7 @@ theme = 'LoveIt'
       # Gravatar邮箱，用于优先在主页显示的头像
       gravatarEmail = ""
       # 主页显示头像的URL
-      avatarURL = "images/新头像.png"
+      avatarURL = "images/avatar.png"
       # 主页显示的网站标题（支持HTML格式）
       title = ""
       # 主页显示的网站副标题
@@ -237,7 +237,7 @@ theme = 'LoveIt'
 
 # Permalinks配置（即永久链接）
 [permalinks]
-  posts = "/:year/:month/:day/:filename/"
+  posts = "/:year/:month/:day/:contentbasename/"
   tags = "/tags/:slug/"
   categories = "/categories/:slug/"
 
@@ -248,7 +248,7 @@ theme = 'LoveIt'
     disable = true
     respectDoNotTrack = true
     useSessionStorage = false
-  [privacy.twitter]
+  [privacy.x]
     disable = true
     enableDNT = true
     simple = false
@@ -269,7 +269,7 @@ theme = 'LoveIt'
   page = ["HTML"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
-  taxonomyTerm = ["HTML"]
+  term = ["HTML"]
 
 # 用于包含静态资源的配置
 [params.static]

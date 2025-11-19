@@ -9,7 +9,7 @@ keywords = ["关于我", "个人简介", "AI", "大模型"]
 tags = ["个人简介"]
 +++
 
-![我的头像](/images/avatar.jpg)
+![我的头像](/images/avatar.png)
 
 # 关于我
 安卓人，安卓素质，安卓语法，安卓态度
