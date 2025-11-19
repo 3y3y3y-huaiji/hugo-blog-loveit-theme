@@ -1,113 +1,114 @@
-# Hugo Blog with LoveIt Theme
+# Hugo博客 - LoveIt主题
 
-This is a personal blog built with [Hugo](https://gohugo.io/) static site generator and the [LoveIt theme](https://github.com/dillonzq/LoveIt).
+这是一个使用[Hugo](https://gohugo.io/)静态站点生成器和[LoveIt主题](https://github.com/dillonzq/LoveIt)构建的个人博客。
 
-## Features
+## 功能特性
 
-- Responsive design
-- Dark mode support
-- Comment system (Giscus)
-- Search functionality
-- SEO optimization
-- Social media integration
-- Analytics integration
+- 响应式设计
+- 暗色模式支持
+- 评论系统（Giscus）
+- 搜索功能
+- SEO优化
+- 社交媒体集成
+- 分析功能集成
 
-## Prerequisites
+## 前置要求
 
-- [Hugo](https://gohugo.io/getting-started/installing/) (extended version)
+- [Hugo](https://gohugo.io/getting-started/installing/)（扩展版）
 - Git
 
-## Getting Started
+## 快速开始
 
-1. Clone this repository:
+1. 克隆此仓库：
    ```bash
    git clone https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme.git
    cd hugo-blog-loveit-theme
    ```
 
-2. Initialize and update the theme submodule:
+2. 初始化并更新主题子模块：
    ```bash
    git submodule init
    git submodule update
    ```
 
-3. Start the development server:
+3. 启动开发服务器：
    ```bash
    hugo server -D
    ```
 
-4. Open your browser and navigate to `http://localhost:1313` to view the site.
+4. 在浏览器中打开 `http://localhost:1313` 查看网站。
 
-## Deployment
+## 部署
 
-This blog is automatically deployed to GitHub Pages using GitHub Actions. The workflow is defined in `.github/workflows/gh-pages.yml`.
+此博客使用 GitHub Actions 自动部署到 GitHub Pages。工作流定义在 `.github/workflows/gh-pages.yml` 中。
 
-To deploy manually, build the site and push the `public` directory to the `gh-pages` branch:
+要手动部署，构建网站并将 `public` 目录推送到 `gh-pages` 分支：
 ```bash
 hugo -D
-# Then deploy the public directory to your hosting service
+# 然后将 public 目录部署到您的托管服务
 ```
 
-## Project Structure
+## 项目结构
 
 ```
 hugo-blog-loveit-theme/
 ├── .github/
 │   └── workflows/
-│       └── gh-pages.yml      # GitHub Actions workflow
+│       └── gh-pages.yml      # GitHub Actions 工作流
 ├── content/
 │   ├── about/
-│   │   └── index.md          # About page
+│   │   └── index.md          # 关于页面
 │   ├── posts/
-│   │   ├── first-post.md     # Sample posts
+│   │   ├── first-post.md     # 示例文章
 │   │   └── ...
-│   └── _index.md             # Homepage content
+│   └── _index.md             # 首页内容
 ├── static/
 │   └── images/
-│       └── avatar.png        # Avatar image
+│       └── avatar.png        # 头像图片
 ├── themes/
-│   └── LoveIt/               # LoveIt theme submodule
-├── hugo.toml                 # Hugo configuration
-├── README.md                 # This file
-└── docs/                     # Project documentation
+│   └── LoveIt/               # LoveIt 主题子模块
+├── hugo.toml                 # Hugo 配置
+├── README.md                 # 本文档（中文版本）
+├── README.en.md              # 本文档（英文版本）
+└── docs/                     # 项目文档
     ├── 需求文档.md
     ├── 待办清单.md
     └── 项目状态.md
 ```
 
-## Configuration
+## 配置
 
-The main configuration file is `hugo.toml`. Key settings include:
+主要配置文件是 `hugo.toml`。关键设置包括：
 
-- Site metadata (title, description, etc.)
-- Theme parameters
-- Menu configuration
-- Social media links
-- Comment system (Giscus) settings
+- 站点元数据（标题、描述等）
+- 主题参数
+- 菜单配置
+- 社交媒体链接
+- 评论系统（Giscus）设置
 
-## Customization
+## 自定义
 
-You can customize the theme by modifying the following:
+您可以通过修改以下内容来自定义主题：
 
-- `hugo.toml`: Site configuration
-- `content/`: Blog posts and pages
-- `static/`: Static assets like images
-- `themes/LoveIt/`: Theme files (be careful when updating the theme)
+- `hugo.toml`：站点配置
+- `content/`：博客文章和页面
+- `static/`：静态资源如图片
+- `themes/LoveIt/`：主题文件（更新主题时需注意）
 
-## Contributing
+## 贡献
 
-1. Fork the repository
-2. Create a new branch for your feature
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
+1. Fork 此仓库
+2. 创建一个新的功能分支
+3. 提交您的更改
+4. 推送到该分支
+5. 创建一个新的 Pull Request
 
-## License
+## 许可证
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+本项目采用 MIT 许可证 - 有关详细信息，请参阅 [LICENSE](LICENSE) 文件。
 
-## Acknowledgments
+## 致谢
 
-- [Hugo](https://gohugo.io/) - The world's fastest framework for building websites
-- [LoveIt Theme](https://github.com/dillonzq/LoveIt) - A clean, elegant but advanced blog theme for Hugo
-- [Giscus](https://giscus.app/) - A comments system powered by GitHub Discussions
+- [Hugo](https://gohugo.io/) - 世界上最快的网站构建框架
+- [LoveIt Theme](https://github.com/dillonzq/LoveIt) - 一个干净、优雅但功能强大的 Hugo 博客主题
+- [Giscus](https://giscus.app/) - 一个由 GitHub Discussions 驱动的评论系统
