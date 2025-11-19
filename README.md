@@ -1,10 +1,6 @@
-# Hugo博客项目 (LoveIt主题)
+# Hugo博客项目
 
-[![GitHub license](https://img.shields.io/github/license/3y3y3y-huaiji/hugo-blog-loveit-theme.svg)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/blob/main/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/3y3y3y-huaiji/hugo-blog-loveit-theme.svg)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/releases)
-[![GitHub stars](https://img.shields.io/github/stars/3y3y3y-huaiji/hugo-blog-loveit-theme.svg?style=social)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/stargazers)
-
-一个使用Hugo静态网站生成器和LoveIt主题构建的个人博客项目，具有响应式设计、搜索功能和评论系统。
+一个使用Hugo静态网站生成器和LoveIt主题构建的个人博客项目，通过GitHub Actions自动部署到GitHub Pages。
 
 ## 🚀 在线预览
 
@@ -14,190 +10,152 @@
 
 ## 📋 目录
 
-- [项目特性](#项目特性)
-- [技术栈](#技术栈)
+- [功能特点](#功能特点)
+- [安装和使用](#安装和使用)
 - [项目结构](#项目结构)
-- [安装与使用](#安装与使用)
-- [配置说明](#配置说明)
+- [配置](#配置)
 - [部署指南](#部署指南)
-- [维护与优化](#维护与优化)
-- [常见问题](#常见问题)
 - [贡献指南](#贡献指南)
 - [许可证](#许可证)
+- [联系方式](#联系方式)
 
-## ✨ 项目特性
+## 🚀 功能特点
 
-- 🎨 基于[LoveIt](https://github.com/dillonzq/LoveIt)主题，界面美观现代
+- 📝 基于Markdown的轻量级内容管理
+- 🎨 采用美观的LoveIt主题，支持暗色模式
 - 📱 完全响应式设计，适配各种设备
-- 🔍 内置全文搜索功能（FlexSearch）
-- 💬 集成Giscus评论系统
-- 🌙 支持明暗主题切换
-- 📊 支持文章分类和标签
-- ⚡ 高性能，快速加载
-- 🔧 SEO优化
-- 🚀 自动部署到GitHub Pages
-
-## 🛠 技术栈
-
-- **静态网站生成器**: [Hugo](https://gohugo.io/)
-- **主题**: [LoveIt](https://github.com/dillonzq/LoveIt)
-- **评论系统**: [Giscus](https://giscus.app/)
-- **搜索**: [FlexSearch](https://github.com/nextapps-de/flexsearch)
-- **部署平台**: GitHub Pages
-- **CI/CD**: GitHub Actions
+- � 通过GitHub Actions自动部署到GitHub Pages
+- � 集成Giscus评论系统
+- 🔍 内置搜索功能（本地已禁用以避免错误）
+- 📊 SEO优化，提升搜索引擎可见性
+- 🌐 多语言支持（目前仅配置中文）
 
 ## 📁 项目结构
 
 ```
-hugo-blog-loveit-theme/
-├── .github/
-│   └── workflows/           # GitHub Actions工作流
-│       └── gh-pages.yml     # 自动部署到GitHub Pages
-├── archetypes/              # 内容模板
-├── assets/                  # 资源文件（SCSS、JS等）
-├── content/                 # 网站内容
-│   ├── about/               # 关于页面
-│   └── posts/               # 博客文章
-├── data/                    # 数据文件
-├── i18n/                    # 国际化文件
-├── layouts/                 # 布局模板
-│   ├── partials/            # 部分模板
-│   └── statistics/          # 统计相关
-├── static/                  # 静态资源
-│   ├── css/                 # 自定义CSS
-│   ├── images/              # 图片资源
-│   └── lib/                 # 第三方库
-├── themes/                  # 主题文件
-│   └── LoveIt/              # LoveIt主题
-├── docs/                    # 项目文档
-├── hugo.toml               # Hugo配置文件
-└── README.md               # 项目说明文档
+hugo博客(loveit主题）/
+├── archetypes/          # 内容模板
+├── content/             # 网站内容
+│   ├── about/           # 关于页面
+│   │   └── index.md     # 关于页面内容
+│   └── posts/           # 文章
+│       ├── digital-minimalism.md
+│       ├── effective-note-taking.md
+│       ├── first-post.md
+│       └── hugo-performance-optimization.md
+├── static/              # 静态资源
+│   ├── images/          # 图片资源
+│   │   ├── avatar.jpg   # 头像文件
+│   │   └── avatar.png   # 备用头像文件
+│   ├── css/             # 样式文件
+│   ├── js/              # JavaScript文件
+│   └── lib/             # 第三方库
+│       └── flexsearch/   # FlexSearch搜索库
+├── themes/              # 主题
+│   └── LoveIt/          # LoveIt主题
+├── .github/             # GitHub配置
+│   └── workflows/       # 工作流
+│       └── gh-pages.yml # GitHub Pages部署工作流
+├── docs/                # 项目文档
+│   ├── 需求文档.md      # 需求文档
+│   ├── 待办清单.md      # 待办清单
+│   └── 项目状态.md      # 项目状态
+├── hugo.toml            # Hugo配置文件
+└── README.md            # 项目说明
 ```
 
-## 🚀 安装与使用
+## 📦 安装和使用
 
 ### 环境要求
 
-- [Hugo](https://gohugo.io/getting-started/installing/) (版本 >= 0.112.0)
+- [Hugo](https://gohugo.io/getting-started/installing/) v0.152.2+extended
 - [Git](https://git-scm.com/)
 
-### 本地运行
+### 本地开发
 
 1. 克隆仓库
-   ```bash
-   git clone https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme.git
-   cd hugo-blog-loveit-theme
-   ```
+```bash
+git clone https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme.git
+cd hugo-blog-loveit-theme
+```
 
-2. 启动本地服务器
-   ```bash
-   hugo server -D
-   ```
+2. 启动本地开发服务器
+```bash
+hugo server -D --bind 0.0.0.0 --port 1313
+```
 
-3. 在浏览器中访问 [http://localhost:1313](http://localhost:1313)
+3. 在浏览器中访问 http://localhost:1313/hugo-blog-loveit-theme/
 
 ### 创建新文章
 
-使用Hugo命令创建新文章：
-
+1. 使用Hugo命令创建新文章
 ```bash
-hugo new posts/your-post-title.md
+hugo new posts/my-new-post.md
 ```
 
-或者手动在 `content/posts/` 目录下创建Markdown文件。
+2. 编辑生成的Markdown文件，添加内容和元数据
 
-### 构建网站
+### 构建和部署
+
+项目使用GitHub Actions自动部署，当推送代码到main分支时会自动触发部署。如需手动构建：
 
 ```bash
-hugo --minify
+hugo -D
 ```
 
-构建后的静态文件将生成在 `public/` 目录中。
+构建后的静态文件将生成在`public`目录中。
 
-## ⚙️ 配置说明
+## ⚙️ 配置
 
 ### 基本配置
 
-主要配置在 `hugo.toml` 文件中：
+主要配置在`hugo.toml`文件中：
 
-```toml
-baseURL = 'https://your-username.github.io/your-repo-name/'
-languageCode = 'zh-cn'
-title = '你的博客标题'
-theme = 'LoveIt'
-```
+- 网站基本信息（标题、描述、关键词）
+- 主题参数
+- 导航菜单
+- 社交链接
+- 评论系统配置
 
 ### 主题配置
 
-LoveIt主题提供了丰富的配置选项，主要在 `[params]` 部分：
-
-- 网站基本信息（标题、描述、关键词）
-- 作者信息
-- 搜索功能配置
-- 导航栏配置
-- 页脚配置
-- 主页配置
-- 评论系统配置
-
-### 评论系统
-
-本项目使用Giscus作为评论系统，配置如下：
-
-```toml
-[params.page.comment.giscus]
-  enable = true
-  repo = "your-username/your-repo"
-  repoId = "your-repo-id"
-  category = "Announcements"
-  categoryId = "your-category-id"
-  lang = "zh-CN"
-  mapping = "pathname"
-  # ...其他配置
-```
+LoveIt主题提供了丰富的配置选项，详情请参考[LoveIt主题文档](https://hugoloveit.com/theme-documentation-basics/)。
 
 ## 🚀 部署指南
 
-### GitHub Pages自动部署
+### GitHub Pages部署
 
-本项目已配置GitHub Actions自动部署到GitHub Pages：
+1. Fork或克隆此仓库
+2. 在GitHub仓库设置中启用GitHub Pages
+3. 确保GitHub Actions工作流`.github/workflows/gh-pages.yml`已正确配置
+4. 推送代码到main分支，GitHub Actions将自动构建和部署
 
-1. 将代码推送到GitHub仓库的main分支
-2. GitHub Actions将自动构建并部署网站
-3. 部署完成后，网站将在GitHub Pages上可用
+### 其他平台部署
 
-### 手动部署到其他平台
+项目可以部署到任何支持静态网站的托管平台，如Netlify、Vercel、Cloudflare Pages等。
 
-1. 构建网站：
-   ```bash
-   hugo --minify
-   ```
+## 🤝 贡献指南
 
-2. 将 `public/` 目录中的内容部署到你选择的托管平台
+欢迎提交问题和改进建议！如果您想为此项目做出贡献：
 
-## 🔧 维护与优化
+1. Fork此仓库
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 创建Pull Request
 
-### 定期更新
+## 📄 许可证
 
-1. **更新Hugo版本**：
-   ```bash
-   # 检查最新版本
-   hugo version
-   
-   # 更新Hugo（根据你的安装方式）
-   # 例如使用Homebrew：
-   brew upgrade hugo
-   ```
+本项目采用MIT许可证 - 查看[LICENSE](LICENSE)文件了解详情。
 
-2. **更新主题**：
-   ```bash
-   cd themes/LoveIt
-   git pull
-   ```
+## 📞 联系方式
 
-3. **更新依赖**：
-   ```bash
-   # 如果主题使用npm管理依赖
-   cd themes/LoveIt
+- GitHub: [3y3y3y-huaiji](https://github.com/3y3y3y-huaiji)
+- 邮箱: sumingkai1@outlook.com
+
+---
+
+⭐ 如果这个项目对您有帮助，请给它一个星标！
    npm install
    npm update
    ```
