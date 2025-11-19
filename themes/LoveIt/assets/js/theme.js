@@ -472,7 +472,9 @@ class Theme {
       const script = document.createElement('script');
       script.id = 'flexsearch';
       script.type = 'text/javascript';
-      script.src = searchConfig.flexsearchURL || '/lib/flexsearch/flexsearch.min.js';
+      // Get base URL from current location
+      const baseURL = window.location.pathname.match(/^\/[^\/]+\//) ? window.location.pathname.match(/^\/[^\/]+\//)[0] : '/';
+      script.src = searchConfig.flexsearchURL || baseURL + 'lib/flexsearch/flexsearch.min.js';
       script.async = true;
 
       if (script.readyState) {
