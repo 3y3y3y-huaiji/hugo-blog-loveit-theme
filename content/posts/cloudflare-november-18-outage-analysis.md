@@ -1,6 +1,6 @@
 +++
 title = "Cloudflare 11月18日大规模崩溃事件技术分析"
-date = 2024-11-19T10:00:00+08:00
+date = 2025-11-19T10:00:00+08:00
 draft = false
 tags = ["Cloudflare", "网络故障", "技术分析", "系统架构"]
 categories = ["技术", "网络安全"]
