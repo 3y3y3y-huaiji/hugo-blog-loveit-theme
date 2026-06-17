@@ -1,4 +1,4 @@
-baseURL = 'https://hugo-blog.sumingkai548.workers.dev/'
+baseURL = 'https://berry.ccwu.cc/'
 languageCode = 'zh-cn'
 title = 'AI科技前沿 - 探索人工智能的未来'
 theme = 'LoveIt'
