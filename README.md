@@ -1,10 +1,10 @@
 # 🤖 AI-Blog-Pulse | 全自动 AI 驱动的科技前沿博客
 
-[![Hugo Version](https://img.shields.io/badge/Hugo-v0.163.2--extended-blue.svg?style=flat-down)](https://gohugo.io/)
-[![Theme LoveIt](https://img.shields.io/badge/Theme-LoveIt--v0.3.1-orange.svg)](https://github.com/dillonzq/LoveIt)
-[![License MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![AI Engine](https://img.shields.io/badge/AI--Engine-NVIDIA--NIM-blueviolet.svg)](https://build.nvidia.com)
-[![Build Status](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions)
+[![Hugo Version](https://img.shields.io/badge/Hugo-v0.163.2--extended-blue)](https://gohugo.io/)
+[![Theme LoveIt](https://img.shields.io/badge/Theme-LoveIt_v0.3.1-orange)](https://github.com/dillonzq/LoveIt)
+[![License MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![AI Engine](https://img.shields.io/badge/AI_Engine-NVIDIA_NIM-blueviolet)](https://build.nvidia.com)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/3y3y3y-huaiji/hugo-blog-loveit-theme/gh-pages.yml?label=GitHub%20Pages)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions)
 
 > 💡 **这是一个全自动运行、智能撰写、零人工干预的科技博客站。** 
 > 
