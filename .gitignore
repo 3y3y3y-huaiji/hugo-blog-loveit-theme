@@ -31,3 +31,6 @@ node_modules/
 .env
 .env.local
 .env.*.local
+
+# Cloudflare Wrangler cache
+.wrangler/

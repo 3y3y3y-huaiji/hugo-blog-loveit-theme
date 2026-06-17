@@ -11,7 +11,9 @@
 * **AI 自动化脚本：** TypeScript + Node.js (使用 `ts-node` 驱动)
 * **大模型服务：** NVIDIA NIM / API Catalog (大模型资源池多模型自动轮询与降级机制)
 * **CI/CD：** GitHub Actions (使用 Node.js 24 LTS 运行环境)
-* **托管部署：** GitHub Pages (Actions 自动构建与分发模式)
+* **托管部署：** 
+  * **GitHub Pages** (由 GitHub Actions 自动构建与发布，用于日常浏览与备份)
+  * **Cloudflare Workers Assets** (命令行或云端直接构建，支持接入广告的最佳顶级域名环境)
 
 ---
 
@@ -32,7 +34,8 @@ npm install
   "typecheck": "tsc --noEmit && tsc --project themes/LoveIt/tsconfig.json --noEmit",
   "build:theme": "babel themes/LoveIt/src/js --out-file themes/LoveIt/assets/js/theme.js --extensions \".ts\" --presets @babel/preset-env,@babel/preset-typescript",
   "build:index": "ts-node scripts/generate-flexsearch-index.ts",
-  "generate:ai-post": "ts-node scripts/generate-ai-post.ts"
+  "generate:ai-post": "ts-node scripts/generate-ai-post.ts",
+  "build:cloudflare": "npm run build:theme && npm run build:index && hugo --baseURL=\"https://hugo-blog.sumingkai548.workers.dev/\" --minify"
 }
 ```
 
@@ -99,8 +102,10 @@ npm install
 
 ## 🔄 5. CI/CD 流水线设计 (GitHub Actions)
 
+由于 GitHub 废弃 Node 20 运行时，我们已全面将流水线的工作步骤升级至 Node 24 兼容版本：
+* 依赖升级包括：`actions/checkout@v6`、`actions/setup-node@v6`、`actions/upload-pages-artifact@v5`、`actions/deploy-pages@v5`。
+
 ### 5.1 自动生成与部署合一流水线 (`ai-blog-cron.yml`)
-* **痛点解决：** 解决由 `GITHUB_TOKEN` 推送的文章无法二次唤醒 `gh-pages.yml` 的 GitHub 限制。
 * **业务流程：** 
   `获取热点并用 AI 生成文章` -> `Git Commit` -> `Git Pull --rebase (避开多人推送冲突)` -> `Git Push` -> `Hugo 编译 (包含最新文章)` -> `打包并部署到 GitHub Pages`。
 * **必要权限 (Permissions)：**
@@ -116,14 +121,55 @@ npm install
 
 ---
 
-## 🔍 6. 常见故障排查 (Troubleshooting)
+## ☁️ 6. Cloudflare Workers Assets 部署与双平台路由共存
 
-### 6.1 流水线部署报 403 权限拒绝 (Permission Denied)
+为了使本博客支持广告联盟接入（如 Google AdSense），我们引入了 Cloudflare Workers Assets 部署方式，并实现了 GitHub Pages（子路径）与 Cloudflare（根路径）的兼容。
+
+### 6.1 双基准域名 (baseURL) 路由策略
+* **GitHub Pages 默认配置：** 在配置文件 `hugo.toml` 中，保持 `baseURL = 'https://3y3y3y-huaiji.github.io/hugo-blog-loveit-theme/'`。这保证了 GitHub 上的样式和相对路径能够正确解析。
+* **Cloudflare Workers 命令行重写：** 通过新增的 npm 脚本，我们在本地编译 Workers 静态资源时，使用命令行参数 `--baseURL` 强行覆盖基准域名：
+  ```bash
+  npm run build:cloudflare
+  ```
+  该命令会编译出根路由适配的静态代码（URL 适配 `https://hugo-blog.sumingkai548.workers.dev/`），确保在 Workers Subdomain 下样式和链接加载完全正常。
+
+### 6.2 部署说明
+本站使用 `wrangler.jsonc` 来定义 Workers Assets，不需要任何主进程脚本（Asset-Only 模式）：
+```json
+{
+  "name": "hugo-blog",
+  "compatibility_date": "2026-06-17",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./public"
+  }
+}
+```
+**部署指令：**
+1. 构建 Workers 静态资产：
+   ```bash
+   npm run build:cloudflare
+   ```
+2. 部署到 Cloudflare Edge（首次部署需运行 `npx wrangler login` 授权）：
+   ```bash
+   npx wrangler deploy
+   ```
+
+---
+
+## 🔍 7. 常见故障排查 (Troubleshooting)
+
+### 7.1 流水线部署报 403 权限拒绝 (Permission Denied)
 * **原因：** 仓库的默认 Workflow 权限是只读的，或者 Pages 的发布源选择错误。
 * **解决：** 
   1. 进入仓库 **Settings -> Actions -> General**，将 **Workflow permissions** 修改为 **`Read and write permissions`** 并保存。
   2. 进入仓库 **Settings -> Pages**，将 **Build and deployment -> Source** 改选为 **`GitHub Actions`**。
 
-### 6.2 博文生成流遇到推送冲突被拒绝 (Push Rejected)
+### 7.2 博文生成流遇到推送冲突被拒绝 (Push Rejected)
 * **原因：** 定时发文时，远程仓库包含了本地 runner 没有的代码（如你刚刚在本地提交了性能改动）。
 * **解决：** 流水线步骤中已加入 `git pull --rebase`。如在本地开发提交遇到该问题，在本地先执行 `git pull --rebase origin main` 融合历史，然后再进行 push 即可。
+
+### 7.3 Cloudflare 部署后访问返回 404
+* **原因 1：** `wrangler.jsonc` 中没有显式设置 `"workers_dev": true`，导致分配的 `workers.dev` 访问路由未启用。
+* **原因 2：** API 上传成功，但部署注册 API 仍在等待节点同步期间，强行终止了 `wrangler deploy` 进程。
+* **解决：** 确保 `wrangler.jsonc` 中已配置 `"workers_dev": true`，重新运行 `npx wrangler deploy` 并等待其打印出 `✨ Deployed` 状态字样。

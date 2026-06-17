@@ -94,30 +94,33 @@ graph TD
 
 ---
 
-### 方案二：Serverless 托管平台部署 (Cloudflare Pages / Vercel / Netlify)
+### 方案二：Cloudflare Workers Assets 边缘部署 (支持顶级域名与广告接入)
 
-如果您喜欢使用第三方的 Serverless 托管服务来提速，可以按照以下方式配置：
+如果您需要让博客运行在独立域名或 Cloudflare Workers 子域名的根路径下（例如，为了满足 Google AdSense 的接入审核要求），推荐使用此部署方案。它基于 Cloudflare 现代的 Workers Assets 静态托管，且支持和 GitHub Pages 共存。
 
-#### 1. 平台连接与基本配置
-在 Cloudflare Pages、Vercel 或 Netlify 控制台导入您的 GitHub 仓库：
-* **框架预设 (Framework Preset)**: 选择 **`Hugo`**。
-* **构建命令 (Build Command)**: 
-  ```bash
-  npm run build:theme && hugo --gc --minify && npm run build:index
-  ```
-  *(注：该命令会先编译 TS 主题，然后构建静态网站，最后为全站生成 FlexSearch 搜索索引)*
-* **发布目录 (Publish Directory)**: `public`。
+#### 1. 前置依赖
+本地已安装 Node.js 20+ 环境，并安装了依赖：
+```bash
+npm install
+```
 
-#### 2. 环境变量配置
-在这些托管平台的项目设置 (Environment Variables) 中：
-* 添加环境变量：`HUGO_VERSION = 0.145.0` (或更高版本，确保使用 extended 扩展版以支持 Sass/SCSS 编译)。
-* 如果您也想在这些平台上运行构建前调用脚本，请同样注入 `NVIDIA_API_KEY` 变量。
+#### 2. 本地构建与发布
+1. **登录 Cloudflare** (首次运行需要)：
+   ```bash
+   npx wrangler login
+   ```
+2. **一键编译（自动重写 baseURL）**：
+   ```bash
+   npm run build:cloudflare
+   ```
+3. **部署至 Cloudflare 边缘端**：
+   ```bash
+   npx wrangler deploy
+   ```
 
-#### 3. 设置每日定时撰写工作流
-由于这些平台不提供原生的定时 cron 代码运行（只有构建托管），您依然需要让 GitHub 的定时工作流跑起来：
-* 保留 GitHub Actions 的 `.github/workflows/ai-blog-cron.yml`。
-* 每天早上 GitHub Action 会自动写文章并 push 到 GitHub。
-* GitHub 收到 push 后，会自动触发 Cloudflare Pages/Vercel/Netlify 的 **Deploy Hook** 自动进行拉取、编译并发布更新。
+#### 3. 配置说明
+* 配置文件为根目录下的 [wrangler.jsonc](file:///d:/Users/Administrator/Documents/博客在hugo/hugo-blog-loveit-theme/wrangler.jsonc)。
+* 详细的 baseURL 重写逻辑、双平台路由兼容策略以及自定义域名绑定方法，请参见：[Cloudflare Workers Assets 部署指南](file:///d:/Users/Administrator/Documents/博客在hugo/hugo-blog-loveit-theme/docs/cloudflare-deployment.md)。
 
 ---
 

@@ -40,12 +40,33 @@ This is a personal blog built with [Hugo](https://gohugo.io/) static site genera
 
 ## Deployment
 
-This blog is automatically deployed to GitHub Pages using GitHub Actions. The workflow is defined in `.github/workflows/gh-pages.yml`.
+This blog supports dual-platform deployment: **GitHub Pages** (for daily backup and auto-publishing) and **Cloudflare Workers Assets** (for custom domain and AdSense integration).
 
-To deploy manually, build the site and push the `public` directory to the `gh-pages` branch:
+### Option 1: GitHub Pages (Automatic)
+The blog is automatically built and deployed to GitHub Pages via GitHub Actions when pushing to the `main` branch. The workflow is defined in `.github/workflows/gh-pages.yml`.
+
+### Option 2: Cloudflare Workers Assets (Manual / Edge Deployment)
+To deploy the blog on the root `/` path (e.g. `https://hugo-blog.sumingkai548.workers.dev/` or your custom domain):
+1. **Login to Cloudflare** (first-time only):
+   ```bash
+   npx wrangler login
+   ```
+2. **Build with baseURL override**:
+   ```bash
+   npm run build:cloudflare
+   ```
+3. **Deploy to Cloudflare Edge**:
+   ```bash
+   npx wrangler deploy
+   ```
+For more technical details about baseURL routing override and custom domain binding, see: [Cloudflare Workers Assets Deployment Guide](file:///d:/Users/Administrator/Documents/博客在hugo/hugo-blog-loveit-theme/docs/cloudflare-deployment.md).
+
+### Option 3: Traditional Manual Deployment
+To build and deploy manually to any static hosting service:
 ```bash
-hugo -D
-# Then deploy the public directory to your hosting service
+hugo --gc --minify
+# The build output is located in the `public` directory.
+# Deploy the contents of the `public` directory to your hosting service.
 ```
 
 ## Project Structure
