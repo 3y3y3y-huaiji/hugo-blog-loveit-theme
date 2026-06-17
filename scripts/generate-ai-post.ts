@@ -144,7 +144,6 @@ async function main() {
     // 格式化输出文件名和日期
     const now = new Date();
     const isoDateStr = now.toISOString(); // yyyy-mm-ddThh:mm:ss.sssZ
-    const localDateStr = now.toLocaleDateString('zh-CN', { timeZone: 'Asia/Shanghai' }).replace(/\//g, '-');
     const fileNameDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
     
     // 生成安全的文件名
