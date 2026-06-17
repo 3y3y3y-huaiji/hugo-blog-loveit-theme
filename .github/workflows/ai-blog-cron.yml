@@ -43,7 +43,7 @@ jobs:
           echo "检测到新生成的博文，准备提交并推送..."
           git add content/posts/
           git commit -m "chore: auto-generate daily AI blog post"
-          # 自动推送回触发该工作流的分支
+          git pull --rebase origin ${{ github.ref_name }}
           git push origin HEAD:${{ github.ref_name }}
         else
           echo "没有生成新的博文，跳过提交。"
