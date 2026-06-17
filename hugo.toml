@@ -1,4 +1,4 @@
-baseURL = 'https://3y3y3y-huaiji.github.io/hugo-blog-loveit-theme/'
+baseURL = 'https://hugo-blog.sumingkai548.workers.dev/'
 languageCode = 'zh-cn'
 title = 'AI科技前沿 - 探索人工智能的未来'
 theme = 'LoveIt'
@@ -138,7 +138,7 @@ hasCJKLanguage = true
     category = "Announcements"
     categoryId = "DIC_kwDOQXU1Ss4Cx4Z7"
     lang = "zh-CN"
-    mapping = "pathname"
+    mapping = "title"
     reactionsEnabled = "1"
     emitMetadata = "1"
     inputPosition = "top"

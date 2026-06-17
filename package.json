@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit && tsc --project themes/LoveIt/tsconfig.json --noEmit",
     "build:theme": "babel themes/LoveIt/src/js --out-file themes/LoveIt/assets/js/theme.js --extensions \".ts\" --presets @babel/preset-env,@babel/preset-typescript",
     "generate:ai-post": "ts-node scripts/generate-ai-post.ts",
-    "build:cloudflare": "npm run build:theme && hugo --baseURL=\"https://hugo-blog.sumingkai548.workers.dev/\" --minify"
+    "build:cloudflare": "npm run build:theme && hugo --minify"
   },
   "repository": {
     "type": "git",
