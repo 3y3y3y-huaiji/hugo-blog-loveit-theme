@@ -7,6 +7,8 @@ enableRobotsTXT = true
 [params]
   # LoveIt主题版本
   version = "0.3.X"
+  # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI
+  fingerprint = "sha256"
   
   # 网站描述
   description = "AI科技前沿是一个全自动运行的科技博客，使用NVIDIA NIM/API Catalog大模型进行日常科技热点追踪和博文撰写。"
@@ -103,7 +105,7 @@ enableRobotsTXT = true
       # Gravatar邮箱，用于优先在主页显示的头像
       gravatarEmail = ""
       # 主页显示头像的URL
-      avatarURL = "images/avatar.png?v=2"
+      avatarURL = "images/avatar.webp"
       # 主页显示的网站标题（支持HTML格式）
       title = ""
       # 主页显示的网站副标题
@@ -271,6 +273,10 @@ enableRobotsTXT = true
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
   term = ["HTML"]
+
+# CDN 资源加速配置
+[params.cdn]
+  data = "jsdelivr.yml"
 
 # 用于包含静态资源的配置
 [params.static]
