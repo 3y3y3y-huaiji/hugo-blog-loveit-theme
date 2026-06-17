@@ -1,4 +1,4 @@
-baseURL = 'https://3y3y3y-huaiji.github.io/hugo-blog-loveit-theme/'
+baseURL = 'https://hugo-blog-loveit-theme.pages.dev/'
 languageCode = 'zh-cn'
 title = 'AI科技前沿 - 探索人工智能的未来'
 theme = 'LoveIt'
