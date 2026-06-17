@@ -72,14 +72,16 @@ async function main() {
   // 1. 获取热点话题
   const topic = await getHotTopic();
 
-  // 2. 随机选择大模型
-  const selectedModel = MODEL_POOL[Math.floor(Math.random() * MODEL_POOL.length)];
-  console.log(`本次博客撰写由大模型资源池随机指派，选中模型：【${selectedModel}】`);
+  // 2. 准备大模型候选池并随机打乱顺序（实现随机首选 + 自动顺序回退）
+  const shuffledModels = [...MODEL_POOL].sort(() => Math.random() - 0.5);
+  console.log(`大模型候选顺序已生成：${shuffledModels.map(m => m.split('/').pop()).join(' -> ')}`);
 
-  // 3. 初始化 OpenAI 兼容的 NVIDIA API 客户端
+  // 3. 初始化 OpenAI 兼容的 NVIDIA API 客户端 (设置 2 分钟超时和最多 1 次重试以防长时间挂起)
   const openai = new OpenAI({
     baseURL: 'https://integrate.api.nvidia.com/v1',
-    apiKey: apiKey
+    apiKey: apiKey,
+    timeout: 120 * 1000,
+    maxRetries: 1
   });
 
   const prompt = `你是一个资深的科技博客作家。请针对以下科技动态/热点话题，撰写一篇深入、专业且富有趣味性的中文分析博客文章。
@@ -99,18 +101,33 @@ async function main() {
 
 注意：绝对不要在你的输出中包含任何 \`\`\`toml 或 \`\`\`yaml 等 Hugo 前置元数据代码块，也不要输出任何前置注释。直接输出文章标题和摘要。`;
 
-  console.log(`正在向 NVIDIA API 提交撰写请求，模型: ${selectedModel} ...`);
-  
   try {
-    const response = await openai.chat.completions.create({
-      model: selectedModel,
-      messages: [
-        { role: 'system', content: '你是一位富有洞察力的前沿技术博主，精通前沿软件开发、大模型、AI、云计算等技术。' },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.7,
-      max_tokens: 2548
-    });
+    let response = null;
+    let selectedModel = "";
+
+    for (const model of shuffledModels) {
+      selectedModel = model;
+      console.log(`正在向 NVIDIA API 提交撰写请求，尝试模型: 【${selectedModel}】...`);
+      try {
+        response = await openai.chat.completions.create({
+          model: selectedModel,
+          messages: [
+            { role: 'system', content: '你是一位富有洞察力的前沿技术博主，精通前沿软件开发、大模型、AI、云计算等技术。' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.7,
+          max_tokens: 2548
+        });
+        console.log(`模型 【${selectedModel}】 响应成功！`);
+        break;
+      } catch (error) {
+        console.warn(`模型 【${selectedModel}】 调用失败: ${(error as Error).message}。将尝试下一个备用模型...`);
+      }
+    }
+
+    if (!response) {
+      throw new Error("所有候选大模型均调用失败，无法生成博文。");
+    }
 
     const output = response.choices[0]?.message?.content;
     if (!output) {
