@@ -49,8 +49,7 @@ jobs:
         hugo-version: 'latest'
         extended: true
 
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
+
       
     - name: Build Hugo Site
       run: hugo --minify
