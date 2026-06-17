@@ -75,7 +75,6 @@ jobs:
 
   deploy-cloudflare:
     runs-on: ubuntu-latest
-    if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     steps:
     - name: Checkout
       uses: actions/checkout@v6
@@ -105,6 +104,7 @@ jobs:
       run: hugo --baseURL="https://hugo-blog.sumingkai548.workers.dev/" --minify
 
     - name: Deploy to Cloudflare Workers
+      if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
