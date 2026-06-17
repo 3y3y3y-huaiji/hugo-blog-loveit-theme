@@ -36,7 +36,8 @@
     "eslint": "^10.5.0",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.61.1"
+    "typescript-eslint": "^8.61.1",
+    "wrangler": "^4.101.0"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
