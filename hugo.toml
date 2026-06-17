@@ -3,6 +3,7 @@ languageCode = 'zh-cn'
 title = 'AI科技前沿 - 探索人工智能的未来'
 theme = 'LoveIt'
 enableRobotsTXT = true
+hasCJKLanguage = true
 
 [params]
   # LoveIt主题版本
