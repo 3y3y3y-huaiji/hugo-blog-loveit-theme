@@ -28,8 +28,10 @@ graph TD
     C --> D[从 5 大模型池中随机挑选写作主体]
     D --> E[调用 NVIDIA NIM API 生成专业博文]
     E --> F[自动注入 Markdown 格式与模型署名]
-    F --> G[Git 自动 commit 并推送到 dev 分支]
-    G --> H[GitHub Actions 触发重构并部署至 GitHub Pages]
+    F --> G[Git 自动 commit 并推送到 main 分支]
+    G --> H[GitHub Actions 触发编译与双平台部署]
+    H --> I1[部署至 GitHub Pages]
+    H --> I2[部署至 Cloudflare Workers Assets]
 ```
 
 ### 1. 🤖 预设 5 大模型资源池 (Model Pool)
@@ -52,7 +54,7 @@ graph TD
 1. **获取源**：利用 Node.js 的 `rss-parser` 获取热点选题。
 2. **大模型调用**：使用官方 `openai` SDK 兼容调用 NVIDIA NIM 的高性能推理服务。
 3. **格式化与归档**：大模型生成结构化的 Markdown 内容，自动写入 Hugo `content/posts/` 目录。
-4. **编译与上线**：脚本运行完毕后，GitHub Action 自动生成 flexsearch 搜索索引，编译 Hugo 静态页面，并将其部署到 GitHub Pages 服务。
+4. **编译与上线**：脚本运行完毕后，GitHub Action 自动编译 Hugo 静态页面并输出原生的 Lunr 搜索索引，并将其分别发布部署到 GitHub Pages 与 Cloudflare Workers Assets 服务。
 
 ---
 

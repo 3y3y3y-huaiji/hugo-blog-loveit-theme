@@ -25,7 +25,7 @@ hasCJKLanguage = true
   # 开启搜索功能
   [params.search]
     enable = true
-    type = "flexsearch"
+    type = "lunr"
     # 文章内容最长索引长度
     contentLength = 10000
     # 搜索框的占位提示语
@@ -38,8 +38,6 @@ hasCJKLanguage = true
     highlightTag = "em"
     # 是否在搜索索引中使用基于 baseURL 的绝对路径
     absoluteURL = false
-    # FlexSearch索引URL
-    flexsearchIndexURL = "/lib/flexsearch/index.json"
   
   # 页面头部导航栏
   [params.header]
@@ -281,10 +279,6 @@ hasCJKLanguage = true
 
 # 用于包含静态资源的配置
 [params.static]
-  # 包含FlexSearch相关文件
-  [params.static.flexsearch]
-    target = "lib/flexsearch"
-    include = "*.js"
   # 包含Lunr.js相关文件
   [params.static.lunr]
     target = "lib/lunr"

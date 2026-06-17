@@ -34,13 +34,9 @@
 
 ## 2. 代码重构实施细节
 
-### 2.1 博客搜索索引生成脚本
-* **源文件**：`scripts/generate-flexsearch-index.js`
-* **目标文件**：[generate-flexsearch-index.ts](file:///d:/Users/Administrator/Documents/博客在hugo/hugo-blog-loveit-theme/scripts/generate-flexsearch-index.ts)
-* **重构内容**：
-  * 将 `require` 替换为 ESM `import`。
-  * 声明 `IndexItem` 与 `ProcessedIndexItem` 接口，定义搜索数据的数据结构与映射规范。
-  * 初始化 `data` 变量以避开“变量未初始化就被使用”的编译器规则。
+### 2.1 搜索功能重构（采用原生中文 Lunr 检索）
+* **改进原因**：LoveIt 主题核心脚本只包含 Lunr 和 Algolia 驱动，不支持 FlexSearch，导致搜索功能在 FlexSearch 配置下失效。
+* **解决方案**：移除了后置生成脚本 `generate-flexsearch-index.ts`，在 `hugo.toml` 中切换为原生 `"lunr"`。主题会在前端仅在用户点击搜索框时动态载入 `lunr.zh.js` 与 `lunr.segmentit.js` 实施高性能分词检索，零负担提升首屏性能。
 
 ### 2.2 主题核心交互文件
 * **源文件**：`themes/LoveIt/src/js/theme.js`
@@ -91,13 +87,10 @@ npm run build:theme
 
 - name: Build Hugo Site
   run: hugo --minify
-
-- name: Generate FlexSearch Index
-  run: npm run build:index
 ```
 
 ### 3.1 流程控制逻辑
 * 如果 ESLint 检测或 TypeScript 类型检查失败，流水线会即时终止，防止带缺陷的代码被部署到线上。
 * 检测成功后，编译主题的 TS 并输出浏览器运行所需的 `theme.js`。
 * 接着使用 Hugo Extended 编译生成整站静态页面。
-* 最终再次运行 TypeScript 版索引生成脚本，为编译好的页面附加最新的 FlexSearch 索引数据，实现全自动编译、全自动索引和自动部署。
+* 最终利用 Hugo 自身模板渲染功能自动输出完美契合 Lunr.js 格式的 `index.json`，实现极速构建和自动中文搜索索引生成。
