@@ -29,7 +29,7 @@ Discover what the Hugo - **LoveIt** theme is all about and the core-concepts beh
 
 Thanks to the simplicity of Hugo, [Hugo](https://gohugo.io/) is the only dependency of this theme.
 
-Just install latest edition of [:(far fa-file-archive fa-fw): Hugo](https://gohugo.io/getting-started/installing/) for your OS (**Windows**, **Linux**, **macOS**).
+Just install latest edition of [:(far fa-file-archive): Hugo](https://gohugo.io/getting-started/installing/) for your OS (**Windows**, **Linux**, **macOS**).
 
 {{< admonition note "When you need to use Hugo extended edition?" false >}}
 When you want [style customization](#style-customization), you need to use the Hugo **extended edition** for correct rendering.
@@ -54,7 +54,7 @@ cd my_website
 
 The **LoveIt** theme's repository is: [https://github.com/dillonzq/LoveIt](https://github.com/dillonzq/LoveIt).
 
-You can download the [release :(far fa-file-archive fa-fw): .zip file](https://github.com/dillonzq/LoveIt/releases) of the theme and extract it in the `themes` directory.
+You can download the [release :(far fa-file-archive): .zip file](https://github.com/dillonzq/LoveIt/releases) of the theme and extract it in the `themes` directory.
 
 Alternatively, clone this repository to the `themes` directory:
 
@@ -72,10 +72,10 @@ git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
 {{< admonition note "LoveIt theme's compatibility" >}}
 
 | LoveIt branch or version | Supported Hugo versions |
-|:---- |:----:|
-| master(Unstable) | ≥ 0.128.0 |
-| **0.3.X(Recommended)** | 0.128.0 - 0.143.1 |
-| 0.2.X(Outdated) | 0.68.0 - 0.127.0 |
+|:-------------------------|:-----------------------:|
+| master(Unstable)         |        ≥ 0.128.0        |
+| **0.3.X(Recommended)**   |    0.128.0 - 0.145.0    |
+| 0.2.X(Outdated)          |    0.68.0 - 0.127.0     |
 
 {{< /admonition >}}
 
@@ -200,7 +200,7 @@ Alternatively, you can use [AWS Amplify](https://gohugo.io/hosting-and-deploymen
 
 In addition to [Hugo global configuration](https://gohugo.io/overview/configuration/) and [menu configuration](#basic-configuration), **LoveIt** lets you define the following parameters in your site configuration (here is a `hugo.toml`, whose values are default).
 
-Please open the code block below to view the complete sample configuration :(far fa-hand-point-down fa-fw)::
+Please open the code block below to view the complete sample configuration :(far fa-hand-point-down)::
 
 ```toml
 baseURL = "http://example.org/"
@@ -416,7 +416,8 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   [params.social]
     GitHub = "xxxx"
     Linkedin = ""
-    Twitter = "xxxx"
+    X = "xxxx" # {{< version 0.3.1 >}}
+    Twitter = "" # {{< version 0.3.1 deprecated >}}
     Instagram = "xxxx"
     Facebook = "xxxx"
     Telegram = "xxxx"
@@ -482,14 +483,17 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     ORCID = ""
     Pleroma = ""
     Kaggle = ""
-    MediaWiki= ""
+    MediaWiki = ""
     Plume = ""
     HackTheBox = ""
-    RootMe= ""
-    Malt = ""
-    TikTok = ""
-    TryHackMe = ""
-    Codeberg = ""
+    RootMe = ""
+    Malt = "" # {{< version 0.3.0 >}}
+    TikTok = "" # {{< version 0.3.0 >}}
+    TryHackMe = "" # {{< version 0.3.0 >}}
+    Codeberg = "" # {{< version 0.3.0 >}}
+    HuggingFace = "" # {{< version 0.3.1 >}}
+    Threads = "" # {{< version 0.3.1 >}}
+    LeetCode = "" # {{< version 0.3.1 >}}
     Phone = ""
     Email = "xxxx@xxxx.com"
     RSS = true # {{< version 0.2.0 >}}
@@ -560,7 +564,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
     # {{< version 0.2.0 changed >}} social share links in post page
     [params.page.share]
       enable = true
-      Twitter = true
+      X = true # {{< version 0.3.1 >}}
+      Twitter = false # {{< version 0.3.1 deprecated >}}
+      Threads = true # {{< version 0.3.1 >}}
       Facebook = true
       Linkedin = false
       Whatsapp = false
@@ -582,7 +588,9 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
       Evernote = false
       Skype = false
       Trello = false
+      Diaspora = true # {{< version 0.3.1 >}}
       Mix = false
+      Telegram = true # {{< version 0.3.1 >}}
     # {{< version 0.2.0 changed >}} Comment config
     [params.page.comment]
       enable = false
@@ -718,12 +726,15 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
 
   # {{< version 0.2.0 >}} Analytics config
   [params.analytics]
-    enable = false
+    # {{< version 0.3.1 deleted >}}
+    enable = true
     # Google Analytics
     [params.analytics.google]
       id = ""
-      # whether to anonymize IP
+      # {{< version 0.3.1 deleted >}} whether to anonymize IP
       anonymizeIP = true
+      # {{< version 0.3.1 >}} whether to respect the browser’s “do not track” setting
+      respectDoNotTrack = false
     # Fathom Analytics
     [params.analytics.fathom]
       id = ""
@@ -803,13 +814,13 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
 
 # {{< link "https://gohugo.io/about/hugo-and-gdpr/" "Privacy config" >}}
 [privacy]
-  # {{< version 0.2.0 deleted >}} privacy of the Google Analytics (replaced by params.analytics.google)
+  # {{< version 0.3.1 changed >}} privacy of the Google Analytics (can also be configured in params.analytics.google)
   [privacy.googleAnalytics]
     # ...
   [privacy.twitter]
-    enableDNT = true
+    # ...
   [privacy.youtube]
-    privacyEnhanced = true
+    # ...
 
 # Options to make output .md files
 [mediaTypes]
@@ -829,7 +840,6 @@ ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
   page = ["HTML", "MarkDown"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
-  taxonomyTerm = ["HTML"]
 ```
 
 {{< admonition >}}
@@ -912,7 +922,7 @@ Customize `browserconfig.xml` and `site.webmanifest` to set theme-color and back
 {{< version 0.2.8 changed >}}
 
 {{< admonition note "Hugo extended version is necessary" >}}
-Since Hugo need to processes :(fab fa-sass fa-fw): SCSS to :(fab fa-css3 fa-fw): CSS,
+Since Hugo need to processes :(fab fa-sass): SCSS to :(fab fa-css3): CSS,
 Hugo **extended** version is necessary for the style customization.
 {{< /admonition >}}
 
@@ -941,31 +951,33 @@ In `assets/css/_custom.scss`, you can add some css style code to customize the s
 
 {{< version 0.2.10 changed >}}
 
-| Language             | Hugo Code | HTML `lang` Attribute | Theme Docs                    | Lunr.js Support               |
-|:-------------------- |:---------:|:---------------------:|:-----------------------------:|:-----------------------------:|
-| English              | `en`      | `en`                  | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
-| Simplified Chinese   | `zh-cn`   | `zh-CN`               | :(far fa-check-square fa-fw): | :(far fa-check-square fa-fw): |
-| Traditional Chinese  | `zh-tw`   | `zh-TW`               | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| French               | `fr`      | `fr`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Polish               | `pl`      | `pl`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Portuguese (Brazil)  | `pt-br`   | `pt-BR`               | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Italian              | `it`      | `it`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Spanish              | `es`      | `es`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| German               | `de`      | `de`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| German               | `de`      | `de`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Serbian              | `sr`      | `sr`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Russian              | `ru`      | `ru`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Romanian             | `ro`      | `ro`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Vietnamese           | `vi`      | `vi`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Arabic               | `ar`      | `ar`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Catalan              | `ca`      | `ca`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Thai                 | `th`      | `th`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Telugu               | `te`      | `te`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Indonesian           | `id`      | `id`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Turkish              | `tr`      | `tr`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
-| Korean               | `ko`      | `ko`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Hindi                | `hi`      | `hi`                  | :(far fa-square fa-fw):       | :(far fa-square fa-fw):       |
-| Dutch                | `nl`      | `nl`                  | :(far fa-square fa-fw):       | :(far fa-check-square fa-fw): |
+| Language            | Hugo Code | HTML `lang` Attribute |          Theme Docs           |        Lunr.js Support        |
+|:--------------------|:---------:|:---------------------:|:-----------------------------:|:-----------------------------:|
+| English             |   `en`    |         `en`          | :(far fa-check-square): | :(far fa-check-square): |
+| Simplified Chinese  |  `zh-cn`  |        `zh-CN`        | :(far fa-check-square): | :(far fa-check-square): |
+| Traditional Chinese |  `zh-tw`  |        `zh-TW`        |    :(far fa-square):    | :(far fa-check-square): |
+| French              |   `fr`    |         `fr`          |    :(far fa-square):    | :(far fa-check-square): |
+| Polish              |   `pl`    |         `pl`          |    :(far fa-square):    |    :(far fa-square):    |
+| Portuguese (Brazil) |  `pt-br`  |        `pt-BR`        |    :(far fa-square):    | :(far fa-check-square): |
+| Italian             |   `it`    |         `it`          |    :(far fa-square):    | :(far fa-check-square): |
+| Spanish             |   `es`    |         `es`          |    :(far fa-square):    | :(far fa-check-square): |
+| German              |   `de`    |         `de`          |    :(far fa-square):    | :(far fa-check-square): |
+| German              |   `de`    |         `de`          |    :(far fa-square):    | :(far fa-check-square): |
+| Serbian             |   `sr`    |         `sr`          |    :(far fa-square):    |    :(far fa-square):    |
+| Russian             |   `ru`    |         `ru`          |    :(far fa-square):    | :(far fa-check-square): |
+| Romanian            |   `ro`    |         `ro`          |    :(far fa-square):    | :(far fa-check-square): |
+| Vietnamese          |   `vi`    |         `vi`          |    :(far fa-square):    | :(far fa-check-square): |
+| Arabic              |   `ar`    |         `ar`          |    :(far fa-square):    | :(far fa-check-square): |
+| Catalan             |   `ca`    |         `ca`          |    :(far fa-square):    |    :(far fa-square):    |
+| Thai                |   `th`    |         `th`          |    :(far fa-square):    | :(far fa-check-square): |
+| Telugu              |   `te`    |         `te`          |    :(far fa-square):    |    :(far fa-square):    |
+| Indonesian          |   `id`    |         `id`          |    :(far fa-square):    |    :(far fa-square):    |
+| Turkish             |   `tr`    |         `tr`          |    :(far fa-square):    | :(far fa-check-square): |
+| Korean              |   `ko`    |         `ko`          |    :(far fa-square):    |    :(far fa-square):    |
+| Hindi               |   `hi`    |         `hi`          |    :(far fa-square):    |    :(far fa-square):    |
+| Dutch               |   `nl`    |         `nl`          |    :(far fa-square):    | :(far fa-check-square): |
+| Bengali             |   `hi`    |         `hi`          |    :(far fa-square):    |    :(far fa-square):    |
+| Japanese            |   `ja`    |         `ja`          |    :(far fa-square):    |    :(far fa-check-square):    |
 
 ### 4.2 Basic Configuration
 
@@ -1092,7 +1104,7 @@ Translations strings are used for common default values used in the theme. Trans
 
 To override these values, create a new file in your local i18n folder `i18n/<languageCode>.toml` and inspire yourself from `themes/LoveIt/i18n/en.toml`.
 
-By the way, as these translations could be used by other people, please take the time to propose a translation by [:(fas fa-code-branch fa-fw): making a PR](https://github.com/dillonzq/LoveIt/pulls) to the theme!
+By the way, as these translations could be used by other people, please take the time to propose a translation by [:(fas fa-code-branch): making a PR](https://github.com/dillonzq/LoveIt/pulls) to the theme!
 
 ## 5 Search
 

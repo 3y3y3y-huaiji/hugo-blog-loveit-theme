@@ -172,12 +172,12 @@ n.CHS_NAMES=T,n.ChsNameOptimizer=Z,n.ChsNameTokenizer=k,n.DatetimeOptimizer=$,n.
 "use strict";
 
 var _segmentit = require("segmentit");
-
-const segmentit = (0, _segmentit.useDefault)(new _segmentit.Segment());
+var segmentit = (0, _segmentit.useDefault)(new _segmentit.Segment());
 lunr.segmentit = segmentit;
-
-lunr.queryHandler = query => {
-  if (/^[\u4e00-\u9fa5]+$/.test(query)) query = lunr.segmentit.doSegment(query).map(seg => '+' + seg.w).join(' ');
+lunr.queryHandler = function (query) {
+  if (/^[\u4e00-\u9fa5]+$/.test(query)) query = lunr.segmentit.doSegment(query).map(function (seg) {
+    return '+' + seg.w;
+  }).join(' ');
   return query;
 };
 

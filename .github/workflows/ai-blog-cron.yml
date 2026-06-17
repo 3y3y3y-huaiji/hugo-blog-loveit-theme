@@ -1,0 +1,50 @@
+name: Auto Generate AI Post
+
+on:
+  schedule:
+    # 每天北京时间早上 08:00 运行一次 (UTC 00:00)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # 给予流水线推送代码的权限
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Run AI Generator Script
+      env:
+        NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      run: npm run generate:ai-post
+
+    - name: Commit and Push New Post
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # 检查是否有文件改动 (主要看 content/posts 目录下是否增加了文章)
+        if [ -n "$(git status --porcelain content/posts/)" ]; then
+          echo "检测到新生成的博文，准备提交并推送..."
+          git add content/posts/
+          git commit -m "chore: auto-generate daily AI blog post [skip ci]"
+          # 自动推送回触发该工作流的分支
+          git push origin HEAD:${{ github.ref_name }}
+        else
+          echo "没有生成新的博文，跳过提交。"
+        fi

@@ -1,0 +1,46 @@
+{
+  "name": "hugo-blog-loveit-theme",
+  "version": "1.0.0",
+  "description": "这是一个使用[Hugo](https://gohugo.io/)静态站点生成器和[LoveIt主题](https://github.com/dillonzq/LoveIt)构建的个人博客。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "lint": "eslint scripts",
+    "typecheck": "tsc --noEmit && tsc --project themes/LoveIt/tsconfig.json --noEmit",
+    "build:theme": "babel themes/LoveIt/src/js --out-file themes/LoveIt/assets/js/theme.js --extensions \".ts\" --presets @babel/preset-env,@babel/preset-typescript",
+    "build:index": "ts-node scripts/generate-flexsearch-index.ts",
+    "generate:ai-post": "ts-node scripts/generate-ai-post.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/issues"
+  },
+  "homepage": "https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme#readme",
+  "devDependencies": {
+    "@babel/cli": "^8.0.0",
+    "@babel/core": "^8.0.0",
+    "@babel/preset-env": "^8.0.0",
+    "@babel/preset-typescript": "^8.0.0",
+    "@types/node": "^25.9.3",
+    "@typescript-eslint/eslint-plugin": "^8.61.1",
+    "@typescript-eslint/parser": "^8.61.1",
+    "eslint": "^10.5.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "openai": "^6.42.0",
+    "rss-parser": "^3.13.0"
+  }
+}

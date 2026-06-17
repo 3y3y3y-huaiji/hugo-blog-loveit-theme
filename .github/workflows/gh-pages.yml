@@ -25,17 +25,38 @@ jobs:
         submodules: true  # 如果使用子模块，请启用此选项
         fetch-depth: 0    # 获取完整历史记录，以便Hugo获取git信息
     
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Run TypeScript Typecheck
+      run: npm run typecheck
+
+    - name: Build Theme JS
+      run: npm run build:theme
+
     - name: Setup Hugo
       uses: peaceiris/actions-hugo@v3
       with:
         hugo-version: 'latest'
         extended: true
-    
+
     - name: Setup Pages
       uses: actions/configure-pages@v4
       
-    - name: Build
+    - name: Build Hugo Site
       run: hugo --minify
+
+    - name: Generate FlexSearch Index
+      run: npm run build:index
     
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3

@@ -85,8 +85,8 @@ I hope you will LoveIt ❤️!
 
 * **Gravatar** supported by [Gravatar](https://gravatar.com)
 * Local **Avatar** supported
-* Up to **76** social links supported
-* Up to **24** share sites supported
+* Up to **84** social links supported
+* Up to **27** share sites supported
 * **Disqus** comment system supported by [Disqus](https://disqus.com)
 * **Gitalk** comment system supported by [Gitalk](https://github.com/gitalk/gitalk)
 * **Valine** comment system supported by [Valine](https://valine.js.org/)
@@ -128,6 +128,14 @@ Build Documentation Locally:
 hugo server --source=exampleSite
 ```
 
+## Compatibility
+
+| LoveIt branch or version | Supported Hugo versions |
+|:-------------------------|:-----------------------:|
+| master(Unstable)         |        ≥ 0.128.0        |
+| **0.3.X(Recommended)**   |    0.128.0 - 0.145.0    |
+| 0.2.X(Outdated)          |    0.68.0 - 0.127.0     |
+
 ## Multilingual and i18n
 
 LoveIt supports the following languages:
@@ -154,6 +162,8 @@ LoveIt supports the following languages:
 * Korean
 * Hindi
 * Dutch
+* Bengali
+* Japanese
 * [Contribute with a new language](https://github.com/dillonzq/LoveIt/pulls)
 
 [Languages Compatibility](https://hugoloveit.com/theme-documentation-basics/#language-compatibility)
@@ -172,7 +182,7 @@ LoveIt is licensed under the **MIT** license. Check the [LICENSE file](https://g
 
 Thanks to the authors of following resources included in the theme:
 
-* [normalize.css](https://github.com/necolas/normalize.css)
+* [modern-normalize](https://github.com/sindresorhus/modern-normalize)
 * [Font Awesome](https://fontawesome.com/)
 * [Simple Icons](https://github.com/simple-icons/simple-icons)
 * [Animate.css](https://daneden.github.io/animate.css/)

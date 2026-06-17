@@ -1,6 +1,6 @@
 baseURL = 'https://3y3y3y-huaiji.github.io/hugo-blog-loveit-theme/'
 languageCode = 'zh-cn'
-title = '我的Hugo博客'
+title = 'AI科技前沿 - 探索人工智能的未来'
 theme = 'LoveIt'
 
 [params]
@@ -8,13 +8,13 @@ theme = 'LoveIt'
   version = "0.3.X"
   
   # 网站描述
-  description = "这是一个使用Hugo和LoveIt主题构建的博客"
+  description = "AI科技前沿是一个全自动运行的科技博客，使用NVIDIA NIM/API Catalog大模型进行日常科技热点追踪和博文撰写。"
   # 网站关键词
-  keywords = ["博客", "Hugo", "LoveIt"]
+  keywords = ["AI", "人工智能", "科技新闻", "大模型", "全自动博客", "DeepSeek", "Kimi", "MiniMax", "GLM", "Gemma"]
   
   # 网站作者
   [params.author]
-    name = "安卓人"
+    name = "AI Writer"
     email = "sumingkai1@outlook.com"
     link = ""
   
@@ -50,7 +50,7 @@ theme = 'LoveIt'
       # LOGO的URL
       logo = ""
       # 标题名称
-      name = "我的Hugo博客"
+      name = "🤖 AI科技前沿"
       # 你可以在名称（允许HTML格式）之前添加其他信息, 例如图标
       pre = ""
       # 你可以在名称（允许HTML格式）之后添加其他信息, 例如图标
@@ -102,11 +102,11 @@ theme = 'LoveIt'
       # Gravatar邮箱，用于优先在主页显示的头像
       gravatarEmail = ""
       # 主页显示头像的URL
-      avatarURL = "images/avatar.png"
+      avatarURL = "images/avatar.png?v=2"
       # 主页显示的网站标题（支持HTML格式）
       title = ""
       # 主页显示的网站副标题
-      subtitle = "这是我的个人博客"
+      subtitle = "💡 全自动AI驱动的科技前沿博文站 | 汇聚全球AI模型灵感与深度思考"
       # 是否为副标题显示打字机效果
       typeit = true
       # 是否显示社交账号

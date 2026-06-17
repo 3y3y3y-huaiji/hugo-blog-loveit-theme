@@ -209,7 +209,7 @@
   [params.social]
     GitHub = ""
     Linkedin = ""
-    Twitter = ""
+    X = ""
     Instagram = ""
     Facebook = ""
     Telegram = ""
@@ -275,14 +275,18 @@
     ORCID = ""
     Pleroma = ""
     Kaggle = ""
-    MediaWiki= ""
+    MediaWiki = ""
     Plume = ""
     HackTheBox = ""
-    RootMe= ""
+    RootMe = ""
     Malt = ""
     TikTok = ""
     TryHackMe = ""
     Codeberg = ""
+    HuggingFace = ""
+    Threads = ""
+    LeetCode = ""
+    LeetCodeCN = ""
     Email = ""
     Phone = ""
     RSS = ""
@@ -338,6 +342,9 @@
       # the maximum number of lines of displayed code by default
       # 默认展开显示的代码行数
       maxShownLines = 50
+    [params.page.code.render]
+      goat = true
+      mermaid = true
     # KaTeX mathematical formulas config (KaTeX https://katex.org/)
     # KaTeX 数学公式配置 (KaTeX https://katex.org/)
     [params.page.math]
@@ -384,7 +391,8 @@
     # 文章页面的分享信息设置
     [params.page.share]
       enable = true
-      Twitter = true
+      X = true
+      Threads = true
       Facebook = true
       Linkedin = false
       Whatsapp = false
@@ -406,7 +414,9 @@
       Evernote = false
       Skype = false
       Trello = false
+      Diaspora = true
       Mix = false
+      Telegram = true
     # Comment config
     # 评论系统设置
     [params.page.comment]
@@ -573,13 +583,12 @@
   # Analytics config
   # 网站分析配置
   [params.analytics]
-    enable = false
     # Google Analytics
     [params.analytics.google]
       id = ""
-      # whether to anonymize IP
-      # 是否匿名化用户 IP
-      anonymizeIP = true
+      # whether to respect the browser’s “do not track” setting
+      # 是否遵循浏览器的 “Do Not Track” 设置
+      respectDoNotTrack = false
     # Fathom Analytics
     [params.analytics.fathom]
       id = ""
