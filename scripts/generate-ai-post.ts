@@ -20,14 +20,20 @@ const RSS_FEEDS = [
   "https://sspai.com/feed",                   // 少数派
   "https://www.solidot.org/index.rss",        // Solidot 奇客
   "https://news.ycombinator.com/rss",         // Hacker News
-  "https://techcrunch.com/feed/"              // TechCrunch
+  "https://techcrunch.com/feed/",             // TechCrunch
+  "https://36kr.com/feed",                    // 36氪
+  "https://www.ithome.com/rss/",              // IT之家
+  "https://www.theverge.com/rss/index.xml",   // The Verge
+  "https://www.wired.com/feed/rss",           // Wired
+  "https://feed.infoq.com/",                  // InfoQ
+  "https://www.geekpark.net/rss"              // 极客公园
 ];
 
 // 默认备用热点主题 (如果 RSS 抓取失败)
 const FALLBACK_TOPICS = [
   { title: "大语言模型的轻量化趋势与端侧部署实践", snippet: "探讨近年来 Llama, Gemma, Phi 等端侧模型的发展及其在手机和PC端的本地化部署方案" },
   { title: "AI Agent（智能体）在企业工作流中的演进与挑战", snippet: "分析 Multi-Agent 多智能体协同系统在业务场景中的落地障碍与主流解决框架" },
-  { title: "深度推理模型（如 DeepSeek R1）的强化学习技术解析", snippet: "剖析基于规则与自我博弈的强化学习在让 AI 具备逻辑推理和深思熟虑能力方面的作用" },
+  { title: "深度推理模型（如 DeepSeek R1）的强化学习技术解析", snippet: "剖析基于规则与自我博弈的强化学习在让 AI 具备 logic 推理和深思熟虑能力方面的作用" },
   { title: "跨平台框架与 Web GPU 的发展对前端渲染带来的变革", snippet: "探讨 WebGPU 规范如何赋予浏览器直接调用硬件 GPU 的能力，加速前端 AI 渲染推理" }
 ];
 
@@ -35,7 +41,10 @@ async function getHotTopic(): Promise<{ title: string; snippet: string }> {
   const parser = new Parser();
   console.log("正在尝试抓取科技 RSS 订阅源以获取热点资讯...");
   
-  for (const url of RSS_FEEDS) {
+  // 随机打乱订阅源顺序，防止每次都首选同一个网站的热点
+  const shuffledFeeds = [...RSS_FEEDS].sort(() => Math.random() - 0.5);
+  
+  for (const url of shuffledFeeds) {
     try {
       console.log(`正在读取订阅源: ${url}`);
       const feed = await parser.parseURL(url);
