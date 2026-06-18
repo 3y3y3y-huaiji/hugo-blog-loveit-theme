@@ -430,7 +430,7 @@ class Theme {
     for (let num = 1; num <= 6; num++) {
       Util.forEach(document.querySelectorAll('.single .content > h' + num), $header => {
         $header.classList.add('headerLink');
-        $header.insertAdjacentHTML('afterbegin', `<a href="#${$header.id}" class="header-mark"></a>`);
+        $header.insertAdjacentHTML('afterbegin', `<a href="#${$header.id}" class="header-mark" aria-label="锚点"></a>`);
       });
     }
   }
