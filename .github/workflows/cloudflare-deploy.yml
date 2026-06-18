@@ -52,9 +52,7 @@ jobs:
       run: hugo --minify
 
     - name: Deploy to Cloudflare Workers
-      env:
-        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      if: env.CLOUDFLARE_API_TOKEN != ''
+      if: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
