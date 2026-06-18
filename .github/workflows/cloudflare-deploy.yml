@@ -5,10 +5,15 @@ on:
     branches:
       - main  # 设置为你的默认分支名称
   workflow_dispatch:  # 允许手动触发
+  workflow_run:
+    workflows: ["Auto Generate AI Post"]
+    types:
+      - completed
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     
