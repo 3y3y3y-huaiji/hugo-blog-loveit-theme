@@ -1,8 +1,0 @@
-{
-  "name": "hugo-blog",
-  "compatibility_date": "2026-06-17",
-  "workers_dev": true,
-  "assets": {
-    "directory": "./public"
-  }
-}
