@@ -7,13 +7,12 @@ import * as dotenv from 'dotenv';
 // 加载本地环境变量 (.env 文件)
 dotenv.config();
 
-// 指定的 5 大大模型列表
+// 指定的 4 大大模型列表
 const MODEL_POOL = [
   "deepseek-ai/deepseek-v4-pro",
   "minimaxai/minimax-m3",
   "moonshotai/kimi-k2.6",
-  "z-ai/glm-5.1",
-  "google/gemma-4-31b-it"
+  "z-ai/glm-5.1"
 ];
 
 // 科技热点 RSS 订阅源
