@@ -2,15 +2,42 @@
 {{- partial "head/link.html" . -}}
 {{- partial "head/seo.html" . -}}
 
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5035931532925128"
-     crossorigin="anonymous"></script>
-
-<!-- Microsoft Clarity Tracking Code -->
+<!-- Lazy Load Google AdSense & Microsoft Clarity to Improve PageSpeed -->
 <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "u719o929br");
+    (function() {
+        var scriptsLoaded = false;
+        function loadScripts() {
+            if (scriptsLoaded) return;
+            scriptsLoaded = true;
+            
+            // Remove event listeners
+            window.removeEventListener('scroll', loadScripts);
+            window.removeEventListener('mousemove', loadScripts);
+            window.removeEventListener('touchstart', loadScripts);
+            window.removeEventListener('keydown', loadScripts);
+
+            // 1. Dynamic load Google AdSense
+            var adsense = document.createElement('script');
+            adsense.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5035931532925128";
+            adsense.async = true;
+            adsense.crossOrigin = "anonymous";
+            document.head.appendChild(adsense);
+
+            // 2. Dynamic load Microsoft Clarity
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "u719o929br");
+        }
+
+        // Trigger loading on user interaction
+        window.addEventListener('scroll', loadScripts, { passive: true });
+        window.addEventListener('mousemove', loadScripts, { passive: true });
+        window.addEventListener('touchstart', loadScripts, { passive: true });
+        window.addEventListener('keydown', loadScripts, { passive: true });
+
+        // Fallback: load after 4 seconds if no interaction
+        setTimeout(loadScripts, 4000);
+    })();
 </script>
