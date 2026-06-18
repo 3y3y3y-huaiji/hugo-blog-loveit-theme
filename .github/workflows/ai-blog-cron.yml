@@ -2,8 +2,8 @@ name: Auto Generate AI Post
 
 on:
   schedule:
-    # 每天北京时间早上 08:00 运行一次 (UTC 00:00)
-    - cron: '0 0 * * *'
+    # 每 4 小时运行一次 (北京时间 08:00, 12:00, 16:00, 20:00, 00:00, 04:00)
+    - cron: '0 */4 * * *'
   workflow_dispatch: # 允许手动触发
 
 concurrency:
