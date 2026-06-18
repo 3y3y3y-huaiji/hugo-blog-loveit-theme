@@ -116,7 +116,7 @@ async function main() {
             { role: 'user', content: prompt }
           ],
           temperature: 0.7,
-          max_tokens: 2548
+          max_tokens: 4096
         });
         console.log(`模型 【${selectedModel}】 响应成功！`);
         break;
@@ -135,16 +135,37 @@ async function main() {
     }
 
     // 4. 解析模型输出，分离标题、摘要和正文
-    const lines = output.trim().split('\n');
-    let title = lines[0].replace(/^(#+\s*|【|“|")|("|$|”|】)$/g, '').trim();
-    let summary = lines[1].trim();
+    const rawLines = output.trim().split('\n');
+    // 跳过开头的空行
+    const lines = rawLines.filter((line, idx) => {
+      if (idx === 0 && line.trim() === '') return false;
+      // 找到第一行非空内容后保留所有行
+      return true;
+    });
+    // 去除首行可能的 Markdown 标题符号、引号等
+    const cleanLine = (s: string) => s.replace(/^(#+\s*|[【「]|"|")|("|$|[」】]|["'])$/g, '').trim();
+
+    let title = cleanLine(lines[0] || '');
+    let summary = (lines[1] || '').trim();
     let contentStartLine = 2;
 
-    // 如果首行为空，寻找下一行作为标题
-    if (!title && lines.length > 1) {
-      title = lines[1].replace(/^(#+\s*|【|“|")|("|$|”|】)$/g, '').trim();
-      summary = lines[2] ? lines[2].trim() : "";
-      contentStartLine = 3;
+    // 如果首行解析后为空或首行仍是空行，尝试后续行
+    if (!title) {
+      for (let i = 1; i < Math.min(lines.length, 5); i++) {
+        const candidate = cleanLine(lines[i]);
+        if (candidate) {
+          title = candidate;
+          summary = (lines[i + 1] || '').trim();
+          contentStartLine = i + 2;
+          break;
+        }
+      }
+    }
+    // 最终兜底
+    if (!title) {
+      title = topic.title;
+      summary = topic.snippet;
+      contentStartLine = 0;
     }
 
     // 提取正文内容
@@ -158,14 +179,16 @@ async function main() {
       }
     }
 
-    // 格式化输出文件名和日期
+    // 格式化输出文件名和日期（使用北京时间 UTC+8）
     const now = new Date();
-    const isoDateStr = now.toISOString(); // yyyy-mm-ddThh:mm:ss.sssZ
-    const fileNameDate = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    const bjOffset = 8 * 60 * 60 * 1000;
+    const bjDate = new Date(now.getTime() + bjOffset);
+    const isoDateStr = bjDate.toISOString().replace('Z', '+08:00');
+    const fileNameDate = bjDate.getUTCFullYear() + '-' + String(bjDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(bjDate.getUTCDate()).padStart(2, '0');
     
-    // 生成安全的文件名
-    const safeTitle = title.replace(/[\\\/:*?"<>|]/g, '').substring(0, 30).trim() || 'ai-post';
-    const postFileName = `ai-generated-${fileNameDate}-${encodeURIComponent(safeTitle).substring(0, 20)}.md`;
+    // 生成干净的文件名（保留中文，去除特殊符号）
+    const safeTitle = title.replace(/[\\\/:*?"<>|\n\r]/g, '').substring(0, 30).trim() || 'ai-post';
+    const postFileName = `ai-generated-${fileNameDate}-${safeTitle}.md`;
     const postFilePath = path.join(__dirname, '../content/posts', postFileName);
 
     // 5. 拼装符合 Hugo TOML 规范的 Front Matter 以及模型署名后缀

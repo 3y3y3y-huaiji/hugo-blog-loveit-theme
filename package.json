@@ -1,11 +1,7 @@
 {
   "name": "hugo-blog-loveit-theme",
   "version": "1.0.0",
-  "description": "这是一个使用[Hugo](https://gohugo.io/)静态站点生成器和[LoveIt主题](https://github.com/dillonzq/LoveIt)构建的个人博客。",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "description": "这是一个使用Hugo静态站点生成器和LoveIt主题构建的全自动AI科技博客。",
   "scripts": {
     "lint": "eslint scripts",
     "typecheck": "tsc --noEmit && tsc --project themes/LoveIt/tsconfig.json --noEmit",

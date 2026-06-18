@@ -6,6 +6,10 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch: # 允许手动触发
 
+concurrency:
+  group: ai-blog-generate
+  cancel-in-progress: false
+
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -16,6 +20,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v6
       with:
+        submodules: true
         fetch-depth: 0
 
     - name: Setup Node.js
@@ -30,6 +35,7 @@ jobs:
     - name: Run AI Generator Script
       env:
         NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      if: env.NVIDIA_API_KEY != ''
       run: npm run generate:ai-post
 
     - name: Commit and Push New Post
@@ -47,43 +53,3 @@ jobs:
         else
           echo "没有生成新的博文，跳过提交。"
         fi
-
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    needs: generate
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '24'
-        cache: 'npm'
-
-    - name: Install Dependencies
-      run: npm ci
-
-    - name: Build Theme JS
-      run: npm run build:theme
-
-    - name: Setup Hugo
-      uses: peaceiris/actions-hugo@v3
-      with:
-        hugo-version: 'latest'
-        extended: true
-
-    - name: Build Hugo Site
-      run: hugo --minify
-
-    - name: Deploy to Cloudflare Workers
-      env:
-        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      if: env.CLOUDFLARE_API_TOKEN != ''
-      uses: cloudflare/wrangler-action@v3
-      with:
-        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        command: deploy

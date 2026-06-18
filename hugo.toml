@@ -1,5 +1,5 @@
 baseURL = 'https://berry.ccwu.cc/'
-languageCode = 'zh-cn'
+locale = 'zh-cn'
 title = 'AI科技前沿 - 探索人工智能的未来'
 theme = 'LoveIt'
 enableRobotsTXT = true
@@ -123,13 +123,6 @@ hasCJKLanguage = true
 
 [params.page.comment]
   enable = true
-  [params.page.comment.utterances]
-    enable = false
-    repo = "3y3y3y-huaiji/hugo-blog-loveit-theme"
-    issueTerm = "pathname"
-    label = "comment"
-    lightTheme = "github-light"
-    darkTheme = "github-dark"
 
   [params.page.comment.giscus]
     enable = true
@@ -216,26 +209,7 @@ hasCJKLanguage = true
   filename = "sitemap.xml"
   priority = 0.5
 
-# 不同页面类型的网站地图配置
-[sitemap.page]
-  changefreq = "monthly"
-  priority = 0.8
 
-[sitemap.posts]
-  changefreq = "weekly"
-  priority = 1.0
-
-[sitemap.home]
-  changefreq = "daily"
-  priority = 1.0
-
-[sitemap.section]
-  changefreq = "weekly"
-  priority = 0.9
-
-[sitemap.taxonomy]
-  changefreq = "monthly"
-  priority = 0.7
 
 # Permalinks配置（即永久链接）
 [permalinks]
