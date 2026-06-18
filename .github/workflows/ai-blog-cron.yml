@@ -33,7 +33,7 @@ jobs:
       run: npm ci
 
     - name: Run AI Generator Script
-      if: ${{ secrets.NVIDIA_API_KEY != '' }}
+      if: secrets.NVIDIA_API_KEY != ''
       env:
         NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
       run: npm run generate:ai-post
