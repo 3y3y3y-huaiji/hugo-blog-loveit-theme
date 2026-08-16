@@ -22,7 +22,16 @@ const RSS_FEEDS = [
   "https://www.theverge.com/rss/index.xml",   // The Verge
   "https://www.wired.com/feed/rss",           // Wired
   "https://feed.infoq.com/",                  // InfoQ
-  "https://www.geekpark.net/rss"              // 极客公园
+  "https://www.geekpark.net/rss",             // 极客公园
+  "https://www.qbitai.com/feed",              // 量子位
+  "https://www.ifanr.com/feed",               // 爱范儿
+  "https://www.ruanyifeng.com/blog/atom.xml", // 阮一峰周刊
+  "https://www.oschina.net/news/rss",         // 开源中国
+  "https://feeds.arstechnica.com/arstechnica/index", // Ars Technica
+  "https://www.engadget.com/rss.xml",         // Engadget
+  "https://www.theregister.com/headlines.atom", // The Register
+  "https://www.phoronix.com/rss.php",         // Phoronix
+  "https://huggingface.co/blog/feed.xml"      // Hugging Face Blog
 ];
 
 // 默认备用热点主题 (如果 RSS 抓取失败)
@@ -33,37 +42,77 @@ const FALLBACK_TOPICS = [
   { title: "跨平台框架与 Web GPU 的发展对前端渲染带来的变革", snippet: "探讨 WebGPU 规范如何赋予浏览器直接调用硬件 GPU 的能力，加速前端 AI 渲染推理" }
 ];
 
-async function getHotTopic(): Promise<{ title: string; snippet: string }> {
+// 标题归一化：去除空白与标点，仅保留中英文与数字，用于话题去重比对
+function normalizeTitle(s: string): string {
+  return s.replace(/[^\p{Script=Han}a-zA-Z0-9]/gu, '').toLowerCase();
+}
+
+// 扫描最近 N 天已生成文章的归一化标题集合（基于文件名），用于话题去重
+function listRecentPostTitles(postsDir: string, days = 60): Set<string> {
+  const titles = new Set<string>();
+  if (!fs.existsSync(postsDir)) {
+    return titles;
+  }
+  const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  const fileNamePattern = /^ai-generated-(\d{4})-(\d{2})-(\d{2})-(.+)\.md$/;
+  for (const fileName of fs.readdirSync(postsDir)) {
+    const match = fileNamePattern.exec(fileName);
+    if (!match) {
+      continue;
+    }
+    // 文件名中的日期为北京时间，解析后早于 cutoff 的跳过
+    const fileDate = new Date(`${match[1]}-${match[2]}-${match[3]}T00:00:00+08:00`);
+    if (fileDate < cutoff) {
+      continue;
+    }
+    titles.add(normalizeTitle(match[4]));
+  }
+  return titles;
+}
+
+// 垃圾标题判定：去空白后长度 < 6，或有效字符（中文/字母/数字）占比 < 60%
+function isGarbageTitle(title: string): boolean {
+  const stripped = title.replace(/\s/g, '');
+  if (!stripped) return true;
+  const valid = stripped.replace(/[^\p{Script=Han}a-zA-Z0-9]/gu, '');
+  return stripped.length < 6 || valid.length / stripped.length < 0.6;
+}
+
+async function getHotTopic(recentTitles: Set<string>): Promise<{ title: string; snippet: string }> {
   const parser = new Parser();
   console.log("正在尝试抓取科技 RSS 订阅源以获取热点资讯...");
-  
+
   // 随机打乱订阅源顺序，防止每次都首选同一个网站的热点
   const shuffledFeeds = [...RSS_FEEDS].sort(() => Math.random() - 0.5);
-  
+
   for (const url of shuffledFeeds) {
     try {
       console.log(`正在读取订阅源: ${url}`);
       const feed = await parser.parseURL(url);
       const items = feed.items.filter(item => item.title);
-      if (items.length > 0) {
-        // 随机选择一条资讯
-        const randomIndex = Math.floor(Math.random() * Math.min(items.length, 10));
-        const item = items[randomIndex];
-        console.log(`成功从 RSS 源获取热点：【${item.title}】`);
-        return {
-          title: item.title || "未知热点",
-          snippet: item.contentSnippet || item.content || "暂无相关详细简述"
-        };
+      // 遍历前 10 条，返回第一条近期未生成过的话题（话题去重）
+      for (const item of items.slice(0, 10)) {
+        if (!recentTitles.has(normalizeTitle(item.title || ''))) {
+          console.log(`成功从 RSS 源获取热点：【${item.title}】`);
+          return {
+            title: item.title || "未知热点",
+            snippet: item.contentSnippet || item.content || "暂无相关详细简述"
+          };
+        }
       }
+      // 本源前 10 条均已写过，换下一个源
+      console.log(`订阅源 ${url} 前 10 条均无新话题，尝试下一个源...`);
     } catch (error) {
       console.warn(`读取订阅源 ${url} 失败:`, (error as Error).message);
     }
   }
 
-  // RSS 全部抓取失败时的安全降级
-  console.log("所有 RSS 订阅源获取失败，启用内置的备用科技热点...");
-  const randomIndex = Math.floor(Math.random() * FALLBACK_TOPICS.length);
-  return FALLBACK_TOPICS[randomIndex];
+  // 所有 RSS 源都没有新话题时的安全降级：优先选择未用过的备用主题
+  console.log("所有 RSS 源均无新话题，启用内置的备用科技热点...");
+  const freshFallbacks = FALLBACK_TOPICS.filter(t => !recentTitles.has(normalizeTitle(t.title)));
+  const pool = freshFallbacks.length > 0 ? freshFallbacks : FALLBACK_TOPICS;
+  const randomIndex = Math.floor(Math.random() * pool.length);
+  return pool[randomIndex];
 }
 
 async function main() {
@@ -73,8 +122,9 @@ async function main() {
     process.exit(1);
   }
 
-  // 1. 获取热点话题
-  const topic = await getHotTopic();
+  // 1. 获取热点话题（扫描最近已生成文章，避免重复选题）
+  const recentTitles = listRecentPostTitles(path.join(__dirname, '../content/posts'));
+  const topic = await getHotTopic(recentTitles);
 
   // 2. 初始化 OpenAI 兼容的 NVIDIA API 客户端 (设置 2 分钟超时和最多 1 次重试以防长时间挂起)
   const openai = new OpenAI({
@@ -147,6 +197,13 @@ async function main() {
         }
       }
     }
+    // 乱码/垃圾标题兜底：标题无效时回退到话题原标题与简述
+    if (isGarbageTitle(title)) {
+      console.warn("检测到模型输出标题疑似乱码，已回退为话题原标题。");
+      title = topic.title;
+      summary = topic.snippet;
+    }
+
     // 最终兜底
     if (!title) {
       title = topic.title;
@@ -172,10 +229,29 @@ async function main() {
     const isoDateStr = bjDate.toISOString().replace('Z', '+08:00');
     const fileNameDate = bjDate.getUTCFullYear() + '-' + String(bjDate.getUTCMonth() + 1).padStart(2, '0') + '-' + String(bjDate.getUTCDate()).padStart(2, '0');
     
-    // 生成干净的文件名（保留中文，去除特殊符号）
-    const safeTitle = title.replace(/[\\\/:*?"<>|\n\r]/g, '').substring(0, 30).trim() || 'ai-post';
+    // 生成干净的文件名：先删除文件系统非法字符与全角标点，再压缩空白（保留中文）
+    const safeTitle = title
+      .replace(/[\\\/:*?"<>|\n\r$`]/g, '')
+      .replace(/[？！：？！「」『』“”‘’（）｜…—·]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .substring(0, 30) || 'ai-post';
     const postFileName = `ai-generated-${fileNameDate}-${safeTitle}.md`;
-    const postFilePath = path.join(__dirname, '../content/posts', postFileName);
+    const postsDir = path.join(__dirname, '../content/posts');
+    let postFilePath = path.join(postsDir, postFileName);
+
+    // 覆盖防护：目标文件已存在时追加 -2、-3… 直到不冲突
+    if (fs.existsSync(postFilePath)) {
+      const dotIndex = postFileName.lastIndexOf('.');
+      const baseName = postFileName.slice(0, dotIndex);
+      const extName = postFileName.slice(dotIndex);
+      let counter = 2;
+      while (fs.existsSync(path.join(postsDir, `${baseName}-${counter}${extName}`))) {
+        counter++;
+      }
+      postFilePath = path.join(postsDir, `${baseName}-${counter}${extName}`);
+      console.log(`目标文件已存在，已重命名为: ${path.basename(postFilePath)}`);
+    }
 
     // 4. 拼装符合 Hugo TOML 规范的 Front Matter 以及模型署名后缀
     const tomlFrontMatter = `+++
@@ -196,7 +272,6 @@ ${bodyContent}
 `;
 
     // 5. 写入文件到 posts 目录
-    const postsDir = path.dirname(postFilePath);
     if (!fs.existsSync(postsDir)) {
       fs.mkdirSync(postsDir, { recursive: true });
     }

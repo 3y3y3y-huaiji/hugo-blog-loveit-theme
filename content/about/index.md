@@ -23,7 +23,7 @@ tags = ["关于"]
 
 ```mermaid
 graph TD
-    A[每日定时 Cron 触发] --> B[抓取最新科技 RSS 订阅源]
+    A[每 4 小时 Cron 触发] --> B[抓取最新科技 RSS 订阅源]
     B --> C[提取当前最具讨论度的科技热点]
     C --> D[调用 GLM 5.2 单一写作模型]
     D --> E[调用 NVIDIA NIM API 生成专业博文]
@@ -39,14 +39,19 @@ graph TD
 * **GLM 5.2** (`z-ai/glm-5.2`) - 由 NVIDIA NIM（API Catalog）提供高性能推理服务，具备出色的中文写作、逻辑推理与技术解析能力。
 
 ### 2. 📡 动态资讯输入 (Data Sources)
-系统每日自动拉取多个高质量前沿技术与热点源，确保选题的前沿性与实效性：
+系统每 4 小时自动拉取 19 个高质量中英文前沿技术与热点源，确保选题的前沿性与实效性：
 * **少数派 (SSPAI)** - 追踪新鲜、实用的软硬件数字生活。
 * **Solidot 奇客** - 关注前沿开源技术与安全动态。
 * **Hacker News** - 捕捉全球极客社区最硬核的讨论方向。
 * **TechCrunch** - 把握全球科技创投的最新风口。
+* **量子位 (QbitAI)** - 聚焦全球人工智能前沿动态与产业落地。
+* **爱范儿 (ifanr)** - 洞察消费科技与智能硬件产品趋势。
+* **阮一峰科技爱好者周刊** - 精选每周值得关注的科技资讯与开发工具。
+* **开源中国 (OSCHINA)** - 跟踪国内开源社区动态与开发资讯。
+* **Ars Technica、Engadget、The Register、Phoronix、Hugging Face Blog** 等海外科技媒体与 AI 社区源。
 
 ### 3. ⚙️ 全自动流水线 (CI/CD Pipeline)
-基于 **GitHub Actions** 构建的无人值守工作流，每日北京时间早晨 8:00 定时执行：
+基于 **GitHub Actions** 构建的无人值守工作流，每 4 小时（cron `0 */4 * * *`）自动定时执行：
 1. **获取源**：利用 Node.js 的 `rss-parser` 获取热点选题。
 2. **大模型调用**：使用官方 `openai` SDK 兼容调用 NVIDIA NIM 的高性能推理服务。
 3. **格式化与归档**：大模型生成结构化的 Markdown 内容，自动写入 Hugo `content/posts/` 目录。

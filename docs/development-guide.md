@@ -40,7 +40,7 @@ pnpm install
 
 ## 🤖 3. AI 自动发帖逻辑 (`scripts/generate-ai-post.ts`)
 
-1. **抓取热点**：读取 RSS 订阅源（少数派、Solidot、Hacker News、TechCrunch），失败则降级为内置备用主题
+1. **抓取热点**：读取 RSS 订阅源（少数派、Solidot、Hacker News、TechCrunch、量子位、Ars Technica 等 19 个中英文源），失败则降级为内置备用主题
 2. **调用写作模型**：调用 GLM 5.2（`z-ai/glm-5.2`，NVIDIA NIM）撰写博文，失败时明确报错退出
 3. **写入博文**：解析 LLM 输出，生成包含 TOML Front Matter 的 Markdown 文件，写入 `content/posts/`
 
@@ -50,7 +50,7 @@ pnpm install
 
 ### 4.1 定时 AI 生成流水线 (`ai-blog-cron.yml`)
 
-* 触发：每日北京时间 08:00 / 手动触发
+* 触发：每 4 小时（cron `0 */4 * * *`）/ 手动触发
 * 流程：生成博文 → Git Commit → Push 到 main
 * Push 后自动触发下方的部署流水线
 

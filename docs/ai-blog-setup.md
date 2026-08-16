@@ -12,8 +12,8 @@
 
 ### 1.2 自动运行闭环
 
-* **资讯源**：脚本依次抓取少数派、Solidot、Hacker News、TechCrunch 等 RSS 源，失败则自动降级启用内置备选主题
-* **定时流水线**：`.github/workflows/ai-blog-cron.yml`，北京时间每日 08:00 运行
+* **资讯源**：脚本依次抓取少数派、Solidot、Hacker News、TechCrunch、量子位、Ars Technica 等 19 个中英文 RSS 源，失败则自动降级启用内置备选主题
+* **定时流水线**：`.github/workflows/ai-blog-cron.yml`，每 4 小时（cron `0 */4 * * *`）运行一次
 * **部署闭环**：定时流水线生成并 push 博文后，自动触发 `cloudflare-deploy.yml` 进行构建和部署
 
 ---

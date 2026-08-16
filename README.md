@@ -8,7 +8,7 @@
 
 > 💡 **这是一个全自动运行、智能撰写、零人工干预的科技博客站。** 
 > 
-> 本项目基于 **Hugo (Extended)** 静态站点生成器和重构版 **LoveIt v0.3.1** 主题，通过对接 **NVIDIA API Catalog**（写作模型：**GLM 5.2**）与主流科技媒体 **RSS 订阅源**，实现每日自动追踪全球科技热点、自主撰写深度技术分析博文，并全自动编译部署到 **Cloudflare Workers** 边缘网络。
+> 本项目基于 **Hugo (Extended)** 静态站点生成器和重构版 **LoveIt v0.3.1** 主题，通过对接 **NVIDIA API Catalog**（写作模型：**GLM 5.2**）与主流科技媒体 **RSS 订阅源**，实现全天候自动追踪全球科技热点、自主撰写深度技术分析博文，并全自动编译部署到 **Cloudflare Workers** 边缘网络。
 
 🌐 **在线访问**：[https://berry.ccwu.cc/](https://berry.ccwu.cc/)
 
@@ -17,7 +17,7 @@
 ## 🌟 核心功能特性
 
 * **🤖 GLM 5.2 单模型撰写**：博文由 **GLM 5.2**（`z-ai/glm-5.2`，NVIDIA NIM）单一模型撰写。
-* **📡 动态热点抓取**：实时读取少数派（SSPAI）、Solidot 奇客、Hacker News、TechCrunch 等优质科技 RSS 订阅源，自动追踪当日最火科技动态。
+* **📡 动态热点抓取**：实时读取少数派（SSPAI）、Solidot、Hacker News、TechCrunch、量子位、爱范儿、阮一峰周刊、Ars Technica 等 19 个中英文优质科技 RSS 订阅源，自动追踪当日最火科技动态。
 * **🛡️ 明确的失败语义**：模型调用超时或报错时，脚本将明确报错并退出流水线（不进行多模型轮询回退），便于及时发现与排查问题。
 * **⚡ 优美的主题与极致性能**：
   * 主题升级至 **LoveIt v0.3.1**，采用 TypeScript 核心重写并自动 Babel 编译。
@@ -55,7 +55,7 @@ hugo-blog-loveit-theme/
 
 ```mermaid
 graph TD
-    A[每日定时 Cron 触发 / 手动触发] --> B(读取科技 RSS 订阅源)
+    A[每 4 小时 Cron 触发 / 手动触发] --> B(读取科技 RSS 订阅源)
     B -->|抓取成功| C(提取最新热门话题)
     B -->|网络失败| D(降级为内置高价值话题)
     C & D --> E[初始化 NVIDIA NIM API 客户端]

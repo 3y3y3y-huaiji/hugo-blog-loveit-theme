@@ -40,7 +40,7 @@ This is a personal blog built with [Hugo](https://gohugo.io/) static site genera
 
 ## Deployment
 
-This blog supports dual-platform deployment: **GitHub Pages** (for daily backup and auto-publishing) and **Cloudflare Workers Assets** (for custom domain and AdSense integration).
+This blog supports dual-platform deployment: **GitHub Pages** (for automated backup and auto-publishing) and **Cloudflare Workers Assets** (for custom domain and AdSense integration).
 
 ### Option 1: GitHub Pages (Automatic)
 The blog is automatically built and deployed to GitHub Pages via GitHub Actions when pushing to the `main` branch. The workflow is defined in `.github/workflows/gh-pages.yml`.

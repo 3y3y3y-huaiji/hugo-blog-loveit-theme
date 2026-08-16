@@ -8,7 +8,7 @@
 - **站点地址**：https://berry.ccwu.cc/
 - **仓库地址**：https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme
 - **部署方式**：通过 GitHub Actions 自动构建，经 Wrangler CLI 部署为 Cloudflare Workers Assets（纯静态托管）
-- **自动化**：每日北京时间 08:00 由 AI 自动生成科技博文并部署
+- **自动化**：每 4 小时（cron `0 */4 * * *`）由 AI 自动生成科技博文并部署
 
 ## Git 规范
 
