@@ -7,13 +7,9 @@ import * as dotenv from 'dotenv';
 // 加载本地环境变量 (.env 文件)
 dotenv.config();
 
-// 指定的 4 大大模型列表
-const MODEL_POOL = [
-  "deepseek-ai/deepseek-v4-pro",
-  "minimaxai/minimax-m3",
-  "moonshotai/kimi-k2.6",
-  "z-ai/glm-5.1"
-];
+// 指定的写作大模型（单一模型，调用失败不回退其他模型）
+const WRITING_MODEL = "z-ai/glm-5.2";
+const MODEL_DISPLAY_NAME = "GLM 5.2";
 
 // 科技热点 RSS 订阅源
 const RSS_FEEDS = [
@@ -31,9 +27,9 @@ const RSS_FEEDS = [
 
 // 默认备用热点主题 (如果 RSS 抓取失败)
 const FALLBACK_TOPICS = [
-  { title: "大语言模型的轻量化趋势与端侧部署实践", snippet: "探讨近年来 Llama, Gemma, Phi 等端侧模型的发展及其在手机和PC端的本地化部署方案" },
+  { title: "大语言模型的轻量化趋势与端侧部署实践", snippet: "探讨近年来端侧开源小参数模型的发展及其在手机和PC端的本地化部署方案" },
   { title: "AI Agent（智能体）在企业工作流中的演进与挑战", snippet: "分析 Multi-Agent 多智能体协同系统在业务场景中的落地障碍与主流解决框架" },
-  { title: "深度推理模型（如 DeepSeek R1）的强化学习技术解析", snippet: "剖析基于规则与自我博弈的强化学习在让 AI 具备 logic 推理和深思熟虑能力方面的作用" },
+  { title: "深度推理模型的强化学习技术解析", snippet: "剖析基于规则与自我博弈的强化学习在让 AI 具备 logic 推理和深思熟虑能力方面的作用" },
   { title: "跨平台框架与 Web GPU 的发展对前端渲染带来的变革", snippet: "探讨 WebGPU 规范如何赋予浏览器直接调用硬件 GPU 的能力，加速前端 AI 渲染推理" }
 ];
 
@@ -80,11 +76,7 @@ async function main() {
   // 1. 获取热点话题
   const topic = await getHotTopic();
 
-  // 2. 准备大模型候选池并随机打乱顺序（实现随机首选 + 自动顺序回退）
-  const shuffledModels = [...MODEL_POOL].sort(() => Math.random() - 0.5);
-  console.log(`大模型候选顺序已生成：${shuffledModels.map(m => m.split('/').pop()).join(' -> ')}`);
-
-  // 3. 初始化 OpenAI 兼容的 NVIDIA API 客户端 (设置 2 分钟超时和最多 1 次重试以防长时间挂起)
+  // 2. 初始化 OpenAI 兼容的 NVIDIA API 客户端 (设置 2 分钟超时和最多 1 次重试以防长时间挂起)
   const openai = new OpenAI({
     baseURL: 'https://integrate.api.nvidia.com/v1',
     apiKey: apiKey,
@@ -110,39 +102,25 @@ async function main() {
 注意：绝对不要在你的输出中包含任何 \`\`\`toml 或 \`\`\`yaml 等 Hugo 前置元数据代码块，也不要输出任何前置注释。直接输出文章标题和摘要。`;
 
   try {
-    let response = null;
-    let selectedModel = "";
+    console.log(`正在向 NVIDIA API 提交撰写请求，模型: 【${WRITING_MODEL}】`);
 
-    for (const model of shuffledModels) {
-      selectedModel = model;
-      console.log(`正在向 NVIDIA API 提交撰写请求，尝试模型: 【${selectedModel}】...`);
-      try {
-        response = await openai.chat.completions.create({
-          model: selectedModel,
-          messages: [
-            { role: 'system', content: '你是一位富有洞察力的前沿技术博主，精通前沿软件开发、大模型、AI、云计算等技术。' },
-            { role: 'user', content: prompt }
-          ],
-          temperature: 0.7,
-          max_tokens: 4096
-        });
-        console.log(`模型 【${selectedModel}】 响应成功！`);
-        break;
-      } catch (error) {
-        console.warn(`模型 【${selectedModel}】 调用失败: ${(error as Error).message}。将尝试下一个备用模型...`);
-      }
-    }
-
-    if (!response) {
-      throw new Error("所有候选大模型均调用失败，无法生成博文。");
-    }
+    const response = await openai.chat.completions.create({
+      model: WRITING_MODEL,
+      messages: [
+        { role: 'system', content: '你是一位富有洞察力的前沿技术博主，精通前沿软件开发、大模型、AI、云计算等技术。' },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 4096
+    });
+    console.log(`模型 【${WRITING_MODEL}】 响应成功！`);
 
     const output = response.choices[0]?.message?.content;
     if (!output) {
       throw new Error("模型响应内容为空");
     }
 
-    // 4. 解析模型输出，分离标题、摘要和正文
+    // 3. 解析模型输出，分离标题、摘要和正文
     const rawLines = output.trim().split('\n');
     // 跳过开头的空行
     const lines = rawLines.filter((line, idx) => {
@@ -199,12 +177,12 @@ async function main() {
     const postFileName = `ai-generated-${fileNameDate}-${safeTitle}.md`;
     const postFilePath = path.join(__dirname, '../content/posts', postFileName);
 
-    // 5. 拼装符合 Hugo TOML 规范的 Front Matter 以及模型署名后缀
+    // 4. 拼装符合 Hugo TOML 规范的 Front Matter 以及模型署名后缀
     const tomlFrontMatter = `+++
 title = "${title.replace(/"/g, '\\"')}"
 date = ${isoDateStr}
 draft = false
-tags = ["AI Generated", "${selectedModel.split('/').pop()}"]
+tags = ["AI Generated", "${MODEL_DISPLAY_NAME}"]
 categories = ["AI博客", "前沿技术"]
 description = "${summary.replace(/"/g, '\\"')}"
 author = "AI Writer"
@@ -214,10 +192,10 @@ ${bodyContent}
 
 ---
 
-*本文由 NVIDIA API Catalog 托管的 **${selectedModel}** 模型自动撰写并生成发布。*
+*本文由 NVIDIA API Catalog 托管的 **${MODEL_DISPLAY_NAME}**（${WRITING_MODEL}）模型自动撰写并生成发布。*
 `;
 
-    // 6. 写入文件到 posts 目录
+    // 5. 写入文件到 posts 目录
     const postsDir = path.dirname(postFilePath);
     if (!fs.existsSync(postsDir)) {
       fs.mkdirSync(postsDir, { recursive: true });
@@ -227,9 +205,9 @@ ${bodyContent}
     console.log(`\n🎉 自动博文撰写成功！`);
     console.log(`生成文件: ${postFilePath}`);
     console.log(`文章标题: ${title}`);
-    console.log(`撰写模型: ${selectedModel}`);
+    console.log(`撰写模型: ${MODEL_DISPLAY_NAME}（${WRITING_MODEL}）`);
   } catch (error) {
-    console.error("调用大模型写入博客文章失败:", (error as Error).message);
+    console.error(`模型 ${WRITING_MODEL} 调用失败:`, (error as Error).message);
     process.exit(1);
   }
 }

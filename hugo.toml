@@ -14,7 +14,7 @@ hasCJKLanguage = true
   # 网站描述
   description = "AI科技前沿是一个全自动运行的科技博客，使用NVIDIA NIM/API Catalog大模型进行日常科技热点追踪和博文撰写。"
   # 网站关键词
-  keywords = ["AI", "人工智能", "科技新闻", "大模型", "全自动博客", "DeepSeek", "Kimi", "MiniMax", "GLM", "Gemma"]
+  keywords = ["AI", "人工智能", "科技新闻", "科技博客", "大模型", "GLM", "全自动博客"]
   
   # 网站作者
   [params.author]

@@ -8,7 +8,7 @@
 
 > 💡 **这是一个全自动运行、智能撰写、零人工干预的科技博客站。** 
 > 
-> 本项目基于 **Hugo (Extended)** 静态站点生成器和重构版 **LoveIt v0.3.1** 主题，通过对接 **NVIDIA API Catalog** 大模型资源池与主流科技媒体 **RSS 订阅源**，实现每日自动追踪全球科技热点、自主撰写深度技术分析博文，并全自动编译部署到 **Cloudflare Workers** 边缘网络。
+> 本项目基于 **Hugo (Extended)** 静态站点生成器和重构版 **LoveIt v0.3.1** 主题，通过对接 **NVIDIA API Catalog**（写作模型：**GLM 5.2**）与主流科技媒体 **RSS 订阅源**，实现每日自动追踪全球科技热点、自主撰写深度技术分析博文，并全自动编译部署到 **Cloudflare Workers** 边缘网络。
 
 🌐 **在线访问**：[https://berry.ccwu.cc/](https://berry.ccwu.cc/)
 
@@ -16,10 +16,9 @@
 
 ## 🌟 核心功能特性
 
-* **🤖 多模型智能撰写**：内置 5 大国产与开源顶尖模型资源池，每次随机指派。
-  * `DeepSeek V4 Pro` / `Kimi K2.6` / `MiniMax M3` / `GLM 5.1` / `Gemma 4 31B`
+* **🤖 GLM 5.2 单模型撰写**：博文由 **GLM 5.2**（`z-ai/glm-5.2`，NVIDIA NIM）单一模型撰写。
 * **📡 动态热点抓取**：实时读取少数派（SSPAI）、Solidot 奇客、Hacker News、TechCrunch 等优质科技 RSS 订阅源，自动追踪当日最火科技动态。
-* **🛡️ 工业级容灾弹性（Model Fallback）**：具备自动防挂死及多模型轮询回退逻辑。若首选模型响应超时（设定 2 分钟）或报错，脚本将自动秒级切换至备用模型，保证流水线 100% 成功。
+* **🛡️ 明确的失败语义**：模型调用超时或报错时，脚本将明确报错并退出流水线（不进行多模型轮询回退），便于及时发现与排查问题。
 * **⚡ 优美的主题与极致性能**：
   * 主题升级至 **LoveIt v0.3.1**，采用 TypeScript 核心重写并自动 Babel 编译。
   * 内置 **Lunr.js** 搜索引擎，支持中文分词的毫秒级本地全文搜索。
@@ -60,10 +59,9 @@ graph TD
     B -->|抓取成功| C(提取最新热门话题)
     B -->|网络失败| D(降级为内置高价值话题)
     C & D --> E[初始化 NVIDIA NIM API 客户端]
-    E --> F{随机打乱大模型顺序并尝试}
-    F -->|模型A超时或故障| G(自动切换尝试模型B)
+    E --> F{调用 GLM 5.2 撰写博文}
     F -->|模型成功响应| H(格式化为 Markdown 博文)
-    G --> H
+    F -->|超时或报错| Z(明确报错并退出流水线)
     H --> I(提交新博文并 Push 回 GitHub)
     I --> J[自动触发 Cloudflare 构建部署]
     J --> K[网站编译并发布上线]
@@ -100,6 +98,7 @@ graph TD
 
 * [Hugo Extended](https://gohugo.io/getting-started/installing/) (v0.163.0+)
 * [Node.js](https://nodejs.org/) (v20+)
+* [pnpm](https://pnpm.io/)（包管理器，本项目已从 npm 迁移至 pnpm）
 
 #### 2. 本地初始化
 
@@ -109,7 +108,7 @@ git clone https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme.git
 cd hugo-blog-loveit-theme
 
 # 安装 Node 依赖
-npm install
+pnpm install
 ```
 
 #### 3. 配置本地环境变量
@@ -124,10 +123,10 @@ NVIDIA_API_KEY=nvapi-your-real-nvidia-api-key-here
 
 ```bash
 # 编译主题核心 JS 资源
-npm run build:theme
+pnpm run build:theme
 
 # 调用 AI 撰写一篇新文章
-npm run generate:ai-post
+pnpm run generate:ai-post
 
 # 启动本地预览服务器
 hugo server -D
@@ -137,8 +136,8 @@ hugo server -D
 
 ## 📝 贡献与开发指南
 
-1. **类型检查**：`npm run typecheck`
-2. **代码风格检查**：`npm run lint`
+1. **类型检查**：`pnpm run typecheck`
+2. **代码风格检查**：`pnpm run lint`
 3. **AI Agent 开发规范**：参见 [`.agents/AGENTS.md`](.agents/AGENTS.md)
 
 ## 📄 许可证

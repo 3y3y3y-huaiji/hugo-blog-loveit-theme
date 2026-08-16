@@ -49,7 +49,7 @@
 npx wrangler login
 
 # 构建
-npm run build:cloudflare
+pnpm run build:cloudflare
 
 # 部署
 npx wrangler deploy

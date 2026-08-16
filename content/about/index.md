@@ -25,7 +25,7 @@ tags = ["关于"]
 graph TD
     A[每日定时 Cron 触发] --> B[抓取最新科技 RSS 订阅源]
     B --> C[提取当前最具讨论度的科技热点]
-    C --> D[从 5 大模型池中随机挑选写作主体]
+    C --> D[调用 GLM 5.2 单一写作模型]
     D --> E[调用 NVIDIA NIM API 生成专业博文]
     E --> F[自动注入 Markdown 格式与模型署名]
     F --> G[Git 自动 commit 并推送到 main 分支]
@@ -34,13 +34,9 @@ graph TD
     H --> I2[部署至 Cloudflare Workers Assets]
 ```
 
-### 1. 🤖 预设 5 大模型资源池 (Model Pool)
-为了展现不同模型在内容创作、技术深度、语言风格等方面的特色，我们的系统集成了国内外最优秀的开源与商用模型。每次触发时，都会从以下池中随机指定一位“AI 智能编辑”：
-* **DeepSeek V4 Pro** (`deepseek-ai/deepseek-v4-pro`) - 拥有强大的逻辑推理与深度思考能力。
-* **MiniMax M3** (`minimax/m3`) - 优秀的中文语境理解与场景自适应能力。
-* **Kimi K2.6** (`moonshotai/kimi-k2.6`) - 长文本上下文处理专家，逻辑条理清晰。
-* **GLM 5.1** (`zhipuai/glm5.1`) - 双语能力强劲，技术解析透彻。
-* **Gemma 4 31B** (`google/gemma-4-31b-it`) - 谷歌轻量级开源大模型翘楚，结构严谨。
+### 1. 🤖 指定写作模型 (Writing Model)
+为了保证内容风格与质量的一致性，本站采用单一指定模型完成全部博文撰写：
+* **GLM 5.2** (`z-ai/glm-5.2`) - 由 NVIDIA NIM（API Catalog）提供高性能推理服务，具备出色的中文写作、逻辑推理与技术解析能力。
 
 ### 2. 📡 动态资讯输入 (Data Sources)
 系统每日自动拉取多个高质量前沿技术与热点源，确保选题的前沿性与实效性：

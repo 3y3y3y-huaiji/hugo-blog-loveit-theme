@@ -6,13 +6,9 @@
 
 ## 1. 核心运行机制
 
-### 1.1 大模型资源池 (NVIDIA API Catalog)
+### 1.1 写作模型 (NVIDIA NIM)
 
-1. `deepseek-ai/deepseek-v4-pro` (DeepSeek V4 Pro)
-2. `minimaxai/minimax-m3` (MiniMax M3)
-3. `moonshotai/kimi-k2.6` (Kimi K2.6)
-4. `z-ai/glm-5.1` (GLM 5.1)
-5. `google/gemma-4-31b-it` (Gemma 4 31B)
+* `z-ai/glm-5.2` (GLM 5.2) — 本项目唯一写作模型，调用失败时明确报错退出，不切换模型
 
 ### 1.2 自动运行闭环
 
@@ -45,7 +41,7 @@ NVIDIA_API_KEY=nvapi-your-real-key-here
 运行生成测试：
 
 ```bash
-npm run generate:ai-post
+pnpm run generate:ai-post
 ```
 
 本地预览：

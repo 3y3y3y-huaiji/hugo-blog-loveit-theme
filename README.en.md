@@ -53,7 +53,7 @@ To deploy the blog on the root `/` path (e.g. `https://hugo-blog.sumingkai548.wo
    ```
 2. **Build with baseURL override**:
    ```bash
-   npm run build:cloudflare
+   pnpm run build:cloudflare
    ```
 3. **Deploy to Cloudflare Edge**:
    ```bash

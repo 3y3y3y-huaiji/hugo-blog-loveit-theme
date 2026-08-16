@@ -9,7 +9,7 @@
 使用 Flat Config 规范的 `eslint.config.js`，基于 `typescript-eslint` 推荐规则。
 
 ```bash
-npm run lint
+pnpm run lint
 ```
 
 ### 1.2 TypeScript 类型系统
@@ -20,7 +20,7 @@ npm run lint
 2. **主题脚本 (浏览器 DOM)**：`themes/LoveIt/tsconfig.json`，`strict: false`（避免第三方库缺类型导致编译阻断）
 
 ```bash
-npm run typecheck
+pnpm run typecheck
 ```
 
 ---
@@ -34,7 +34,7 @@ npm run typecheck
 * 编译工具：Babel + `@babel/preset-typescript`
 
 ```bash
-npm run build:theme
+pnpm run build:theme
 ```
 
 ---
