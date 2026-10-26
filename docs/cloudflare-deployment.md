@@ -19,11 +19,11 @@
 
 ---
 
-## 2. 域名与跳转
+## 2. 域名与规范链接
 
 - 生产域名：https://sumingkai.de5.net/
 - Pages 默认域名：https://hugo-blog-loveit-theme.pages.dev/
-- `static/_redirects` 会将 `hugo-blog-loveit-theme.pages.dev` 的请求 301 到主域名，避免重复收录。
+- Cloudflare Pages 的 `_redirects` 不支持域名级跳转，因此不做 `pages.dev` 的 301；页面通过 `<link rel="canonical">` 统一指向主域名。
 - Pull Request 会自动生成独立的 Preview URL，用于合并前验证。
 
 ---
@@ -57,7 +57,7 @@ pnpm run build:theme
 hugo --gc --minify
 ```
 
-构建完成后检查 `public/_headers`、`public/_redirects`、`public/site.webmanifest` 是否生成，并确认 `public/index.html` 中的图标与 OG 图路径正确。
+构建完成后检查 `public/_headers`、`public/site.webmanifest` 是否生成，并确认 `public/index.html` 中的图标与 OG 图路径正确。
 
 ---
 

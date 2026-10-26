@@ -1,2 +1,0 @@
-# 统一使用自定义域名，避免 pages.dev 域名与主域名重复收录
-https://hugo-blog-loveit-theme.pages.dev/*  https://sumingkai.de5.net/:splat  301!

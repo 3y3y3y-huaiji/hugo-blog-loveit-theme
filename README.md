@@ -38,7 +38,6 @@ hugo-blog-loveit-theme/
 │   └── archive/              # 历史早报归档分区
 ├── static/
 │   ├── _headers              # Cloudflare Pages 安全响应头与缓存策略
-│   ├── _redirects            # pages.dev 到自定义域名的规范化跳转
 │   └── images/               # 头像、分享封面等静态图片
 ├── themes/
 │   └── LoveIt/               # LoveIt 主题目录
