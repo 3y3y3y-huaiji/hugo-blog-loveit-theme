@@ -7,7 +7,7 @@
 
 > 专注于形式化数学验证 (Lean 4)、几何深度学习架构与底层系统工程的个人技术沉淀。
 
-🌐 **在线站点**：[https://berry.ccwu.cc/](https://berry.ccwu.cc/)
+🌐 **在线站点**：[https://sumingkai.de5.net/](https://sumingkai.de5.net/)
 
 ---
 
