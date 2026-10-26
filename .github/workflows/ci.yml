@@ -1,0 +1,95 @@
+name: CI & Code Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  theme-check:
+    name: Theme Lint & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript Typecheck
+        run: pnpm run typecheck
+
+      - name: Build Theme Assets
+        run: pnpm run build:theme
+
+  hugo-build-check:
+    name: Hugo Site Build Test
+    runs-on: ubuntu-latest
+    needs: theme-check
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.22.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Theme Assets
+        run: pnpm run build:theme
+
+      - name: Setup Hugo (Community Benchmark)
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.125.0'
+          extended: true
+
+      - name: Verify Hugo Build
+        run: hugo --gc --minify
+
+  link-check:
+    name: Markdown Link Integrity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check Links with Lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --exclude-all-private --exclude-mail --exclude "berry.ccwu.cc" ./content/posts ./content/about README.md
+          fail: false

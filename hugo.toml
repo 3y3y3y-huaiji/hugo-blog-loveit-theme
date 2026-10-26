@@ -1,0 +1,220 @@
+baseURL = 'https://berry.ccwu.cc/'
+locale = 'zh-cn'
+title = '安卓人'
+theme = 'LoveIt'
+enableRobotsTXT = true
+hasCJKLanguage = true
+
+[params]
+  # LoveIt主题版本
+  version = "0.3.X"
+  # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI
+  fingerprint = "sha256"
+  
+  # 主站默认文章章节 (确保 archive 归档不会出现在主页)
+  mainSections = ["posts"]
+
+  # 网站描述
+  description = "安卓人的个人技术博客，记录形式化数学 (Lean 4)、几何深度学习架构与系统工程实践。"
+  # 网站关键词
+  keywords = ["安卓人", "Lean 4", "形式化数学", "Mathlib4", "几何深度学习", "Mobius Attention", "系统工程"]
+  
+  # 网站作者
+  [params.author]
+    name = "安卓人"
+    email = "sumingkai1@outlook.com"
+    link = "https://github.com/3y3y3y-huaiji"
+  
+  # 开启搜索功能
+  [params.search]
+    enable = true
+    type = "lunr"
+    contentLength = 10000
+    placeholder = "搜索文章..."
+    maxResultLength = 50
+    snippetLength = 300
+    highlightTag = "em"
+    absoluteURL = false
+  
+  # 页面头部导航栏
+  [params.header]
+    desktopMode = "fixed"
+    mobileMode = "auto"
+    themeChangeMode = "switch"
+    [params.header.title]
+      logo = ""
+      name = "安卓人"
+      pre = ""
+      post = ""
+  
+  # 页面底部信息配置
+  [params.footer]
+    enable = true
+    custom = ''
+    hugo = true
+    copyright = true
+    author = true
+    since = 2025
+    icp = ""
+    license = '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
+  
+  # Section（所有文章）页面配置
+  [params.section]
+    paginate = 20
+    dateFormat = "01-02"
+    rss = 10
+  
+  # List（目录或标签）页面配置
+  [params.list]
+    paginate = 20
+    dateFormat = "01-02"
+    rss = 10
+  
+  # 主页配置
+  [params.home]
+    rss = 10
+    # 主页个人信息
+    [params.home.profile]
+      enable = true
+      gravatarEmail = ""
+      avatarURL = "images/avatar.webp"
+      title = "安卓人"
+      subtitle = "形式化数学 (Lean 4) · 几何深度学习架构 · 系统工程"
+      typeit = false
+      social = true
+      disclaimer = ""
+    # 主页文章列表
+    [params.home.posts]
+      enable = true
+      paginate = 8
+
+  # 社交账号
+  [params.social]
+    GitHub = "3y3y3y-huaiji"
+    Email = "sumingkai1@outlook.com"
+
+  # KaTeX 数学公式渲染支持
+  [params.page.math]
+    enable = true
+
+[params.page.comment]
+  enable = true
+
+  [params.page.comment.giscus]
+    enable = true
+    repo = "3y3y3y-huaiji/Giscus-Comment-Repository"
+    repoId = "R_kgDOQXU1Sg"
+    category = "Announcements"
+    categoryId = "DIC_kwDOQXU1Ss4Cx4Z7"
+    lang = "zh-CN"
+    mapping = "title"
+    reactionsEnabled = "1"
+    emitMetadata = "1"
+    inputPosition = "top"
+    lazyLoading = true
+    lightTheme = "github-light"
+    darkTheme = "github-dark"
+
+# 菜单配置
+[menu]
+  [[menu.main]]
+    weight = 1
+    identifier = "posts"
+    name = "文章"
+    url = "/posts/"
+  [[menu.main]]
+    weight = 2
+    identifier = "tags"
+    name = "标签"
+    url = "/tags/"
+  [[menu.main]]
+    weight = 3
+    identifier = "categories"
+    name = "分类"
+    url = "/categories/"
+  [[menu.main]]
+    weight = 4
+    identifier = "archive"
+    name = "归档"
+    url = "/archive/"
+  [[menu.main]]
+    weight = 5
+    identifier = "about"
+    name = "关于"
+    url = "/about/"
+
+# Hugo解析文档的配置
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = false
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      definitionList = true
+      footnote = true
+      linkify = true
+      strikethrough = true
+      table = true
+      taskList = true
+      typographer = true
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 6
+    ordered = false
+
+# 网站地图配置
+[sitemap]
+  changefreq = "weekly"
+  filename = "sitemap.xml"
+  priority = 0.5
+
+# Permalinks配置
+[permalinks]
+  posts = "/:year/:month/:day/:contentbasename/"
+  tags = "/tags/:slug/"
+  categories = "/categories/:slug/"
+
+# 隐私设置
+[privacy]
+  [privacy.googleAnalytics]
+    anonymizeIP = true
+    disable = true
+    respectDoNotTrack = true
+    useSessionStorage = false
+  [privacy.x]
+    disable = true
+    enableDNT = true
+    simple = false
+  [privacy.youtube]
+    disable = true
+    enhancedPrivacy = true
+  [privacy.msClarity]
+    disable = true
+
+# 用于输出Markdown格式的文章的设置
+[mediaTypes]
+  [mediaTypes."text/plain"]
+    suffixes = ["md"]
+
+# 用于输出HTML格式的网站设置
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  term = ["HTML"]
+
+# CDN 资源加速配置
+[params.cdn]
+  data = "jsdelivr.yml"
+
+# 用于包含静态资源的配置
+[params.static]
+  [params.static.lunr]
+    target = "lib/lunr"
+    include = "*.js"

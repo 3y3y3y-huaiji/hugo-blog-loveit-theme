@@ -1,0 +1,39 @@
+{
+  "name": "hugo-blog-loveit-theme",
+  "version": "1.0.0",
+  "description": "安卓人的个人技术博客，基于 Hugo 与 LoveIt 主题构建，托管于 Cloudflare Pages。",
+  "packageManager": "pnpm@11.22.0",
+  "scripts": {
+    "lint": "eslint themes/LoveIt/src/js",
+    "typecheck": "tsc --project themes/LoveIt/tsconfig.json --noEmit",
+    "build:theme": "babel themes/LoveIt/src/js --out-file themes/LoveIt/assets/js/theme.js --extensions \".ts\" --presets @babel/preset-env,@babel/preset-typescript",
+    "build": "pnpm run build:theme && hugo --gc --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme.git"
+  },
+  "keywords": [
+    "hugo",
+    "blog",
+    "loveit",
+    "lean4",
+    "math",
+    "cloudflare-pages"
+  ],
+  "author": "安卓人",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@babel/cli": "^8.0.4",
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
+    "@babel/preset-typescript": "^8.0.1",
+    "@types/node": "^26.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
+    "eslint": "^10.8.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.67.0"
+  }
+}
