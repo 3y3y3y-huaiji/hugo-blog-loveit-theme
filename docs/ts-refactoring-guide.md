@@ -39,13 +39,14 @@ pnpm run build:theme
 
 ---
 
-## 3. CI/CD 集成
+## 3. CI 集成
 
-`cloudflare-deploy.yml` 流水线在部署前自动执行：
+`.github/workflows/ci.yml` 会在 Pull Request 和推送 `main` 时自动执行：
 
 1. ESLint 检测
 2. TypeScript 类型检查
 3. Babel 编译主题 JS
-4. Hugo 构建
+4. 使用 Hugo 0.140.0 执行整站构建
+5. Lychee 死链检查
 
-任一步骤失败，流水线即时终止，防止缺陷代码上线。
+任一步骤失败，流水线即时终止，防止缺陷代码合并。合并到 `main` 后由 Cloudflare Pages 自动构建并部署。

@@ -520,7 +520,9 @@ class Theme {
           securityLevel: 'loose'
         });
         Util.forEach($mermaidElements, $mermaid => {
-          mermaid.render('mermaid-svg-' + $mermaid.id, this.data[$mermaid.id]).then(({
+          const code = $mermaid.dataset.mermaidSource || this.data[$mermaid.id] || $mermaid.textContent;
+          $mermaid.dataset.mermaidSource = code;
+          mermaid.render('mermaid-svg-' + $mermaid.id, code).then(({
             svg
           }) => {
             $mermaid.innerHTML = svg;

@@ -1,76 +1,85 @@
-# 📘 AI 科技前沿博客 - 开发与运维手册
+# 📘 开发与运维手册
 
-本手册记录了本站的核心技术架构、本地开发规范、AI 自动发帖逻辑以及 CI/CD 自动部署流程。
-
----
-
-## 🚀 1. 项目技术栈概述
-
-* **静态站点生成器：** Hugo Extended (v0.163.2+)
-* **主题：** LoveIt (局部 TypeScript 重写)
-* **AI 自动化脚本：** TypeScript + Node.js (ts-node)
-* **大模型服务：** NVIDIA NIM / API Catalog (GLM 5.2 单一写作模型，失败时明确报错退出)
-* **CI/CD：** GitHub Actions (Node.js 24 LTS)
-* **托管部署：** Cloudflare Workers Assets (纯静态托管，自定义域名 berry.ccwu.cc)
+本手册记录本站的技术架构、本地开发规范与 CI/CD 流程。
 
 ---
 
-## 💻 2. 本地开发与环境配置
+## 🚀 1. 技术栈概述
 
-### 2.1 依赖安装
+* **静态站点生成器：** Hugo Extended 0.140.0
+* **主题：** LoveIt（局部 TypeScript 重写，Babel 编译）
+* **静态资源：** 主题内置本地资源（Font Awesome、KaTeX、Lunr 等），不使用第三方 CDN
+* **CI：** GitHub Actions（Node.js 24、pnpm 11.22.0）
+* **托管部署：** Cloudflare Pages（Git 集成，自定义域名 `sumingkai.de5.net`）
 
-确保本地安装了 Node.js 20+ 与 Hugo Extended。在项目根目录执行：
+---
+
+## 💻 2. 本地开发
+
+### 2.1 环境要求
+
+- Node.js 24
+- pnpm 11.22.0
+- Hugo Extended 0.140.0
 
 ```bash
 pnpm install
+pnpm run build:theme
+hugo server -D
 ```
 
-### 2.2 常用开发指令
+本地预览地址：http://localhost:1313
+
+### 2.2 常用命令
 
 | 指令 | 用途 |
 |------|------|
-| `pnpm run lint` | ESLint 静态代码检查 |
+| `pnpm run lint` | ESLint 静态代码检查（主题 TS 源码） |
 | `pnpm run typecheck` | TypeScript 类型检查 |
 | `pnpm run build:theme` | Babel 编译主题 TS → JS |
-| `pnpm run generate:ai-post` | AI 生成一篇新博文 |
-| `pnpm run build:cloudflare` | 完整构建（主题编译 + Hugo 构建） |
-| `hugo server` | 本地预览服务器 (http://localhost:1313) |
+| `pnpm run build` | 编译主题资源并执行 Hugo 构建 |
+| `hugo server -D` | 本地预览（包含草稿） |
 
 ---
 
-## 🤖 3. AI 自动发帖逻辑 (`scripts/generate-ai-post.ts`)
+## ✍️ 3. 写作与发布流程
 
-1. **抓取热点**：读取 RSS 订阅源（少数派、Solidot、Hacker News、TechCrunch、量子位、Ars Technica 等 19 个中英文源），失败则降级为内置备用主题
-2. **调用写作模型**：调用 GLM 5.2（`z-ai/glm-5.2`，NVIDIA NIM）撰写博文，失败时明确报错退出
-3. **写入博文**：解析 LLM 输出，生成包含 TOML Front Matter 的 Markdown 文件，写入 `content/posts/`
+1. 从 `main` 创建 Feature 分支：`git checkout -b post/my-new-post`
+2. 在 `content/posts/` 新建 Markdown 文件，文件名使用 kebab-case；
+3. 本地运行 `hugo server -D` 检查排版、数学公式与链接；
+4. 提交并推送分支，创建 Pull Request；
+5. CI 通过后合并到 `main`，Cloudflare Pages 自动部署生产站点。
 
 ---
 
-## 🔄 4. CI/CD 流水线设计
+## 🔄 4. CI 流水线设计
 
-### 4.1 定时 AI 生成流水线 (`ai-blog-cron.yml`)
+`.github/workflows/ci.yml` 包含三个任务：
 
-* 触发：每 4 小时（cron `0 */4 * * *`）/ 手动触发
-* 流程：生成博文 → Git Commit → Push 到 main
-* Push 后自动触发下方的部署流水线
-
-### 4.2 推送部署流水线 (`cloudflare-deploy.yml`)
-
-* 触发：Push 到 main 分支 / 手动触发
-* 流程：ESLint → TypeScript Typecheck → Build Theme → Hugo Build → Deploy to Cloudflare Workers
+1. **Theme Lint & Typecheck**：ESLint → TypeScript 类型检查 → 编译主题 JS
+2. **Hugo Site Build Test**：使用与 Pages 相同的 Hugo 0.140.0 执行整站构建
+3. **Markdown Link Integrity**：Lychee 检查 `content/posts`、`content/about` 与 README 中的死链，失败会阻断合并
 
 ---
 
 ## 🔍 5. 常见故障排查
 
-### 流水线部署报 403 权限拒绝
+### 本地找不到 `hugo`
 
-进入仓库 **Settings → Actions → General**，将 **Workflow permissions** 改为 **Read and write permissions**。
+安装 Hugo Extended 0.140.0 并加入 PATH，或使用与 CI 相同的版本。
 
-### 博文生成流遇到推送冲突
+### 页面样式或交互异常
 
-流水线已内置 `git pull --rebase`。本地开发遇到此问题时，执行 `git pull --rebase origin main` 后再 push。
+主题 JS 可能未重新编译，执行：
 
-### Cloudflare 部署后访问返回 404
+```bash
+pnpm run build:theme
+```
 
-确保 `wrangler.jsonc` 中 `"workers_dev": true` 已配置，重新运行 `npx wrangler deploy` 并等待完成。
+### 数学公式不渲染
+
+确认文章 front matter 所在页面启用了 `math`，并检查 `hugo.toml` 中的 `params.page.math.enable`。
+
+### Cloudflare Pages 构建失败
+
+参见 `docs/cloudflare-deployment.md` 的故障排查章节。

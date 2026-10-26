@@ -1,0 +1,9 @@
+{{- $params := .Page.Scratch.Get "params" -}}
+{{- $render := $params.code.render | default dict -}}
+{{- if $render.mermaid | default true -}}
+    {{- $id := dict "Content" .Inner "Scratch" .Page.Scratch | partial "function/id.html" -}}
+    <div class="mermaid" id="{{ $id }}">{{ .Inner }}</div>
+    {{- .Page.Scratch.SetInMap "this" "mermaid" true -}}
+{{- else -}}
+    {{- dict "Content" .Inner "Lang" .Type "Options" .Options "Page" .Page | partial "plugin/code-block.html" -}}
+{{- end -}}

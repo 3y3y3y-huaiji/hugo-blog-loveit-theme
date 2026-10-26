@@ -11,6 +11,10 @@ module.exports = [
     },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-expressions": "warn",
+      "no-var": "off",
+      "prefer-const": "warn",
       "no-console": "off"
     }
   },
@@ -19,7 +23,8 @@ module.exports = [
       "**/node_modules/**",
       "**/public/**",
       "**/resources/**",
-      "themes/**"
+      "themes/LoveIt/assets/**",
+      "themes/LoveIt/exampleSite/**"
     ]
   }
 ];

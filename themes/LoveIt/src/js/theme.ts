@@ -532,7 +532,9 @@ class Theme {
             if ($mermaidElements.length) {
                 mermaid.initialize({startOnLoad: false, theme: this.isDark ? 'dark' : 'neutral', securityLevel: 'loose'});
                 Util.forEach($mermaidElements, $mermaid => {
-                    mermaid.render('mermaid-svg-' + $mermaid.id, this.data[$mermaid.id])
+                    const code = $mermaid.dataset.mermaidSource || this.data[$mermaid.id] || $mermaid.textContent;
+                    $mermaid.dataset.mermaidSource = code;
+                    mermaid.render('mermaid-svg-' + $mermaid.id, code)
                         .then(({ svg }: any) => {
                             $mermaid.innerHTML = svg;
                         });

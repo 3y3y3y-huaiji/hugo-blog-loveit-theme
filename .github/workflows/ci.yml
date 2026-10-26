@@ -38,6 +38,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: ESLint
+        run: pnpm run lint
+
       - name: TypeScript Typecheck
         run: pnpm run typecheck
 
@@ -72,10 +75,10 @@ jobs:
       - name: Build Theme Assets
         run: pnpm run build:theme
 
-      - name: Setup Hugo Extended (Latest)
+      - name: Setup Hugo Extended (matches Cloudflare Pages)
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: 'latest'
+          hugo-version: '0.140.0'
           extended: true
 
       - name: Verify Hugo Build
@@ -91,5 +94,5 @@ jobs:
       - name: Check Links with Lychee
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --exclude-all-private --exclude-mail --exclude "sumingkai.de5.net" ./content/posts ./content/about README.md
-          fail: false
+          args: --exclude-all-private --exclude-mail --exclude "sumingkai.de5.net" --max-retries 3 --retry-wait-time 2 --timeout 20 ./content/posts ./content/about README.md
+          fail: true
