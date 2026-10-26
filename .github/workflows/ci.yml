@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -63,7 +63,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -93,3 +93,4 @@ jobs:
         with:
           args: --exclude-all-private --exclude-mail --exclude "berry.ccwu.cc" ./content/posts ./content/about README.md
           fail: false
+
