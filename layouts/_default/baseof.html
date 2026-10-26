@@ -1,5 +1,10 @@
 {{- partial "init.html" . -}}
 
+{{- /* 渲染钩子的 Scratch 状态不会保留到页面模板，这里根据原始 Markdown 补上 mermaid 标记。 */ -}}
+{{- if or (strings.Contains .RawContent "```mermaid") (strings.Contains .RawContent "{{< mermaid") -}}
+    {{- .Scratch.SetInMap "this" "mermaid" true -}}
+{{- end -}}
+
 <!DOCTYPE html>
 <html lang="{{ .Site.LanguageCode | default "zh-CN" }}">
     <head>

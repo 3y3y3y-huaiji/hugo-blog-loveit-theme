@@ -1,6 +1,7 @@
 # 安卓人的个人技术博客
 
-[![Hugo Version](https://badgen.net/badge/Hugo/v0.125+/blue)](https://gohugo.io/)
+[![CI](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml)
+[![Hugo Version](https://badgen.net/badge/Hugo/v0.140.0/blue)](https://gohugo.io/)
 [![Theme LoveIt](https://badgen.net/badge/Theme/LoveIt/orange)](https://github.com/dillonzq/LoveIt)
 [![License MIT](https://badgen.net/badge/License/MIT/green)](LICENSE)
 [![Hosting](https://badgen.net/badge/Hosting/Cloudflare%20Pages/F38020)](https://pages.cloudflare.com/)
@@ -13,11 +14,13 @@
 
 ## 🛠️ 技术架构
 
-* **静态站点生成器**：Hugo Extended
+* **静态站点生成器**：Hugo Extended 0.140.0（CI 与 Cloudflare Pages 使用同一版本）
 * **主题**：LoveIt（基于 TypeScript 重构与 Babel 自动打包）
 * **数学公式排版**：KaTeX 原生支持（满足 Lean 4 定理证明、流形注意力数学推导）
-* **托管部署**：Cloudflare Pages Git 集成（边缘全球 CDN、自动 Universal SSL）
-* **代码与构建质量门禁 (CI)**：GitHub Actions（复用成熟官方与社区事实标准 Actions 进行类型校验、Hugo 整站试构建与死链审计）
+* **静态资源**：使用主题内置的本地资源（Font Awesome、KaTeX、Lunr 等），不依赖第三方 CDN
+* **站内搜索**：Lunr.js 本地索引，仅索引博客正文与关于页，历史归档不参与搜索
+* **托管部署**：Cloudflare Pages Git 集成（边缘全球 CDN、自动 Universal SSL、安全响应头与缓存策略）
+* **代码与构建质量门禁 (CI)**：GitHub Actions（类型校验、Hugo 整站试构建与死链阻断）
 
 ---
 
@@ -33,8 +36,13 @@ hugo-blog-loveit-theme/
 │   ├── about/                # 关于页面
 │   ├── posts/                # 正式技术博文
 │   └── archive/              # 历史早报归档分区
+├── static/
+│   ├── _headers              # Cloudflare Pages 安全响应头与缓存策略
+│   ├── _redirects            # pages.dev 到自定义域名的规范化跳转
+│   └── images/               # 头像、分享封面等静态图片
 ├── themes/
 │   └── LoveIt/               # LoveIt 主题目录
+├── docs/                     # 部署与开发文档
 ├── hugo.toml                 # Hugo 站点配置
 └── package.json              # 前端资源与构建脚本
 ```
@@ -42,6 +50,8 @@ hugo-blog-loveit-theme/
 ---
 
 ## 💻 本地开发
+
+环境要求：Node.js 24、pnpm 11.22.0、Hugo Extended 0.140.0。
 
 1. **安装依赖**：
    ```bash

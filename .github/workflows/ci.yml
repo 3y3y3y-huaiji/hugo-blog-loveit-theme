@@ -38,6 +38,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: ESLint
+        run: pnpm run lint
+
       - name: TypeScript Typecheck
         run: pnpm run typecheck
 
@@ -72,24 +75,36 @@ jobs:
       - name: Build Theme Assets
         run: pnpm run build:theme
 
-      - name: Setup Hugo Extended (Latest)
+      - name: Setup Hugo Extended (matches Cloudflare Pages)
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: 'latest'
+          hugo-version: '0.140.0'
           extended: true
 
       - name: Verify Hugo Build
         run: hugo --gc --minify
 
   link-check:
-    name: Markdown Link Integrity
+    name: Site Link Integrity
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
+      - name: Setup Hugo Extended (matches Cloudflare Pages)
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.140.0'
+          extended: true
+
+      - name: Build Site
+        run: hugo --gc --minify
+
+      - name: Set Lychee Root Directory
+        run: echo "LYCHEE_ROOT=$GITHUB_WORKSPACE/public" >> "$GITHUB_ENV"
+
       - name: Check Links with Lychee
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --exclude-all-private --exclude-mail --exclude "sumingkai.de5.net" ./content/posts ./content/about README.md
-          fail: false
+          args: --exclude-all-private --exclude "mailto:" --exclude "sumingkai.de5.net" --exclude "openai.com" --exclude "website-datenbank.de" --exclude "archive" --exclude-path "public/archive" --exclude-path "public/robots.txt" --max-retries 3 --retry-wait-time 2 --timeout 20 --root-dir "${{ env.LYCHEE_ROOT }}" public
+          fail: true

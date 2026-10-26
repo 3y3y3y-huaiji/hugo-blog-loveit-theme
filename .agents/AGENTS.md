@@ -7,7 +7,7 @@
 - **站长**：安卓人
 - **定位**：形式化数学 (Lean 4)、几何深度学习架构与底层系统工程的技术研究博客。
 - **技术栈**：Hugo (Extended) + LoveIt 主题 (TypeScript 构建) + KaTeX
-- **站点地址**：https://berry.ccwu.cc/
+- **站点地址**：https://sumingkai.de5.net/
 - **部署方式**：Cloudflare Pages Git 集成（零 API Token，push main 触发全球边缘部署）
 - **CI 质量体系**：`.github/workflows/ci.yml`（自动化执行 TypeScript 类型检查、Hugo 整站干跑验证、Lychee 死链审计）
 
