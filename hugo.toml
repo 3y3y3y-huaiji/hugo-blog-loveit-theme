@@ -1,4 +1,5 @@
 baseURL = 'https://berry.ccwu.cc/'
+languageCode = 'zh-CN'
 locale = 'zh-cn'
 title = '安卓人'
 theme = 'LoveIt'
