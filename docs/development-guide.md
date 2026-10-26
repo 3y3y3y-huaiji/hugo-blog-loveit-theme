@@ -58,7 +58,7 @@ hugo server -D
 
 1. **Theme Lint & Typecheck**：ESLint → TypeScript 类型检查 → 编译主题 JS
 2. **Hugo Site Build Test**：使用与 Pages 相同的 Hugo 0.140.0 执行整站构建
-3. **Markdown Link Integrity**：Lychee 检查 `content/posts`、`content/about` 与 README 中的死链，失败会阻断合并
+3. **Site Link Integrity**：Lychee 检查 Hugo 构建产物 `public/` 中的站内与站外链接，失败会阻断合并
 
 ---
 
