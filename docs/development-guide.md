@@ -60,6 +60,8 @@ hugo server -D
 2. **Hugo Site Build Test**：使用与 Pages 相同的 Hugo 0.140.0 执行整站构建
 3. **Site Link Integrity**：Lychee 检查 Hugo 构建产物 `public/` 中的站内与站外链接，失败会阻断合并
 
+> 历史归档的早期文件名使用百分号编码，暂不参与链接审计；归档页面本身仍可正常浏览。
+
 ---
 
 ## 🔍 5. 常见故障排查
