@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
           fetch-depth: 1
@@ -29,10 +29,10 @@ jobs:
         with:
           version: 11.22.0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js (Latest LTS)
+        uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -50,7 +50,7 @@ jobs:
     needs: theme-check
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
           fetch-depth: 0
@@ -60,10 +60,10 @@ jobs:
         with:
           version: 11.22.0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js (Latest LTS)
+        uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -72,10 +72,10 @@ jobs:
       - name: Build Theme Assets
         run: pnpm run build:theme
 
-      - name: Setup Hugo (Community Benchmark)
+      - name: Setup Hugo Extended (Latest)
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: '0.140.0'
+          hugo-version: 'latest'
           extended: true
 
       - name: Verify Hugo Build
@@ -86,12 +86,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check Links with Lychee
         uses: lycheeverse/lychee-action@v2
         with:
           args: --exclude-all-private --exclude-mail --exclude "berry.ccwu.cc" ./content/posts ./content/about README.md
           fail: false
-
-
