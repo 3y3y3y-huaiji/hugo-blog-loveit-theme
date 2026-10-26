@@ -1,6 +1,6 @@
 baseURL = 'https://berry.ccwu.cc/'
 locale = 'zh-cn'
-title = '安卓人'
+title = '安卓�?
 theme = 'LoveIt'
 enableRobotsTXT = true
 hasCJKLanguage = true
@@ -11,22 +11,19 @@ hasCJKLanguage = true
   # 哪种哈希函数用来 SRI, 为空时表示不使用 SRI
   fingerprint = "sha256"
   
-  # 主站默认文章章节 (确保 archive 归档不会出现在主页)
+  # 主站默认文章章节 (确保 archive 归档不会出现在主�?
   mainSections = ["posts"]
 
   # 网站描述
-  description = "安卓人的个人技术博客，记录形式化数学 (Lean 4)、几何深度学习架构与系统工程实践。"
-  # 网站关键词
-  keywords = ["安卓人", "Lean 4", "形式化数学", "Mathlib4", "几何深度学习", "Mobius Attention", "系统工程"]
+  description = "安卓人的个人技术博客，记录形式化数�?(Lean 4)、几何深度学习架构与系统工程实践�?
+  # 网站关键�?  keywords = ["安卓�?, "Lean 4", "形式化数�?, "Mathlib4", "几何深度学习", "Mobius Attention", "系统工程"]
   
-  # 网站作者
-  [params.author]
-    name = "安卓人"
+  # 网站作�?  [params.author]
+    name = "安卓�?
     email = "sumingkai1@outlook.com"
     link = "https://github.com/3y3y3y-huaiji"
   
-  # 开启搜索功能
-  [params.search]
+  # 开启搜索功�?  [params.search]
     enable = true
     type = "lunr"
     contentLength = 10000
@@ -36,14 +33,13 @@ hasCJKLanguage = true
     highlightTag = "em"
     absoluteURL = false
   
-  # 页面头部导航栏
-  [params.header]
+  # 页面头部导航�?  [params.header]
     desktopMode = "fixed"
     mobileMode = "auto"
     themeChangeMode = "switch"
     [params.header.title]
       logo = ""
-      name = "安卓人"
+      name = "安卓�?
       pre = ""
       post = ""
   
@@ -64,8 +60,7 @@ hasCJKLanguage = true
     dateFormat = "01-02"
     rss = 10
   
-  # List（目录或标签）页面配置
-  [params.list]
+  # List（目录或标签）页面配�?  [params.list]
     paginate = 20
     dateFormat = "01-02"
     rss = 10
@@ -78,8 +73,8 @@ hasCJKLanguage = true
       enable = true
       gravatarEmail = ""
       avatarURL = "images/avatar.webp"
-      title = "安卓人"
-      subtitle = "形式化数学 (Lean 4) · 几何深度学习架构 · 系统工程"
+      title = "安卓�?
+      subtitle = "形式化数�?(Lean 4) · 几何深度学习架构 · 系统工程"
       typeit = false
       social = true
       disclaimer = ""
@@ -143,8 +138,7 @@ hasCJKLanguage = true
     name = "关于"
     url = "/about/"
 
-# Hugo解析文档的配置
-[markup]
+# Hugo解析文档的配�?[markup]
   [markup.highlight]
     codeFences = true
     guessSyntax = true
@@ -175,7 +169,7 @@ hasCJKLanguage = true
 
 # Permalinks配置
 [permalinks]
-  posts = "/:year/:month/:day/:contentbasename/"
+  posts = "/:year/:month/:day/:filename/"
   tags = "/tags/:slug/"
   categories = "/categories/:slug/"
 
@@ -201,16 +195,14 @@ hasCJKLanguage = true
   [mediaTypes."text/plain"]
     suffixes = ["md"]
 
-# 用于输出HTML格式的网站设置
-[outputs]
+# 用于输出HTML格式的网站设�?[outputs]
   home = ["HTML", "RSS", "JSON"]
   page = ["HTML"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
   term = ["HTML"]
 
-# CDN 资源加速配置
-[params.cdn]
+# CDN 资源加速配�?[params.cdn]
   data = "jsdelivr.yml"
 
 # 用于包含静态资源的配置
@@ -218,3 +210,4 @@ hasCJKLanguage = true
   [params.static.lunr]
     target = "lib/lunr"
     include = "*.js"
+
