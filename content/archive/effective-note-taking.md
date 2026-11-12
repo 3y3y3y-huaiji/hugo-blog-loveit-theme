@@ -1,6 +1,7 @@
 +++
 title = "高效学习笔记法：构建个人知识体系"
 date = 2025-06-18T16:45:00+08:00
+aliases = ["/2025/06/18/effective-note-taking/"]
 draft = false
 tags = ["学习方法", "笔记系统", "知识管理", "个人成长"]
 categories = ["学习笔记"]

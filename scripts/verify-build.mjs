@@ -35,6 +35,26 @@ function findPostPage(publicDir) {
     return null;
 }
 
+function findArchiveArticle(publicDir) {
+    const archiveDir = path.join(publicDir, 'archive');
+    if (!fs.existsSync(archiveDir)) {
+        return null;
+    }
+    const stack = [archiveDir];
+    while (stack.length > 0) {
+        const current = stack.pop();
+        for (const child of fs.readdirSync(current, { withFileTypes: true })) {
+            const childPath = path.join(current, child.name);
+            if (child.isDirectory()) {
+                stack.push(childPath);
+            } else if (child.name === 'index.html' && current !== archiveDir) {
+                return childPath;
+            }
+        }
+    }
+    return null;
+}
+
 export function verifyBuild(publicDir, { siteOrigin = process.env.SITE_ORIGIN || DEFAULT_ORIGIN } = {}) {
     const errors = [];
     const origin = siteOrigin.replace(/\/$/, '');
@@ -79,6 +99,16 @@ export function verifyBuild(publicDir, { siteOrigin = process.env.SITE_ORIGIN ||
         if (!findPostPage(publicDir)) {
             errors.push('public/ 下没有找到任何文章页（/:year/:month/:day/:slug/）');
         }
+        if (!fs.existsSync(path.join(publicDir, 'archive', 'index.html'))) {
+            errors.push('缺少归档列表页：public/archive/index.html');
+        }
+        if (!findArchiveArticle(publicDir)) {
+            errors.push('public/archive/ 下没有找到任何归档文章页');
+        }
+        const aliasPage = path.join(publicDir, '2025', '06', '18', 'first-post', 'index.html');
+        if (!fs.existsSync(aliasPage) || !readText(aliasPage).includes('/archive/first-post/')) {
+            errors.push('旧文章别名页缺失或未指向 /archive/first-post/');
+        }
     }
 
     return { errors };
@@ -99,7 +129,7 @@ export function main() {
         }
         process.exit(1);
     }
-    console.log('构建产物校验通过：首页、搜索索引、Sitemap、RSS、robots.txt、文章页均存在');
+    console.log('构建产物校验通过：首页、搜索索引、Sitemap、RSS、robots.txt、文章页、归档页与旧链接别名均存在');
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;

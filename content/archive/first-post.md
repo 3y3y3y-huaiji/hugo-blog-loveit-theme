@@ -1,6 +1,7 @@
 +++
 title = "AI智能时代启航：AI科技前沿博客正式运行"
 date = 2025-06-18T19:46:43+08:00
+aliases = ["/2025/06/18/first-post/"]
 draft = false
 tags = ["AI博客", "人工智能", "公告"]
 categories = ["公告"]

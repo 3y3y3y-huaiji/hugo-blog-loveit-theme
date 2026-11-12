@@ -1,6 +1,8 @@
 ---
 title: "博客仓库优化实践"
 date: 2025-11-17T10:00:00+08:00
+aliases:
+  - /2025/11/17/blog-repository-optimization/
 draft: false
 tags: ["博客", "优化", "Hugo"]
 categories: ["技术"]
