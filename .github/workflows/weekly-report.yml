@@ -49,22 +49,23 @@ jobs:
 
             - name: Probe NVIDIA API
               run: |
-                  echo '--- integrate /v1/models'
-                  curl -4 -sS --max-time 15 -o /tmp/models.json -w 'integrate-models=%{http_code}\n' \
-                    https://integrate.api.nvidia.com/v1/models \
-                    -H "Authorization: Bearer $NVIDIA_API_KEY" || true
-                  head -c 300 /tmp/models.json 2>/dev/null || true
+                  echo '--- glm-5.3-flash'
+                  code=$(curl -4 -sS --max-time 30 -o /tmp/glm.json -w '%{http_code}' \
+                    https://integrate.api.nvidia.com/v1/chat/completions \
+                    -H "Authorization: Bearer $NVIDIA_API_KEY" \
+                    -H "Content-Type: application/json" \
+                    -d '{"model":"z-ai/glm-5.3-flash","stream":false,"messages":[{"role":"user","content":"Say hi."}],"max_tokens":8}' || true)
+                  echo "glm=$code"
+                  head -c 500 /tmp/glm.json 2>/dev/null || true
                   echo
-                  echo '--- ai.api /v1/models'
-                  curl -4 -sS --max-time 15 -o /tmp/ai-models.json -w 'ai-models=%{http_code}\n' \
-                    https://ai.api.nvidia.com/v1/models \
-                    -H "Authorization: Bearer $NVIDIA_API_KEY" || true
-                  head -c 300 /tmp/ai-models.json 2>/dev/null || true
-                  echo
-                  echo '--- no auth'
-                  curl -4 -sS --max-time 15 -o /tmp/noauth.json -w 'noauth=%{http_code}\n' \
-                    https://integrate.api.nvidia.com/v1/models || true
-                  head -c 200 /tmp/noauth.json 2>/dev/null || true
+                  echo '--- llama-3.1-8b'
+                  code2=$(curl -4 -sS --max-time 30 -o /tmp/llama.json -w '%{http_code}' \
+                    https://integrate.api.nvidia.com/v1/chat/completions \
+                    -H "Authorization: Bearer $NVIDIA_API_KEY" \
+                    -H "Content-Type: application/json" \
+                    -d '{"model":"meta/llama-3.1-8b-instruct","stream":false,"messages":[{"role":"user","content":"Say hi."}],"max_tokens":8}' || true)
+                  echo "llama=$code2"
+                  head -c 500 /tmp/llama.json 2>/dev/null || true
                   echo
                   exit 1
 
