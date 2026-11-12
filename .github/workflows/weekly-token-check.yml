@@ -1,0 +1,34 @@
+name: Weekly PR Token Check
+
+on:
+    workflow_dispatch:
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Create and close a throwaway PR with WEEKLY_PR_TOKEN
+              env:
+                  PR_TOKEN: ${{ secrets.WEEKLY_PR_TOKEN }}
+              run: |
+                  set -euo pipefail
+                  [ -n "$PR_TOKEN" ] || { echo "WEEKLY_PR_TOKEN 未配置"; exit 1; }
+
+                  branch="token-check/${GITHUB_RUN_ID}"
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git checkout -b "$branch"
+                  git commit --allow-empty -m "chore: token check [skip ci]"
+                  git push origin "$branch"
+
+                  url=$(GH_TOKEN="$PR_TOKEN" gh pr create --base main --head "$branch" --title "chore: token check" --body "临时验证 WEEKLY_PR_TOKEN 权限，验证后自动关闭。")
+                  echo "created: $url"
+                  pr=${url##*/}
+                  GH_TOKEN="${{ github.token }}" gh pr close "$pr" --delete-branch
