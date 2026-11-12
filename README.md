@@ -32,7 +32,7 @@
 - **OpenCode + GLM 5.3 Flash**：通过 OpenCode CLI 的 `nvidia` provider 调用 `nvidia/z-ai/glm-5.3-flash`；模型只负责写作，采集、校验、发布由确定性脚本完成。
 - **轻松随笔型风格**：语气、结构、输出格式都在 [`prompts/weekly-report.md`](prompts/weekly-report.md)。
 - **明确的失败语义**：模型超时、输出不合约、正文太短都会让任务失败；本周没有公开活动时跳过，不编造内容。
-- **完整质量门禁**：Prettier、ESLint、主题类型检查、内容契约、20 个 `node:test` 单测、Hugo 构建产物契约、生产依赖审计、Lychee 死链检查、线上冒烟。
+- **完整质量门禁**：Prettier、ESLint、主题类型检查、内容契约、24 个 `node:test` 单测、Hugo 构建产物契约、生产依赖审计、Lychee 死链检查、线上冒烟。
 - **历史归档**：早期 `ai-generated-*` 文章保留在 `content/archive/`，不再新增。
 
 ## 周报生成链路
@@ -104,8 +104,12 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 
 | Secret 名称 | 说明 |
 | --- | --- |
-| `NVIDIA_API_KEY` | 从 [NVIDIA Build](https://build.nvidia.com/) 获取的 `nvapi-` 开头密钥 |
+| `NVIDIA_API_KEY` | 从 [NVIDIA Build](https://build.nvidia.com/) 获取的 `nvapi-` 开头密钥（第 1 把） |
+| `NVIDIA_API_KEY_2` | 可选，第 2 把备用 key；前一把探测失败时自动切换 |
+| `NVIDIA_API_KEY_3` | 可选，第 3 把备用 key |
 | `GH_PAT` | 只读公开仓库的 PAT（classic `public_repo` 或 fine-grained 公开仓库只读）；用于跨仓库采集 |
+
+> 多把 NVIDIA key 只会在同一个 `glm-5.3-flash` 模型内轮换。如果是 NVIDIA 模型后端整体无响应，换 key 也无法恢复；工作流会逐把探测并给出每把 key 的 HTTP 状态。
 
 可选仓库变量 `SITE_ORIGIN` 用于部署后冒烟，默认 `https://hugo-blog-loveit-theme.pages.dev`。
 
@@ -116,7 +120,7 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | Job | 内容 |
 | --- | --- |
 | `static` | Prettier → ESLint → 主题 TypeScript 类型检查 |
-| `content` | 内容契约 → 20 个 `node:test` 单测 |
+| `content` | 内容契约 → 24 个 `node:test` 单测 |
 | `build` | Babel 编译主题 → Hugo 0.169.0 构建 → 产物契约 |
 | `audit` | 只审计生产依赖的高危漏洞 |
 | `link-check` | Lychee 死链检查（排除归档与外部站点） |
@@ -149,6 +153,7 @@ hugo server -D
 
 ```env
 NVIDIA_API_KEY=nvapi-your-real-key
+NVIDIA_API_KEY_2=nvapi-your-backup-key
 GH_TOKEN=github_pat_public_read_only
 ```
 

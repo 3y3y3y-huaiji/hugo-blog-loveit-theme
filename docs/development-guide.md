@@ -80,7 +80,7 @@ hugo server -D
 `.github/workflows/ci.yml` 包含五个任务：
 
 1. **Format / Lint / Typecheck**：Prettier → ESLint → 主题 TypeScript 类型检查
-2. **Content Contract & Tests**：内容契约 → 20 个 `node:test` 单测
+2. **Content Contract & Tests**：内容契约 → 24 个 `node:test` 单测
 3. **Hugo Build & Artifact Contract**：编译主题 → Hugo 0.169.0 构建 → 产物契约
 4. **Production Dependency Audit**：仅审计生产依赖的高危漏洞
 5. **Site Link Integrity**：Lychee 检查 `public/` 中的站内与站外链接

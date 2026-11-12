@@ -8,7 +8,7 @@
         "typecheck": "tsc --project themes/LoveIt/tsconfig.json --noEmit",
         "format": "prettier --write \"scripts/**/*.mjs\" \"config/**/*.json\" \"*.{js,json,jsonc}\" \".github/**/*.yml\"",
         "format:check": "prettier --check \"scripts/**/*.mjs\" \"config/**/*.json\" \"*.{js,json,jsonc}\" \".github/**/*.yml\"",
-        "test": "node --test scripts/verify-content.test.mjs scripts/collect-github-activity.test.mjs scripts/generate-weekly-report.test.mjs",
+        "test": "node --test scripts/verify-content.test.mjs scripts/collect-github-activity.test.mjs scripts/generate-weekly-report.test.mjs scripts/nvidia-key-pool.test.mjs",
         "verify:content": "node scripts/verify-content.mjs",
         "verify:build": "node scripts/verify-build.mjs",
         "audit": "pnpm audit --prod --audit-level high --registry=https://registry.npmjs.org",

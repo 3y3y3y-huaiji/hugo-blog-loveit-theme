@@ -12,6 +12,7 @@
 - 通过 OpenCode CLI 的内置 `nvidia` provider 调用，读取 `NVIDIA_API_KEY`
 - 模型只负责写作；采集、校验、落盘、发布都是确定性脚本
 - 模型失败或输出不合约时任务直接失败，不回退到其他模型
+- 同一模型内支持多把 NVIDIA key 轮换：按 `NVIDIA_API_KEY`、`NVIDIA_API_KEY_2`、`NVIDIA_API_KEY_3` 顺序探测，使用第一把可用的 key
 
 ### 1.2 采集范围
 
@@ -36,8 +37,12 @@
 
 | Secret 名称 | 说明 |
 |-------------|------|
-| `NVIDIA_API_KEY` | 从 NVIDIA Build 获取的 `nvapi-` 开头密钥 |
+| `NVIDIA_API_KEY` | 从 NVIDIA Build 获取的 `nvapi-` 开头密钥（第 1 把） |
+| `NVIDIA_API_KEY_2` | 可选，第 2 把备用 key |
+| `NVIDIA_API_KEY_3` | 可选，第 3 把备用 key |
 | `GH_PAT` | 公开仓库只读 PAT（classic `public_repo` 或 fine-grained 公开仓库只读）；不要授予私有仓库权限 |
+
+多把 key 由 `scripts/select-nvidia-key.mjs` 逐把探测；只有 key 级故障（额度、失效、限流）能通过轮换解决。如果 `glm-5.3-flash` 模型后端整体无响应，所有 key 都会超时，本次周报会跳过。
 
 Cloudflare Pages 使用 Git 集成，不需要 `CLOUDFLARE_API_TOKEN` 或 `CLOUDFLARE_ACCOUNT_ID`。
 
@@ -83,7 +88,8 @@ Windows 上 OpenCode 的 native binary 可能无法启动，建议用 WSL、Dock
 
 | 现象 | 检查 |
 |------|------|
-| `缺少 NVIDIA_API_KEY` | GitHub Secrets 是否配置 |
+| `缺少 NVIDIA_API_KEY` | GitHub Secrets 是否配置（至少配置 `NVIDIA_API_KEY`、`NVIDIA_API_KEY_2`、`NVIDIA_API_KEY_3` 之一） |
+| `所有 NVIDIA key 对当前模型均不可用` | 查看每把 key 的 HTTP 状态；超时通常表示 NVIDIA 模型后端不可用，换 key 无效 |
 | `缺少 GH_PAT` | 是否创建只读公开仓库 PAT，并命名为 `GH_PAT` |
 | `gh api ... 失败：401/403` | PAT 是否过期、是否有 public repo 读权限 |
 | `找不到 opencode 命令` | 是否执行 `npm install -g @opencode/cli@2.2.7` |
