@@ -146,18 +146,25 @@ function runOpenCode({ promptContent, activity, model }) {
                       options,
                   );
 
-        const stderrTail = `${result.stderr || ''}`.trim().slice(-2000);
+        const stderrText = `${result.stderr || ''}`.trim();
+        const stderrTail = stderrText.slice(-2000);
+        const stderrErrors = stderrText
+            .split('\n')
+            .filter((line) => /error|invalid|unknown|not found|failed|401|403|model|agent/i.test(line))
+            .slice(-20)
+            .join('\n');
         if (result.error) {
             if (result.error.code === 'ENOENT') {
                 throw new Error(
                     '找不到 opencode 命令。请先安装：npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7；Windows 本地建议在 WSL/Git Bash 或 CI 中运行。',
                 );
             }
-            const suffix = stderrTail ? `\n${stderrTail}` : '';
-            throw new Error(`OpenCode 执行失败：${result.error.message}${suffix}`);
+            const detail = stderrErrors || stderrTail;
+            throw new Error(`OpenCode 执行失败：${result.error.message}${detail ? `\n${detail}` : ''}`);
         }
         if (result.status !== 0) {
-            throw new Error(`OpenCode 退出码 ${result.status}${stderrTail ? `：\n${stderrTail}` : ''}`);
+            const detail = stderrErrors || stderrTail;
+            throw new Error(`OpenCode 退出码 ${result.status}${detail ? `：\n${detail}` : ''}`);
         }
 
         return result.stdout || '';
