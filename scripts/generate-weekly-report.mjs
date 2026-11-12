@@ -108,17 +108,17 @@ function runOpenCode({ promptContent, activity, model }) {
             maxBuffer: 20 * 1024 * 1024,
             env: process.env,
         };
-        // --auto 自动批准未被显式 deny 的权限请求；--print-logs 把诊断日志写到 stderr，超时时可回看。
+        // --standalone 是全局 flag，必须放在 run 前面；否则会连到仓库根目录的共享 server。
         const result =
             process.platform === 'win32'
                 ? spawnSync(
                       process.env.ComSpec || 'cmd.exe',
-                      ['/d', '/s', '/c', `opencode.cmd run --standalone --auto --print-logs -m ${model} ${prompt}`],
+                      ['/d', '/s', '/c', `opencode.cmd --standalone run --auto --print-logs -m ${model} ${prompt}`],
                       options,
                   )
                 : spawnSync(
                       'opencode',
-                      ['run', '--standalone', '--auto', '--print-logs', '-m', model, prompt],
+                      ['--standalone', 'run', '--auto', '--print-logs', '-m', model, prompt],
                       options,
                   );
 
