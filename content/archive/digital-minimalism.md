@@ -1,6 +1,7 @@
 +++
 title = "数字极简主义：在信息过载时代找回专注力"
 date = 2025-06-18T14:20:00+08:00
+aliases = ["/2025/06/18/digital-minimalism/"]
 draft = false
 tags = ["生活", "极简主义", "数字生活", "专注力"]
 categories = ["生活"]

@@ -1,6 +1,7 @@
 +++
 title = "Hugo博客性能优化指南"
 date = 2025-06-18T10:30:00+08:00
+aliases = ["/2025/06/18/hugo-performance-optimization/"]
 draft = false
 tags = ["Hugo", "性能优化", "Web开发"]
 categories = ["技术"]
