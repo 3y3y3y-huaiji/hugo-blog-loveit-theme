@@ -21,9 +21,8 @@
 
 ## 2. 域名与规范链接
 
-- 生产域名：https://sumingkai.de5.net/
-- Pages 默认域名：https://hugo-blog-loveit-theme.pages.dev/
-- Cloudflare Pages 的 `_redirects` 不支持域名级跳转，因此不做 `pages.dev` 的 301；页面通过 `<link rel="canonical">` 统一指向主域名。
+- 生产域名：https://hugo-blog-loveit-theme.pages.dev/
+- 页面通过 `<link rel="canonical">` 统一指向该域名。
 - Pull Request 会自动生成独立的 Preview URL，用于合并前验证。
 
 ---
@@ -43,9 +42,11 @@
 
 1. 从 `main` 创建 Feature 分支并提交修改；
 2. 推送分支并创建 Pull Request；
-3. GitHub Actions 执行 ESLint、TypeScript 类型检查、主题编译、Hugo 构建和死链检查；
+3. GitHub Actions 执行 Prettier、ESLint、类型检查、内容契约、单测、Hugo 构建、产物契约、依赖审计和死链检查；
 4. Cloudflare Pages 生成 Preview URL；
 5. 合并到 `main` 后，Pages 自动构建并发布到生产域名。
+
+周报任务每周一 08:00（北京时间）生成 `content/posts/weekly-YYYY-Www.md` 并 push `main`，随后同样由 Pages 构建发布；`ci.yml` 通过 `workflow_run` 对周报提交补跑检查。
 
 ---
 
@@ -67,7 +68,7 @@ hugo --gc --minify
 
 - 确认 Pages 环境变量 `HUGO_VERSION=0.140.0`、`NODE_VERSION=24` 未被修改；
 - 在本地执行 `hugo --gc --minify` 复现错误；
-- 检查 `hugo.toml` 的 `baseURL` 是否为 `https://sumingkai.de5.net/`。
+- 检查 `hugo.toml` 的 `baseURL` 是否为 `https://hugo-blog-loveit-theme.pages.dev/`。
 
 ### 页面样式或交互异常
 
@@ -76,5 +77,5 @@ hugo --gc --minify
 
 ### 自定义域名无法访问
 
-- 在 Pages 项目的 Custom domains 中确认 `sumingkai.de5.net` 状态为 Active；
+- 在 Pages 项目的 Custom domains 中确认 `hugo-blog-loveit-theme.pages.dev` 状态为 Active；
 - 检查 DNS 记录与 Cloudflare 证书状态。

@@ -1,0 +1,6 @@
+{
+    "githubUser": "3y3y3y-huaiji",
+    "maxEvents": 300,
+    "excludeRepos": [],
+    "model": "nvidia/z-ai/glm-5.3-flash"
+}
