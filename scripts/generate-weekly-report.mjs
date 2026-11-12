@@ -115,16 +115,34 @@ function runOpenCode({ promptContent, activity, model }) {
             env: process.env,
         };
         // --standalone 是全局 flag，必须放在 run 前面；否则会连到仓库根目录的共享 server。
+        // plan 是只读 agent，避免 build agent 反复尝试被 deny 的 edit/bash 工具。
         const result =
             process.platform === 'win32'
                 ? spawnSync(
                       process.env.ComSpec || 'cmd.exe',
-                      ['/d', '/s', '/c', `opencode.cmd --standalone run --auto --print-logs -m ${model} ${prompt}`],
+                      [
+                          '/d',
+                          '/s',
+                          '/c',
+                          `opencode.cmd --log-level DEBUG --standalone run --auto --print-logs --agent plan -m ${model} ${prompt}`,
+                      ],
                       options,
                   )
                 : spawnSync(
                       'opencode',
-                      ['--standalone', 'run', '--auto', '--print-logs', '-m', model, prompt],
+                      [
+                          '--log-level',
+                          'DEBUG',
+                          '--standalone',
+                          'run',
+                          '--auto',
+                          '--print-logs',
+                          '--agent',
+                          'plan',
+                          '-m',
+                          model,
+                          prompt,
+                      ],
                       options,
                   );
 
