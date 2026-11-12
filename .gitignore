@@ -34,3 +34,6 @@ node_modules/
 
 # Cloudflare Wrangler cache
 .wrangler/
+
+# Weekly report scratch files
+.weekly-report/
