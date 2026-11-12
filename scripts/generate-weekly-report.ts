@@ -75,6 +75,16 @@ export function parseReportOutput(output: string): ReportOutput {
     return { title, description, body };
 }
 
+function parseReportOutputWithContext(output: string): ReportOutput {
+    try {
+        return parseReportOutput(output);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const snippet = output.slice(0, 2000).trim() || '(空)';
+        throw new Error(`${message}\nOpenCode 输出片段：\n${snippet}`);
+    }
+}
+
 function runOpenCode({
     promptContent,
     activity,
@@ -175,7 +185,11 @@ function runOpenCode({
             throw new Error(`OpenCode 退出码 ${result.status}${detail ? `：\n${detail}` : ''}`);
         }
 
-        return result.stdout || '';
+        const stdout = result.stdout || '';
+        if (!stdout.trim()) {
+            throw new Error(`OpenCode 未返回内容。stderr 末尾：\n${stderrTail || '(空)'}`);
+        }
+        return stdout;
     } finally {
         fs.rmSync(workDir, { recursive: true, force: true });
         if (configBackup) {
@@ -232,7 +246,7 @@ export function main(): void {
         model: config.model,
     });
 
-    const report = parseReportOutput(output);
+    const report = parseReportOutputWithContext(output);
     const fileName = `weekly-${range.label}.md`;
     const raw = buildPost({ ...report, publishDate: range.publishDate });
     const { errors } = validatePosts([{ fileName, raw }]);
