@@ -59,6 +59,7 @@ const rows = [
         readText('package.json') === 'MISSING' ? 'MISSING' : JSON.parse(readText('package.json')).packageManager,
     ],
     ['.node-version', readText('.node-version')],
+    ['.ci-node-version', readText('.ci-node-version')],
     ['.hugo-version', readText('.hugo-version')],
 ];
 

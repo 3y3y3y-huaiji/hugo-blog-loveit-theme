@@ -17,8 +17,8 @@ Live site: <https://hugo-blog-loveit-theme.pages.dev/>
 | --- | --- |
 | Local Node.js | v26.13.1 at `C:\Program Files\nodejs\node.exe` (preferred on PATH) |
 | Local pnpm | 11.22.0 at `C:\Users\安卓人\AppData\Local\pnpm\bin\pnpm` (preferred on PATH) |
-| CI Node.js | 26.13.1 (`.node-version`; Pages only needs Hugo) |
-| CI / Pages Hugo | Extended 0.169.0 (`.hugo-version`) |
+| CI Node.js | 26.13.1 (`.ci-node-version`; Pages reads `.node-version` and uses Node 24) |
+| CI Hugo | Extended 0.169.0 (`.hugo-version`); Pages defaults to 0.147.7, templates support 0.140+ |
 | OpenCode CLI | CI uses 2.2.7; the native Windows binary is incompatible on this machine — use CI/WSL |
 | npm registry | Huawei Cloud mirror locally; `pnpm audit` overrides it with npmjs |
 | Main deps | Babel 8.1 / TypeScript 6.0.3 / ESLint 10.14 / Prettier 3.9 / typescript-eslint 8.72 / dotenv 18 |
@@ -77,7 +77,7 @@ hugo-blog-loveit-theme/
 ├── docs/
 ├── hugo.toml
 ├── package.json
-└── .node-version / .hugo-version
+└── .node-version / .ci-node-version / .hugo-version
 ```
 
 ## Cloudflare Pages settings
@@ -89,7 +89,7 @@ Pages uses Git integration; no `wrangler deploy` and no Cloudflare API token are
 | Production branch | `main` |
 | Build command | `hugo --gc --minify` |
 | Output directory | `public` |
-| Node version | `24` (optional; Pages still runs `pnpm install` automatically) |
+| Node version | `24` from `.node-version` (no `NODE_VERSION` needed) |
 | Hugo version | defaults to `0.147.7`; templates support 0.140+, set `HUGO_VERSION=0.169.0` to match CI |
 
 Theme JS is committed at `themes/LoveIt/assets/js/theme.js`, so Pages only needs Hugo; `pnpm run build` is used locally/CI to verify the theme build too.

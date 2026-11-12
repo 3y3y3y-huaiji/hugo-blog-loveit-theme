@@ -17,8 +17,8 @@
 | --- | --- |
 | 本机全局 Node.js | v26.13.1（`C:\Program Files\nodejs\node.exe`，PATH 中优先使用） |
 | 本机全局 pnpm | 11.22.0（`C:\Users\安卓人\AppData\Local\pnpm\bin\pnpm`，PATH 中优先使用） |
-| CI Node.js | 26.13.1（`.node-version`；Pages 构建只用 Hugo，不需要 Node） |
-| CI / Pages Hugo | Extended 0.169.0（`.hugo-version`） |
+| CI Node.js | 26.13.1（`.ci-node-version`；Pages 读取 `.node-version` 使用 Node 24） |
+| CI Hugo | Extended 0.169.0（`.hugo-version`）；Pages 默认 0.147.7，模板兼容 0.140+ |
 | OpenCode CLI | CI 使用 2.2.7；本机 Windows 上 native binary 不兼容，周报生成以 CI/WSL 为准 |
 | npm registry | 本机为华为云镜像；`pnpm audit` 已内置 npmjs registry 覆盖 |
 | 主要依赖 | Babel 8.1 / TypeScript 6.0.3 / ESLint 10.14 / Prettier 3.9 / typescript-eslint 8.72 / dotenv 18 |
@@ -83,7 +83,7 @@ hugo-blog-loveit-theme/
 ├── docs/                         # 项目文档
 ├── hugo.toml
 ├── package.json
-└── .node-version / .hugo-version
+└── .node-version / .ci-node-version / .hugo-version
 ```
 
 ## Cloudflare Pages 设置
@@ -95,7 +95,7 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | Production branch | `main` |
 | Build command | `hugo --gc --minify` |
 | Output directory | `public` |
-| Node version | `24`（可选；Pages 会自动执行 `pnpm install`） |
+| Node version | `.node-version` 中的 `24`（无需设置 `NODE_VERSION`） |
 | Hugo version | 默认 `0.147.7`；模板兼容 0.140+，可设 `HUGO_VERSION=0.169.0` 与 CI 对齐 |
 
 主题 JS 已编译并提交在 `themes/LoveIt/assets/js/theme.js`，因此 Pages 构建只需要 Hugo；`pnpm run build` 用于本地或 CI 同时验证主题编译。

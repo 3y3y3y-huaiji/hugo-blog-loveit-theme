@@ -13,7 +13,7 @@
 | Build output directory | `public` |
 | Root directory | 仓库根目录 |
 | `HUGO_VERSION` | 可选；不设置时使用 Pages 默认 `0.147.7`。模板兼容 0.140+，如需与 CI 对齐可设为 `0.169.0` |
-| `NODE_VERSION` | `24`（可选；Pages 检测到 `pnpm-lock.yaml` 会自动执行 `pnpm install`） |
+| `NODE_VERSION` | 无需设置；Pages 读取 `.node-version`（`24`）并自动执行 `pnpm install` |
 
 主题 JS 已编译并提交在 `themes/LoveIt/assets/js/theme.js`，构建命令本身只需要 Hugo，不需要手动执行 `pnpm install`；但 Pages 构建环境仍会自动安装 Node 依赖。
 
