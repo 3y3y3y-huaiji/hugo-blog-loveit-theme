@@ -48,7 +48,10 @@ jobs:
                   [ -n "$GH_TOKEN" ] || { echo "缺少 GH_PAT（公开仓库只读 PAT）"; exit 1; }
 
             - name: Install OpenCode CLI
-              run: npm install -g @opencode/cli@2.2.7
+              run: npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7
+
+            - name: Verify OpenCode CLI
+              run: opencode --version
 
             - name: Generate Weekly Report
               run: pnpm run report:weekly

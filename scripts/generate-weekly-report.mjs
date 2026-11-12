@@ -104,32 +104,36 @@ function runOpenCode({ promptContent, activity, model }) {
         const options = {
             cwd: tempDir,
             encoding: 'utf8',
-            timeout: 20 * 60 * 1000,
+            timeout: 5 * 60 * 1000,
             maxBuffer: 20 * 1024 * 1024,
             env: process.env,
         };
-        // Windows 上 opencode 是 .cmd 包装器；走 cmd.exe 而不是 shell:true，避免参数未转义的弃用警告。
-        // --standalone 让 CI 每次使用独立实例，避免依赖用户级后台服务。
+        // --auto 自动批准未被显式 deny 的权限请求；--print-logs 把诊断日志写到 stderr，超时时可回看。
         const result =
             process.platform === 'win32'
                 ? spawnSync(
                       process.env.ComSpec || 'cmd.exe',
-                      ['/d', '/s', '/c', `opencode.cmd run --standalone -m ${model} ${prompt}`],
+                      ['/d', '/s', '/c', `opencode.cmd run --standalone --auto --print-logs -m ${model} ${prompt}`],
                       options,
                   )
-                : spawnSync('opencode', ['run', '--standalone', '-m', model, prompt], options);
+                : spawnSync(
+                      'opencode',
+                      ['run', '--standalone', '--auto', '--print-logs', '-m', model, prompt],
+                      options,
+                  );
 
+        const stderrTail = `${result.stderr || ''}`.trim().slice(-2000);
         if (result.error) {
             if (result.error.code === 'ENOENT') {
                 throw new Error(
-                    '找不到 opencode 命令。请先安装：npm install -g @opencode/cli@2.2.7；Windows 本地建议在 WSL/Git Bash 或 CI 中运行。',
+                    '找不到 opencode 命令。请先安装：npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7；Windows 本地建议在 WSL/Git Bash 或 CI 中运行。',
                 );
             }
-            throw new Error(`OpenCode 执行失败：${result.error.message}`);
+            const suffix = stderrTail ? `\n${stderrTail}` : '';
+            throw new Error(`OpenCode 执行失败：${result.error.message}${suffix}`);
         }
         if (result.status !== 0) {
-            const detail = `${result.stderr || result.stdout || ''}`.trim().slice(-2000);
-            throw new Error(`OpenCode 退出码 ${result.status}${detail ? `：${detail}` : ''}`);
+            throw new Error(`OpenCode 退出码 ${result.status}${stderrTail ? `：\n${stderrTail}` : ''}`);
         }
 
         return result.stdout || '';
