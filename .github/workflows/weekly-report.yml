@@ -47,27 +47,20 @@ jobs:
                   [ -n "$NVIDIA_API_KEY" ] || { echo "缺少 NVIDIA_API_KEY"; exit 1; }
                   [ -n "$GH_TOKEN" ] || { echo "缺少 GH_PAT（公开仓库只读 PAT）"; exit 1; }
 
-            - name: Probe NVIDIA API
+            - name: Check GLM 5.3 Flash Availability
               run: |
-                  echo '--- glm-5.3-flash'
-                  code=$(curl -4 -sS --max-time 30 -o /tmp/glm.json -w '%{http_code}' \
+                  code=$(curl -4 -sS --max-time 30 -o /tmp/glm-probe.json -w '%{http_code}' \
                     https://integrate.api.nvidia.com/v1/chat/completions \
                     -H "Authorization: Bearer $NVIDIA_API_KEY" \
                     -H "Content-Type: application/json" \
-                    -d '{"model":"z-ai/glm-5.3-flash","stream":false,"messages":[{"role":"user","content":"Say hi."}],"max_tokens":8}' || true)
-                  echo "glm=$code"
-                  head -c 500 /tmp/glm.json 2>/dev/null || true
+                    -d '{"model":"z-ai/glm-5.3-flash","stream":false,"messages":[{"role":"user","content":"ping"}],"max_tokens":1}' || true)
+                  echo "GLM 5.3 Flash probe HTTP: $code"
+                  head -c 300 /tmp/glm-probe.json 2>/dev/null || true
                   echo
-                  echo '--- llama-3.1-8b'
-                  code2=$(curl -4 -sS --max-time 30 -o /tmp/llama.json -w '%{http_code}' \
-                    https://integrate.api.nvidia.com/v1/chat/completions \
-                    -H "Authorization: Bearer $NVIDIA_API_KEY" \
-                    -H "Content-Type: application/json" \
-                    -d '{"model":"meta/llama-3.1-8b-instruct","stream":false,"messages":[{"role":"user","content":"Say hi."}],"max_tokens":8}' || true)
-                  echo "llama=$code2"
-                  head -c 500 /tmp/llama.json 2>/dev/null || true
-                  echo
-                  exit 1
+                  if [ "$code" != "200" ]; then
+                    echo "NVIDIA GLM 5.3 Flash 当前无响应（HTTP $code），本次跳过周报；等 NVIDIA 恢复后下次自动重试。"
+                    exit 1
+                  fi
 
             - name: Install OpenCode CLI
               run: npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7
