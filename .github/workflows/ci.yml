@@ -22,7 +22,7 @@ permissions:
 
 jobs:
     static:
-        name: Format / Lint / Typecheck
+        name: Theme Lint & Typecheck
         runs-on: ubuntu-latest
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 10
@@ -89,7 +89,7 @@ jobs:
               run: pnpm run test
 
     build:
-        name: Hugo Build & Artifact Contract
+        name: Hugo Site Build Test
         runs-on: ubuntu-latest
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 15
