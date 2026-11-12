@@ -4,3 +4,5 @@ allowBuilds:
 onlyBuiltDependencies:
   - esbuild
   - workerd
+overrides:
+  minimatch@10: 11.0.8
