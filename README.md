@@ -113,8 +113,11 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | `NVIDIA_API_KEY_2` | 可选，第 2 把备用 key；前一把探测失败时自动切换 |
 | `NVIDIA_API_KEY_3` | 可选，第 3 把备用 key |
 | `GH_PAT` | 只读公开仓库的 PAT（classic `public_repo` 或 fine-grained 公开仓库只读）；用于跨仓库采集 |
+| `WEEKLY_PR_TOKEN` | fine-grained PAT，仅本仓库 `Pull requests: Read and write` + `Contents: Read`；用于创建周报 PR |
 
 > 多把 NVIDIA key 只会在同一个 `step-5-preview` 模型内轮换。如果是 NVIDIA 模型后端整体无响应，换 key 也无法恢复；工作流会逐把探测并给出每把 key 的 HTTP 状态。
+
+> `WEEKLY_PR_TOKEN` 是独立 PAT，用来绕开仓库默认的 “GitHub Actions 不能创建 PR” 限制，避免全局打开 Actions 创建/批准 PR 的权限。
 
 可选仓库变量 `SITE_ORIGIN` 用于部署后冒烟，默认 `https://hugo-blog-loveit-theme.pages.dev`。
 
