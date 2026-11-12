@@ -26,7 +26,7 @@ graph TD
     C --> D[OpenCode CLI 调用 Step 5 Preview]
     D --> E[按 prompts/weekly-report.md 写作]
     E --> F[内容契约校验]
-    F --> G[提交回 main]
+    F --> G[创建周报 PR]
     G --> H[Cloudflare Pages Git 集成构建]
     H --> I[线上冒烟]
 ```

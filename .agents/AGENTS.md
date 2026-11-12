@@ -18,7 +18,7 @@
 
 - **人工/Agent 改动严禁直推 `main`**；所有改动走 Feature 分支 + Pull Request。
 - 必须通过 GitHub Actions CI（跑绿）后才允许合并。
-- **唯一例外**：`.github/workflows/weekly-report.yml` 的 bot 可以在生成周报后直接 push `main`，用于每周自动发布。不要把这个例外扩大到其他 workflow。
+- **唯一例外**：`.github/workflows/weekly-report.yml` 会在生成周报后创建 `weekly-report/YYYY-Www` 分支和 Pull Request，并触发 CI；仍需人工合并，不直接 push `main`。不要把这个例外扩大到其他 workflow。
 - 利用 Cloudflare Pages 的 Preview Deployments 在合并前验证真实渲染。
 
 ### 提交规范（Conventional Commits）
@@ -58,7 +58,7 @@
 4. `generate-weekly-report.ts` 在 `.weekly-report/` 写入 `prompt.md`、`activity.json`，并在仓库根目录写临时 `opencode.json`；执行 `opencode --standalone run --agent plan -m nvidia/stepfun-ai/step-5-preview`。
 5. OpenCode 只允许读取 `.weekly-report/` 下的临时文件；不允许 bash/edit/webfetch。
 6. 解析 `TITLE/DESCRIPTION/BODY/END_OF_REPORT`，重建 canonical front matter，校验后写入 `content/posts/weekly-YYYY-Www.md`。
-7. `weekly-report.yml` 再跑 `verify:content`，通过后 commit + push；Pages Git 集成自动构建。
+7. `weekly-report.yml` 再跑 `verify:content`，通过后创建 `weekly-report/YYYY-Www` 分支和 PR，并用 `workflow_dispatch` 补跑 CI；人工合并后 Pages Git 集成自动构建。
 
 只分析公开仓库；不采集私有仓库、代码 diff、token 或邮箱。
 
@@ -75,7 +75,7 @@
 | `scripts/verify-content.ts` | 周报与归档文章的硬性契约 |
 | `scripts/serve-public.ts` | E2E 用的本地静态服务器，服务 `public/` 与 404 |
 | `playwright.config.ts` / `e2e/*.spec.ts` | 浏览器端到端检查；改导航、搜索、主题或移动端后必须跑 |
-| `.github/workflows/weekly-report.yml` | 持有 `contents: write`，使用 `GH_PAT` 与 `NVIDIA_API_KEY` |
+| `.github/workflows/weekly-report.yml` | 持有 `contents/pull-requests/actions: write`，使用 `GH_PAT` 与 `NVIDIA_API_KEY`；只创建周报 PR，不直推 `main` |
 | `.github/workflows/ci.yml` | PR 门禁；不要在多个 workflow 里重复触发部署 |
 | `themes/LoveIt/**` | 主题源码；改动后必须重新执行 `build:theme` |
 

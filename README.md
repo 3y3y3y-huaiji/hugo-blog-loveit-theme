@@ -7,7 +7,7 @@
 [![Hosting](https://badgen.net/badge/Hosting/Cloudflare%20Pages/F38020)](https://pages.cloudflare.com/)
 [![License MIT](https://badgen.net/badge/License/MIT/green)](LICENSE)
 
-> 一个个人技术周记：每周一 08:00（北京时间），GitHub Actions 用 `gh` 采集我过去一周的**公开 GitHub 活动**，交给 **OpenCode CLI + Step 5 Preview** 写成轻松随笔型周报，校验后提交回 `main`，由 Cloudflare Pages Git 集成自动构建发布。
+> 一个个人技术周记：每周一 08:00（北京时间），GitHub Actions 用 `gh` 采集我过去一周的**公开 GitHub 活动**，交给 **OpenCode CLI + Step 5 Preview** 写成轻松随笔型周报，校验后创建 PR，人工合并后由 Cloudflare Pages Git 集成自动构建发布。
 
 🌐 **在线站点**：[https://hugo-blog-loveit-theme.pages.dev/](https://hugo-blog-loveit-theme.pages.dev/)
 
@@ -48,7 +48,7 @@ graph TD
     G --> H[TITLE/DESCRIPTION/BODY 解析]
     H --> I[重建 front matter + 内容校验]
     I --> J[写入 content/posts/weekly-YYYY-Www.md]
-    J --> K[提交并 push main]
+    J --> K[创建周报 PR]
     K --> L[Cloudflare Pages Git 集成构建]
     L --> M[每日线上冒烟]
 ```
@@ -171,7 +171,7 @@ GH_TOKEN=github_pat_public_read_only
 ## 分支与发布策略
 
 - 人工与 Agent 改动走 Feature 分支 + PR，`main` 受保护。
-- 唯一例外：`weekly-report.yml` 的 bot 可以在生成周报后直接 push `main`，用于每周自动发布。
+- 唯一例外：`weekly-report.yml` 会在生成周报后创建 `weekly-report/YYYY-Www` 分支和 PR，并触发 CI；仍需人工合并，不直接 push `main`。
 - 详细规范见 [`.agents/AGENTS.md`](.agents/AGENTS.md)。
 
 ## 许可证

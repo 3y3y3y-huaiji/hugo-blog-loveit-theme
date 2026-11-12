@@ -74,7 +74,7 @@ hugo server -D
 4. 提交并推送分支，创建 Pull Request。
 5. CI 通过后合并到 `main`，Cloudflare Pages 自动部署。
 
-> 人工/Agent 改动禁止直推 `main`；唯一例外是 `weekly-report.yml` 的 bot 周报发布。
+> 人工/Agent 改动禁止直推 `main`；周报由 `weekly-report.yml` 创建 `weekly-report/YYYY-Www` 分支和 PR，仍需人工合并。
 
 ### 3.3 浏览器 E2E
 
