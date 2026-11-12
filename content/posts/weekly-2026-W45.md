@@ -30,7 +30,7 @@ author = "安卓人"
 
 fork 里开 `feat/odd-field-zero-node` 分支折腾 Topology/Order/Antipodal，把 IsOddMap 相关定理 golf 了一遍，然后被 Lean4 教育了半天：模块 docstring 必须放 public section 前面，import 之间要空行，漏了就直接报错给你看。就……很 Lean。
 
-另外给自己仓库 net-tools 提了[PR #1](https://github.com/3y3y3y-huaiji/net-tools/pull/1)，chore 级别，格式化 spec markdown，居然成了本周唯一合并的 PR。
+另外给自己仓库 net-tools 提了 PR #1，chore 级别，格式化 spec markdown，居然成了本周唯一合并的 PR。
 
 ## PR 与协作
 
