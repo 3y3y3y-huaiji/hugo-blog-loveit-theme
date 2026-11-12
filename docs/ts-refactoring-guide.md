@@ -53,5 +53,6 @@ pnpm run build:theme
 5. Babel 编译主题 JS
 6. 使用 Hugo 0.169.0 构建并校验产物
 7. 生产依赖审计与 Lychee 死链检查
+8. Playwright Chromium 浏览器 E2E
 
 任一步骤失败，流水线即时终止，防止缺陷代码合并。合并到 `main` 后由 Cloudflare Pages 自动构建并部署。

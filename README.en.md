@@ -72,7 +72,10 @@ hugo-blog-loveit-theme/
 │   ├── verify-build.ts
 │   ├── smoke.ts
 │   ├── check-env.ts
+│   ├── serve-public.ts
 │   └── *.test.ts
+├── e2e/                            # Playwright browser E2E tests
+├── playwright.config.ts
 ├── dist/                           # tsc output (gitignored)
 ├── tsconfig.scripts.json
 ├── themes/LoveIt/
@@ -131,6 +134,9 @@ pnpm run collect:activity -- --now 2026-11-12T12:00:00+08:00
 pnpm run report:weekly   # needs NVIDIA_API_KEY and GH_TOKEN
 pnpm run check
 pnpm run check:full      # needs Hugo 0.169.0
+pnpm run e2e:install     # install Chromium once
+pnpm run build
+pnpm run e2e
 pnpm run build:theme
 hugo server -D
 ```

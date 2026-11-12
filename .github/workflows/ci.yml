@@ -189,3 +189,61 @@ jobs:
               with:
                   args: --exclude-all-private --exclude "mailto:" --exclude "hugo-blog-loveit-theme.pages.dev" --exclude "openai.com" --exclude "website-datenbank.de" --exclude "archive" --exclude-path "public/archive" --exclude-path "public/robots.txt" --max-retries 3 --retry-wait-time 2 --timeout 20 --root-dir "${{ env.LYCHEE_ROOT }}" public
                   fail: true
+
+    e2e:
+        name: Browser E2E
+        runs-on: ubuntu-latest
+        if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+        timeout-minutes: 20
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+                  fetch-depth: 1
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11.22.0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .ci-node-version
+                  cache: 'pnpm'
+
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build Scripts
+              run: pnpm run build:scripts
+
+            - name: Build Theme Assets
+              run: pnpm run build:theme
+
+            - name: Read Hugo Version
+              run: echo "HUGO_VERSION=$(cat .hugo-version)" >> "$GITHUB_ENV"
+
+            - name: Setup Hugo Extended
+              uses: peaceiris/actions-hugo@v3
+              with:
+                  hugo-version: ${{ env.HUGO_VERSION }}
+                  extended: true
+
+            - name: Build Site
+              run: hugo --gc --minify
+
+            - name: Install Playwright Chromium
+              run: pnpm exec playwright install --with-deps chromium
+
+            - name: Run Browser E2E
+              run: pnpm run e2e
+
+            - name: Upload Playwright Report
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 7

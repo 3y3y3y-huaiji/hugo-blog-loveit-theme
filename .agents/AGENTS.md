@@ -9,7 +9,7 @@
 - **技术栈**：Hugo Extended 0.169.0 + LoveIt 主题（TypeScript 构建）+ OpenCode CLI + Step 5 Preview
 - **站点地址**：https://hugo-blog-loveit-theme.pages.dev/
 - **部署方式**：Cloudflare Pages Git 集成（push `main` 触发构建，零 API Token）
-- **CI 质量体系**：`.github/workflows/ci.yml`（Prettier、ESLint、TypeScript 类型检查、内容契约、单测、Hugo 构建、产物契约、生产依赖审计、Lychee 死链检查）
+- **CI 质量体系**：`.github/workflows/ci.yml`（Prettier、ESLint、TypeScript 类型检查、内容契约、单测、Hugo 构建、产物契约、生产依赖审计、Lychee 死链检查、Playwright E2E）
 - **历史内容**：`content/archive/ai-generated-*` 是早期 RSS 自动发文，保留归档，不再新增
 
 ## 2. Git 分支与安全策略
@@ -73,6 +73,8 @@
 | `scripts/select-nvidia-key.ts` | 多把 NVIDIA key 顺序探测，选出可用 key 写入 `GITHUB_ENV` |
 | `scripts/generate-weekly-report.ts` | OpenCode 权限、`.weekly-report/` 临时文件、模型调用、front matter 与落盘 |
 | `scripts/verify-content.ts` | 周报与归档文章的硬性契约 |
+| `scripts/serve-public.ts` | E2E 用的本地静态服务器，服务 `public/` 与 404 |
+| `playwright.config.ts` / `e2e/*.spec.ts` | 浏览器端到端检查；改导航、搜索、主题或移动端后必须跑 |
 | `.github/workflows/weekly-report.yml` | 持有 `contents: write`，使用 `GH_PAT` 与 `NVIDIA_API_KEY` |
 | `.github/workflows/ci.yml` | PR 门禁；不要在多个 workflow 里重复触发部署 |
 | `themes/LoveIt/**` | 主题源码；改动后必须重新执行 `build:theme` |
@@ -104,10 +106,13 @@ pnpm run verify:build   # 构建产物契约
 pnpm run audit          # 生产依赖高危漏洞
 pnpm run smoke          # 线上冒烟（可设 SITE_ORIGIN）
 pnpm run report:weekly  # 本地生成周报（需要 NVIDIA_API_KEY、GH_TOKEN、OpenCode CLI）
+pnpm run e2e:install    # 首次安装 Playwright Chromium
+pnpm run e2e            # 浏览器端到端检查（需先 hugo build 生成 public/）
 ```
 
 - `pnpm run check` = format + lint + typecheck + test + verify:content，提交前必须通过。
 - `pnpm run check:full` = check + build + verify:build，改主题/布局/Hugo 配置时必须通过。
+- 改导航、搜索、主题切换、移动端菜单或 404 时必须跑 `pnpm run e2e`。
 - 新增纯函数、解析器、校验规则必须补 `node:test` 单测；不要为了过门禁降低校验强度。
 
 ## 8. 已知陷阱

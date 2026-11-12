@@ -78,7 +78,10 @@ hugo-blog-loveit-theme/
 │   ├── verify-build.ts
 │   ├── smoke.ts
 │   ├── check-env.ts
+│   ├── serve-public.ts
 │   └── *.test.ts
+├── e2e/                          # Playwright 浏览器端到端测试
+├── playwright.config.ts
 ├── dist/                         # tsc 编译输出（gitignored）
 ├── tsconfig.scripts.json
 ├── themes/LoveIt/                # vendored 主题（含 TypeScript 源码）
@@ -126,6 +129,7 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | `build` | 编译 scripts → Babel 编译主题 → Hugo 0.169.0 构建 → 产物契约 |
 | `audit` | 只审计生产依赖的高危漏洞 |
 | `link-check` | Lychee 死链检查（排除归档与外部站点） |
+| `e2e` | Playwright Chromium 浏览器端到端检查（导航、搜索、主题、移动端、404） |
 
 PR 与 push 都会跑；Cloudflare Pages 负责部署。`weekly-report.yml` 用 `GITHUB_TOKEN` push 不会触发 `push` workflow，所以 `ci.yml` 通过 `workflow_run` 接续检查。
 
@@ -145,6 +149,11 @@ pnpm run report:weekly
 # 本地门禁
 pnpm run check       # 格式 + ESLint + 类型检查 + 单测 + 内容契约
 pnpm run check:full  # check + Hugo 构建 + 产物契约（需 Hugo 0.169.0）
+
+# 浏览器 E2E（首次安装 Chromium）
+pnpm run e2e:install
+pnpm run build
+pnpm run e2e
 
 # 本地预览
 pnpm run build:theme
