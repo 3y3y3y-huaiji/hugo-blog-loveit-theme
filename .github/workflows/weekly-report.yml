@@ -15,7 +15,9 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 45
         permissions:
-            contents: write # 周报生成后需要提交回 main
+            contents: write
+            pull-requests: write
+            actions: write
         env:
             NVIDIA_API_KEY_1: ${{ secrets.NVIDIA_API_KEY }}
             NVIDIA_API_KEY_2: ${{ secrets.NVIDIA_API_KEY_2 }}
@@ -69,17 +71,39 @@ jobs:
             - name: Verify Generated Content
               run: pnpm run verify:content
 
-            - name: Commit and Push
+            - name: Create Weekly Report PR
+              env:
+                  GH_TOKEN: ${{ github.token }}
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-                  if [ -n "$(git status --porcelain content/posts/)" ]; then
-                    echo "检测到新周报，准备提交并推送..."
-                    git add content/posts/
-                    git commit -m "chore: add weekly GitHub report"
-                    git pull --rebase origin ${{ github.ref_name }}
-                    git push origin HEAD:${{ github.ref_name }}
-                  else
+                  if [ -z "$(git status --porcelain content/posts/)" ]; then
                     echo "本周没有新周报，跳过提交。"
+                    exit 0
                   fi
+
+                  file=$(git status --porcelain content/posts/ | awk '{print $2}' | head -n1)
+                  label=$(basename "$file" .md | sed 's/^weekly-//')
+                  branch="weekly-report/${label}"
+
+                  echo "检测到新周报：$file"
+                  git checkout -B "$branch"
+                  git add content/posts/
+                  git commit -m "chore: add weekly GitHub report ${label}"
+                  git push --force-with-lease origin "$branch"
+
+                  existing=$(gh pr list --head "$branch" --json number --jq '.[0].number')
+                  if [ -z "$existing" ]; then
+                    gh pr create \
+                      --base main \
+                      --head "$branch" \
+                      --title "chore: weekly report ${label}" \
+                      --body "自动生成的周报：\`${file}\`。请等待 CI 通过后合并。"
+                  else
+                    echo "PR #$existing 已存在，已更新分支。"
+                  fi
+
+                  # GITHUB_TOKEN 创建的 PR 不会自动触发 pull_request workflow；
+                  # 用 workflow_dispatch 在周报分支上补跑 CI。
+                  gh workflow run ci.yml --ref "$branch"

@@ -1,6 +1,6 @@
 # 周报自动生成配置
 
-本项目每周一 08:00（北京时间）自动生成一篇个人技术周报，流程是：公开 GitHub 活动采集 → OpenCode CLI + Step 5 Preview 写作 → 内容契约校验 → 提交回 `main` → Cloudflare Pages Git 集成构建。
+本项目每周一 08:00（北京时间）自动生成一篇个人技术周报，流程是：公开 GitHub 活动采集 → OpenCode CLI + Step 5 Preview 写作 → 内容契约校验 → 创建 PR → 人工合并 → Cloudflare Pages Git 集成构建。
 
 ---
 
@@ -55,7 +55,7 @@ Cloudflare Pages 使用 Git 集成，不需要 `CLOUDFLARE_API_TOKEN` 或 `CLOUD
 - 定时：`.github/workflows/weekly-report.yml`，cron `0 0 * * 1`（周一 00:00 UTC，即北京 08:00）
 - 手动：仓库 **Actions** → **Weekly GitHub Report** → **Run workflow**
 - 本周没有公开活动时脚本直接退出，不生成周报、不提交
-- 生成成功后 job 会运行 `pnpm run verify:content`，通过才 commit + push
+- 生成成功后 job 会运行 `pnpm run verify:content`，通过后创建 `weekly-report/YYYY-Www` 分支和 PR，并触发 CI；人工合并后部署
 
 ---
 

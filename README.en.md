@@ -7,7 +7,7 @@
 [![Hosting](https://badgen.net/badge/Hosting/Cloudflare%20Pages/F38020)](https://pages.cloudflare.com/)
 [![License MIT](https://badgen.net/badge/License/MIT/green)](LICENSE)
 
-> A personal tech weekly. Every Monday at 08:00 Beijing time, GitHub Actions collects my **public GitHub activity** with `gh`, asks **OpenCode CLI + Step 5 Preview** to write a casual retro-style report, verifies it, commits it to `main`, and lets Cloudflare Pages Git integration build and publish the Hugo site.
+> A personal tech weekly. Every Monday at 08:00 Beijing time, GitHub Actions collects my **public GitHub activity** with `gh`, asks **OpenCode CLI + Step 5 Preview** to write a casual retro-style report, verifies it, opens a pull request, and lets Cloudflare Pages build and publish after manual merge.
 
 Live site: <https://hugo-blog-loveit-theme.pages.dev/>
 
@@ -47,7 +47,7 @@ Monday 00:00 UTC (Beijing 08:00)
   -> TITLE / DESCRIPTION / BODY parsing
   -> canonical front matter + content contract
   -> content/posts/weekly-YYYY-Www.md
-  -> push main
+  -> open weekly PR
   -> Cloudflare Pages build
 ```
 
