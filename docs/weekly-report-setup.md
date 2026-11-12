@@ -41,6 +41,9 @@
 | `NVIDIA_API_KEY_2` | 可选，第 2 把备用 key |
 | `NVIDIA_API_KEY_3` | 可选，第 3 把备用 key |
 | `GH_PAT` | 公开仓库只读 PAT（classic `public_repo` 或 fine-grained 公开仓库只读）；不要授予私有仓库权限 |
+| `WEEKLY_PR_TOKEN` | fine-grained PAT，仅本仓库 `Pull requests: Read and write` + `Contents: Read`；用于创建周报 PR |
+
+`WEEKLY_PR_TOKEN` 用来避免打开仓库级的 “Allow GitHub Actions to create and approve pull requests”；没有它工作流会在 `gh pr create` 处失败。
 
 多把 key 由 `scripts/select-nvidia-key.ts` 逐把探测（CI 中先 `pnpm run build:scripts`，再运行 `node dist/select-nvidia-key.js`）；只有 key 级故障（额度、失效、限流）能通过轮换解决。如果 `step-5-preview` 模型后端整体无响应，所有 key 都会超时，本次周报会跳过。
 
@@ -55,7 +58,7 @@ Cloudflare Pages 使用 Git 集成，不需要 `CLOUDFLARE_API_TOKEN` 或 `CLOUD
 - 定时：`.github/workflows/weekly-report.yml`，cron `0 0 * * 1`（周一 00:00 UTC，即北京 08:00）
 - 手动：仓库 **Actions** → **Weekly GitHub Report** → **Run workflow**
 - 本周没有公开活动时脚本直接退出，不生成周报、不提交
-- 生成成功后 job 会运行 `pnpm run verify:content`，通过后创建 `weekly-report/YYYY-Www` 分支和 PR，并触发 CI；人工合并后部署
+- 生成成功后 job 会运行 `pnpm run verify:content`，通过后用 `WEEKLY_PR_TOKEN` 创建 `weekly-report/YYYY-Www` 分支和 PR；新 PR 自动触发 CI，人工合并后部署
 
 ---
 
@@ -94,6 +97,8 @@ Windows 上 OpenCode 的 native binary 可能无法启动，建议用 WSL、Dock
 | `缺少 NVIDIA_API_KEY` | GitHub Secrets 是否配置（至少配置 `NVIDIA_API_KEY`、`NVIDIA_API_KEY_2`、`NVIDIA_API_KEY_3` 之一） |
 | `所有 NVIDIA key 对当前模型均不可用` | 查看每把 key 的 HTTP 状态；超时通常表示 NVIDIA 模型后端不可用，换 key 无效 |
 | `缺少 GH_PAT` | 是否创建只读公开仓库 PAT，并命名为 `GH_PAT` |
+| `缺少 WEEKLY_PR_TOKEN` | 是否创建仅本仓库 `Pull requests: Read and write` 的 fine-grained PAT，并命名为 `WEEKLY_PR_TOKEN` |
+| `GitHub Actions is not permitted to create...` | `WEEKLY_PR_TOKEN` 是否为空或过期；工作流应使用该 PAT 而不是 `GITHUB_TOKEN` 建 PR |
 | `gh api ... 失败：401/403` | PAT 是否过期、是否有 public repo 读权限 |
 | `找不到 opencode 命令` | 是否执行 `npm install -g @opencode/cli@2.2.7` |
 | `模型输出缺少 TITLE` | 提示词标记是否被改坏，或模型输出被日志污染 |

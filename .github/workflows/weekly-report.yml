@@ -16,13 +16,13 @@ jobs:
         timeout-minutes: 45
         permissions:
             contents: write
-            pull-requests: write
             actions: write
         env:
             NVIDIA_API_KEY_1: ${{ secrets.NVIDIA_API_KEY }}
             NVIDIA_API_KEY_2: ${{ secrets.NVIDIA_API_KEY_2 }}
             NVIDIA_API_KEY_3: ${{ secrets.NVIDIA_API_KEY_3 }}
             GH_TOKEN: ${{ secrets.GH_PAT }}
+            WEEKLY_PR_TOKEN: ${{ secrets.WEEKLY_PR_TOKEN }}
             GITHUB_USER: 3y3y3y-huaiji
 
         steps:
@@ -57,6 +57,7 @@ jobs:
                   done
                   [ "$found" = "1" ] || { echo "缺少 NVIDIA_API_KEY（或 NVIDIA_API_KEY_2/3）"; exit 1; }
                   [ -n "$GH_TOKEN" ] || { echo "缺少 GH_PAT（公开仓库只读 PAT）"; exit 1; }
+                  [ -n "$WEEKLY_PR_TOKEN" ] || { echo "缺少 WEEKLY_PR_TOKEN（仅本仓库 Pull requests 读写的 fine-grained PAT）"; exit 1; }
 
             - name: Select Available NVIDIA Key
               run: node dist/select-nvidia-key.js
@@ -73,7 +74,7 @@ jobs:
 
             - name: Create Weekly Report PR
               env:
-                  GH_TOKEN: ${{ github.token }}
+                  GH_TOKEN: ${{ secrets.WEEKLY_PR_TOKEN }}
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -102,8 +103,6 @@ jobs:
                       --body "自动生成的周报：\`${file}\`。请等待 CI 通过后合并。"
                   else
                     echo "PR #$existing 已存在，已更新分支。"
+                    # 分支由 GITHUB_TOKEN 推送，不会触发 pull_request workflow，补跑一次 CI。
+                    GH_TOKEN="${{ github.token }}" gh workflow run ci.yml --ref "$branch"
                   fi
-
-                  # GITHUB_TOKEN 创建的 PR 不会自动触发 pull_request workflow；
-                  # 用 workflow_dispatch 在周报分支上补跑 CI。
-                  gh workflow run ci.yml --ref "$branch"

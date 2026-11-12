@@ -107,6 +107,9 @@ Theme JS is committed at `themes/LoveIt/assets/js/theme.js`, so Pages only needs
 | `NVIDIA_API_KEY_2` | Optional second key; used automatically when the primary probe fails |
 | `NVIDIA_API_KEY_3` | Optional third key |
 | `GH_PAT` | Public-repo read-only PAT for cross-repository activity; do not grant private repo access |
+| `WEEKLY_PR_TOKEN` | Fine-grained PAT for this repository only (`Pull requests: Read and write` + `Contents: Read`); used to open the weekly PR |
+
+> `WEEKLY_PR_TOKEN` exists because the repository does not enable “Allow GitHub Actions to create and approve pull requests”; a dedicated PAT keeps that global permission off.
 
 > Key rotation only switches keys for the same `step-5-preview` model. If the model backend is down, all keys fail; the workflow reports each key's HTTP status.
 
