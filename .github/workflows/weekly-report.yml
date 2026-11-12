@@ -49,13 +49,16 @@ jobs:
 
             - name: Probe NVIDIA API
               run: |
-                  code=$(curl -sS --max-time 30 -o /tmp/nvidia-probe.json -w '%{http_code}' \
+                  echo '--- DNS'
+                  getent ahosts integrate.api.nvidia.com || true
+                  echo '--- IPv4 request'
+                  code=$(curl -4 -v --max-time 20 -o /tmp/nvidia-probe.json -w '%{http_code}' \
                     https://integrate.api.nvidia.com/v1/chat/completions \
                     -H "Authorization: Bearer $NVIDIA_API_KEY" \
                     -H "Content-Type: application/json" \
-                    -d '{"model":"z-ai/glm-5.3-flash","messages":[{"role":"user","content":"Say hi in one word."}],"max_tokens":8}')
+                    -d '{"model":"z-ai/glm-5.3-flash","messages":[{"role":"user","content":"Say hi in one word."}],"max_tokens":8}' || true)
                   echo "HTTP $code"
-                  head -c 600 /tmp/nvidia-probe.json
+                  head -c 600 /tmp/nvidia-probe.json 2>/dev/null || true
                   echo
                   [ "$code" = "200" ]
 
