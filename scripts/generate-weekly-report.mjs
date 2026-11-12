@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 // 周报生成：采集公开 GitHub 活动 -> 交给 OpenCode CLI（GLM 5.3 Flash）写作 -> 校验并写入 content/posts。
-// OpenCode 只允许读取临时目录里的 prompt.md 与 activity.json，不能执行命令或修改仓库。
+// OpenCode 只允许读取 .weekly-report/ 里的 prompt.md 与 activity.json，不能执行命令或修改仓库。
 
 import 'dotenv/config';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -77,12 +76,19 @@ export function parseReportOutput(output) {
 }
 
 function runOpenCode({ promptContent, activity, model }) {
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'weekly-report-'));
+    // OpenCode 的 server 以仓库根目录为 workspace，不跟随 spawn 的 cwd；
+    // 因此把临时文件放在仓库内的 .weekly-report/，并把临时 opencode.json 写到根目录。
+    const workDir = path.join(ROOT, '.weekly-report');
+    const configPath = path.join(ROOT, 'opencode.json');
+    const configBackup = fs.existsSync(configPath) ? fs.readFileSync(configPath) : null;
+    fs.rmSync(workDir, { recursive: true, force: true });
+    fs.mkdirSync(workDir, { recursive: true });
+
     try {
-        fs.writeFileSync(path.join(tempDir, 'prompt.md'), promptContent, 'utf8');
-        fs.writeFileSync(path.join(tempDir, 'activity.json'), `${JSON.stringify(activity, null, 2)}\n`, 'utf8');
+        fs.writeFileSync(path.join(workDir, 'prompt.md'), promptContent, 'utf8');
+        fs.writeFileSync(path.join(workDir, 'activity.json'), `${JSON.stringify(activity, null, 2)}\n`, 'utf8');
         fs.writeFileSync(
-            path.join(tempDir, 'opencode.json'),
+            configPath,
             `${JSON.stringify(
                 {
                     $schema: 'https://opencode.ai/config.json',
@@ -100,41 +106,75 @@ function runOpenCode({ promptContent, activity, model }) {
 
         // prompt 保持无空格短句，避免 Windows cmd 把它拆成多个参数。
         const prompt =
-            '读取当前目录的prompt.md和activity.json，严格按prompt.md的格式写周报。只使用这两个文件，不要调用其他工具。';
+            '读取.weekly-report/prompt.md和.weekly-report/activity.json，严格按prompt.md的格式写周报。只使用这两个文件，不要调用其他工具。';
         const options = {
-            cwd: tempDir,
+            cwd: ROOT,
             encoding: 'utf8',
-            timeout: 20 * 60 * 1000,
+            timeout: 5 * 60 * 1000,
             maxBuffer: 20 * 1024 * 1024,
             env: process.env,
         };
-        // Windows 上 opencode 是 .cmd 包装器；走 cmd.exe 而不是 shell:true，避免参数未转义的弃用警告。
-        // --standalone 让 CI 每次使用独立实例，避免依赖用户级后台服务。
+        // --standalone 是全局 flag，必须放在 run 前面；否则会连到仓库根目录的共享 server。
+        // plan 是只读 agent，避免 build agent 反复尝试被 deny 的 edit/bash 工具。
         const result =
             process.platform === 'win32'
                 ? spawnSync(
                       process.env.ComSpec || 'cmd.exe',
-                      ['/d', '/s', '/c', `opencode.cmd run --standalone -m ${model} ${prompt}`],
+                      [
+                          '/d',
+                          '/s',
+                          '/c',
+                          `opencode.cmd --log-level debug --standalone run --auto --print-logs --agent plan -m ${model} ${prompt}`,
+                      ],
                       options,
                   )
-                : spawnSync('opencode', ['run', '--standalone', '-m', model, prompt], options);
+                : spawnSync(
+                      'opencode',
+                      [
+                          '--log-level',
+                          'debug',
+                          '--standalone',
+                          'run',
+                          '--auto',
+                          '--print-logs',
+                          '--agent',
+                          'plan',
+                          '-m',
+                          model,
+                          prompt,
+                      ],
+                      options,
+                  );
 
+        const stderrText = `${result.stderr || ''}`.trim();
+        const stderrTail = stderrText.slice(-2000);
+        const stderrErrors = stderrText
+            .split('\n')
+            .filter((line) => /error|invalid|unknown|not found|failed|401|403|model|agent/i.test(line))
+            .slice(-20)
+            .join('\n');
         if (result.error) {
             if (result.error.code === 'ENOENT') {
                 throw new Error(
-                    '找不到 opencode 命令。请先安装：npm install -g @opencode/cli@2.2.7；Windows 本地建议在 WSL/Git Bash 或 CI 中运行。',
+                    '找不到 opencode 命令。请先安装：npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7；Windows 本地建议在 WSL/Git Bash 或 CI 中运行。',
                 );
             }
-            throw new Error(`OpenCode 执行失败：${result.error.message}`);
+            const detail = stderrErrors || stderrTail;
+            throw new Error(`OpenCode 执行失败：${result.error.message}${detail ? `\n${detail}` : ''}`);
         }
         if (result.status !== 0) {
-            const detail = `${result.stderr || result.stdout || ''}`.trim().slice(-2000);
-            throw new Error(`OpenCode 退出码 ${result.status}${detail ? `：${detail}` : ''}`);
+            const detail = stderrErrors || stderrTail;
+            throw new Error(`OpenCode 退出码 ${result.status}${detail ? `：\n${detail}` : ''}`);
         }
 
         return result.stdout || '';
     } finally {
-        fs.rmSync(tempDir, { recursive: true, force: true });
+        fs.rmSync(workDir, { recursive: true, force: true });
+        if (configBackup) {
+            fs.writeFileSync(configPath, configBackup);
+        } else {
+            fs.rmSync(configPath, { force: true });
+        }
     }
 }
 
@@ -176,7 +216,7 @@ export function main() {
     }
 
     const styleGuide = fs.readFileSync(path.join(ROOT, 'prompts', 'weekly-report.md'), 'utf8');
-    const promptContent = `${styleGuide}\n\n## 本次数据文件\n\n当前目录下的 \`activity.json\` 是本次周报的唯一事实来源。\n`;
+    const promptContent = `${styleGuide.replaceAll('`activity.json`', '`.weekly-report/activity.json`')}\n\n## 本次数据文件\n\n\`.weekly-report/activity.json\` 是本次周报的唯一事实来源。\n`;
     console.log(`调用 OpenCode CLI，模型：${config.model}`);
     const output = runOpenCode({
         promptContent,
