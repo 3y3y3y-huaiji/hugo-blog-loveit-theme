@@ -6,7 +6,7 @@
 
 - **站长**：安卓人
 - **定位**：个人技术周记。每周记录我在 GitHub 上的公开活动、代码决策、踩坑和下周打算。
-- **技术栈**：Hugo Extended 0.140.0 + LoveIt 主题（TypeScript 构建）+ OpenCode CLI + GLM 5.3 Flash
+- **技术栈**：Hugo Extended 0.169.0 + LoveIt 主题（TypeScript 构建）+ OpenCode CLI + GLM 5.3 Flash
 - **站点地址**：https://hugo-blog-loveit-theme.pages.dev/
 - **部署方式**：Cloudflare Pages Git 集成（push `main` 触发构建，零 API Token）
 - **CI 质量体系**：`.github/workflows/ci.yml`（Prettier、ESLint、TypeScript 类型检查、内容契约、单测、Hugo 构建、产物契约、生产依赖审计、Lychee 死链检查）
@@ -54,8 +54,8 @@
 
 1. `getReportRange()` 取上一个完整的北京时间自然周。
 2. `collect-github-activity.mjs` 读取 `/users/{user}/events/public`，按 head 补拉 PushEvent 提交明细，并用 search API 补全 PR / issue。
-3. `generate-weekly-report.mjs` 在临时目录写入 `prompt.md`、`activity.json`、`opencode.json`，执行 `opencode run --standalone -m nvidia/z-ai/glm-5.3-flash`。
-4. OpenCode 只允许读取临时文件；不允许 bash/edit/webfetch。
+3. `generate-weekly-report.mjs` 在 `.weekly-report/` 写入 `prompt.md`、`activity.json`，并在仓库根目录写临时 `opencode.json`；执行 `opencode --standalone run --agent plan -m nvidia/z-ai/glm-5.3-flash`。
+4. OpenCode 只允许读取 `.weekly-report/` 下的临时文件；不允许 bash/edit/webfetch。
 5. 解析 `TITLE/DESCRIPTION/BODY/END_OF_REPORT`，重建 canonical front matter，校验后写入 `content/posts/weekly-YYYY-Www.md`。
 6. `weekly-report.yml` 再跑 `verify:content`，通过后 commit + push；Pages Git 集成自动构建。
 
@@ -69,7 +69,7 @@
 | `config/weekly-report.json` | `githubUser`、`model`、`maxEvents`、`excludeRepos` 决定采集范围与写作模型 |
 | `prompts/weekly-report.md` | 周报语气、结构、输出标记；改标记会直接让解析器失败 |
 | `scripts/collect-github-activity.mjs` | 只采公开活动、时间窗、commit 补拉与 search 查询 |
-| `scripts/generate-weekly-report.mjs` | OpenCode 权限、临时目录、模型调用、front matter 与落盘 |
+| `scripts/generate-weekly-report.mjs` | OpenCode 权限、`.weekly-report/` 临时文件、模型调用、front matter 与落盘 |
 | `scripts/verify-content.mjs` | 周报与归档文章的硬性契约 |
 | `.github/workflows/weekly-report.yml` | 持有 `contents: write`，使用 `GH_PAT` 与 `NVIDIA_API_KEY` |
 | `.github/workflows/ci.yml` | PR 门禁；不要在多个 workflow 里重复触发部署 |
@@ -80,8 +80,10 @@
 ## 6. 环境与版本
 
 - **本机**：全局 Node v26.13.1、全局 pnpm 11.22.0（PATH 中优先使用）。
-- **CI / Cloudflare Pages**：Node 24（`.node-version`）、Hugo Extended 0.140.0（`.hugo-version`）、pnpm 11.22.0。
-- **Hugo**：本机未全局安装；本地跑 `check:full` 需要自行安装 0.140.0，或使用临时二进制。
+- **CI**：Node 26.13.1（`.node-version`）、Hugo Extended 0.169.0（`.hugo-version`）、pnpm 11.22.0。
+- **Cloudflare Pages**：构建命令只有 `hugo --gc --minify`，只需要 Hugo 0.169.0；不需要 Node，也不需要 `NODE_VERSION`。
+- **Hugo**：本机未全局安装；本地跑 `check:full` 需要自行安装 0.169.0，或使用临时二进制。
+- **TypeScript**：固定 6.0.3；TypeScript 7 目前不被 typescript-eslint 支持，不要升级。
 - **OpenCode CLI**：CI 使用 2.2.7；当前 Windows 上 native binary 不兼容，本地生成周报优先用 WSL/CI。
 - **npm registry**：本机为华为云镜像；`pnpm audit` 已内置 `--registry=https://registry.npmjs.org`。
 
@@ -94,7 +96,7 @@ pnpm run typecheck      # 主题 TypeScript 类型检查
 pnpm run test           # 20 个 node:test 单测
 pnpm run verify:content # 内容契约（周报 + 归档文章）
 pnpm run env:check      # 核对本机环境与依赖版本
-pnpm run build          # build:theme + hugo --gc --minify（Hugo 0.140.0）
+pnpm run build          # build:theme + hugo --gc --minify（Hugo 0.169.0）
 pnpm run verify:build   # 构建产物契约
 pnpm run audit          # 生产依赖高危漏洞
 pnpm run smoke          # 线上冒烟（可设 SITE_ORIGIN）
@@ -115,7 +117,7 @@ pnpm run report:weekly  # 本地生成周报（需要 NVIDIA_API_KEY、GH_TOKEN�
 - **OpenCode 的 Windows 原生二进制在当前机器上不兼容。** 本地用 WSL/Docker；CI 用 `ubuntu-latest`。
 - **`weekly-report.yml` 用 `GITHUB_TOKEN` push 不会触发 `push` workflow。** 因此 `ci.yml` 声明了 `workflow_run` 触发；删掉它周报就不会过 CI。
 - **`workflow_run` 的 checkout 必须显式使用 `github.event.workflow_run.head_branch || github.ref`。** 否则可能检出上游触发提交而不是最新 `main`。
-- **Pages 使用 Hugo 0.140.0。** 本地验证请对齐 `.hugo-version`；不要用 0.163.2 的结果替代 Pages 结果。
+- **Pages 使用 Hugo 0.169.0。** 本地验证请对齐 `.hugo-version`；不要用其他 Hugo 版本的结果替代 Pages 结果。
 - **`pnpm audit` 在华为云镜像返回 405。** 使用 `pnpm run audit` 内置的 npmjs registry。
 - **历史内容不满足新契约。** 归档文章存在空 `description`、YAML front matter、正文极短等情况；校验脚本只告警，不要批量改写。
 - **`pages.dev` 可能拦截 CI 机房 IP。** 冒烟返回 403 不一定是站点坏了；用 `SITE_ORIGIN` 指向可达的预览地址复核。

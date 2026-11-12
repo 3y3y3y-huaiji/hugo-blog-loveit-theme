@@ -1,7 +1,7 @@
 # Android's Tech Weekly
 
 [![CI](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml)
-[![Hugo Version](https://badgen.net/badge/Hugo/v0.140.0/blue)](https://gohugo.io/)
+[![Hugo Version](https://badgen.net/badge/Hugo/v0.169.0/blue)](https://gohugo.io/)
 [![Theme LoveIt](https://badgen.net/badge/Theme/LoveIt/orange)](https://github.com/dillonzq/LoveIt)
 [![Model GLM 5.3 Flash](https://badgen.net/badge/Model/GLM%205.3%20Flash/blueviolet)](https://build.nvidia.com/z-ai/glm-5-3-flash)
 [![Hosting](https://badgen.net/badge/Hosting/Cloudflare%20Pages/F38020)](https://pages.cloudflare.com/)
@@ -17,11 +17,11 @@ Live site: <https://hugo-blog-loveit-theme.pages.dev/>
 | --- | --- |
 | Local Node.js | v26.13.1 at `C:\Program Files\nodejs\node.exe` (preferred on PATH) |
 | Local pnpm | 11.22.0 at `C:\Users\安卓人\AppData\Local\pnpm\bin\pnpm` (preferred on PATH) |
-| CI / Pages Node.js | 24 (`.node-version`, matching the Pages build image) |
-| CI / Pages Hugo | Extended 0.140.0 (`.hugo-version`) |
+| CI Node.js | 26.13.1 (`.node-version`; Pages only needs Hugo) |
+| CI / Pages Hugo | Extended 0.169.0 (`.hugo-version`) |
 | OpenCode CLI | CI uses 2.2.7; the native Windows binary is incompatible on this machine — use CI/WSL |
 | npm registry | Huawei Cloud mirror locally; `pnpm audit` overrides it with npmjs |
-| Main deps | Babel 8 / TypeScript 6 / ESLint 10 / Prettier 3.9 / dotenv 17 |
+| Main deps | Babel 8.1 / TypeScript 6.0.3 / ESLint 10.14 / Prettier 3.9 / typescript-eslint 8.72 / dotenv 18 |
 
 Run `pnpm run env:check` to reproduce the local environment.
 
@@ -89,8 +89,8 @@ Pages uses Git integration; no `wrangler deploy` and no Cloudflare API token are
 | Production branch | `main` |
 | Build command | `hugo --gc --minify` |
 | Output directory | `public` |
-| Node version | `24` |
-| Hugo version | `0.140.0` |
+| Node version | Not needed (the build command only uses Hugo) |
+| Hugo version | `0.169.0` |
 
 Theme JS is committed at `themes/LoveIt/assets/js/theme.js`, so Pages only needs Hugo; `pnpm run build` is used locally/CI to verify the theme build too.
 
@@ -109,7 +109,7 @@ Optional repository variable: `SITE_ORIGIN` (default `https://hugo-blog-loveit-t
 | --- | --- |
 | `static` | Prettier → ESLint → theme TypeScript typecheck |
 | `content` | content contract → 20 `node:test` tests |
-| `build` | Babel theme build → Hugo 0.140.0 build → artifact contract |
+| `build` | Babel theme build → Hugo 0.169.0 build → artifact contract |
 | `audit` | production dependency audit |
 | `link-check` | Lychee link check (archive and external sites excluded) |
 
@@ -117,14 +117,14 @@ PRs and pushes run these checks; Cloudflare Pages handles deployment. The weekly
 
 ## Local development
 
-Requirements: global Node v26.13.1, global pnpm 11.22.0, Hugo Extended 0.140.0 (not installed globally here), GitHub CLI, and OpenCode CLI 2.2.7 (use CI/WSL on Windows).
+Requirements: global Node v26.13.1, global pnpm 11.22.0, Hugo Extended 0.169.0 (not installed globally here), GitHub CLI, and OpenCode CLI 2.2.7 (use CI/WSL on Windows).
 
 ```bash
 pnpm install
 pnpm run collect:activity -- --now 2026-11-12T12:00:00+08:00
 pnpm run report:weekly   # needs NVIDIA_API_KEY and GH_TOKEN
 pnpm run check
-pnpm run check:full      # needs Hugo 0.140.0
+pnpm run check:full      # needs Hugo 0.169.0
 pnpm run build:theme
 hugo server -D
 ```
