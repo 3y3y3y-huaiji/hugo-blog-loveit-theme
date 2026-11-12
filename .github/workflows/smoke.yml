@@ -22,8 +22,21 @@ jobs:
         timeout-minutes: 10
         steps:
             - uses: actions/checkout@v6
-            # 不依赖 node_modules：脚本只用 Node 内置模块，runner 自带 Node。
+            # scripts 现在是 TypeScript，需要安装依赖并编译到 dist/ 后再冒烟。
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11.22.0
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .ci-node-version
+                  cache: 'pnpm'
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
+            - name: Build Scripts
+              run: pnpm run build:scripts
             - name: 探测主站
-              run: node scripts/smoke.mjs
+              run: pnpm run smoke
               env:
                   SITE_ORIGIN: ${{ inputs.origin || 'https://hugo-blog-loveit-theme.pages.dev' }}

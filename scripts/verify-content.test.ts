@@ -1,13 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseFrontMatter, normalizeTitle, validatePosts } from './verify-content.mjs';
+import { parseFrontMatter, normalizeTitle, validatePosts } from './verify-content.js';
 
-function tomlArray(values) {
+interface PostOverrides {
+    title?: string;
+    date?: string;
+    draft?: boolean;
+    tags?: string[];
+    categories?: string[];
+    description?: string;
+    body?: string;
+}
+
+function tomlArray(values: string[]): string {
     return `[${values.map((value) => `"${value}"`).join(', ')}]`;
 }
 
-function makePost(fileName, overrides = {}) {
+function makePost(fileName: string, overrides: PostOverrides = {}) {
     const {
         title = '一个足够长的测试标题',
         date = '2026-11-12T08:00:00+08:00',
@@ -35,7 +45,7 @@ ${body}
     };
 }
 
-function makeWeekly(fileName, overrides = {}) {
+function makeWeekly(fileName: string, overrides: PostOverrides = {}) {
     const {
         title = '这周我把周报流水线接上了',
         date = '2026-11-16T08:00:00+08:00',

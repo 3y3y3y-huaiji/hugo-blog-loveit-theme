@@ -2,6 +2,13 @@
 public/
 resources/_gen/
 
+# Compiled TypeScript scripts
+dist/
+
+# Playwright output
+playwright-report/
+test-results/
+
 # OS generated files
 .DS_Store
 .DS_Store?

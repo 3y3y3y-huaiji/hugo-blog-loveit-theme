@@ -66,13 +66,15 @@ hugo-blog-loveit-theme/
 │   ├── posts/                      # weekly reports and personal posts
 │   └── archive/                    # archived early AI posts
 ├── scripts/
-│   ├── collect-github-activity.mjs
-│   ├── generate-weekly-report.mjs
-│   ├── verify-content.mjs
-│   ├── verify-build.mjs
-│   ├── smoke.mjs
-│   ├── check-env.mjs
-│   └── *.test.mjs
+│   ├── collect-github-activity.ts
+│   ├── generate-weekly-report.ts
+│   ├── verify-content.ts
+│   ├── verify-build.ts
+│   ├── smoke.ts
+│   ├── check-env.ts
+│   └── *.test.ts
+├── dist/                           # tsc output (gitignored)
+├── tsconfig.scripts.json
 ├── themes/LoveIt/
 ├── docs/
 ├── hugo.toml

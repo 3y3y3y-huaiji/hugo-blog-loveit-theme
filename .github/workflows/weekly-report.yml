@@ -43,6 +43,9 @@ jobs:
             - name: Install Dependencies
               run: pnpm install --frozen-lockfile
 
+            - name: Build Scripts
+              run: pnpm run build:scripts
+
             # 至少配置一把 NVIDIA key；多把 key 时由下一步按顺序探测。
             - name: Check Secrets
               run: |
@@ -54,7 +57,7 @@ jobs:
                   [ -n "$GH_TOKEN" ] || { echo "缺少 GH_PAT（公开仓库只读 PAT）"; exit 1; }
 
             - name: Select Available NVIDIA Key
-              run: node scripts/select-nvidia-key.mjs
+              run: node dist/select-nvidia-key.js
 
             - name: Install OpenCode CLI
               run: npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7

@@ -27,7 +27,7 @@
 - 文件：`prompts/weekly-report.md`
 - 风格：第一人称、轻松随笔型、技术细节适度
 - 输出标记：`TITLE:` / `DESCRIPTION:` / `BODY:` / `END_OF_REPORT`
-- 改风格可以，但不要改标记，否则 `generate-weekly-report.mjs` 无法解析
+- 改风格可以，但不要改标记，否则 `generate-weekly-report.ts` 无法解析
 
 ---
 
@@ -42,7 +42,7 @@
 | `NVIDIA_API_KEY_3` | 可选，第 3 把备用 key |
 | `GH_PAT` | 公开仓库只读 PAT（classic `public_repo` 或 fine-grained 公开仓库只读）；不要授予私有仓库权限 |
 
-多把 key 由 `scripts/select-nvidia-key.mjs` 逐把探测；只有 key 级故障（额度、失效、限流）能通过轮换解决。如果 `step-5-preview` 模型后端整体无响应，所有 key 都会超时，本次周报会跳过。
+多把 key 由 `scripts/select-nvidia-key.ts` 逐把探测（CI 中先 `pnpm run build:scripts`，再运行 `node dist/select-nvidia-key.js`）；只有 key 级故障（额度、失效、限流）能通过轮换解决。如果 `step-5-preview` 模型后端整体无响应，所有 key 都会超时，本次周报会跳过。
 
 Cloudflare Pages 使用 Git 集成，不需要 `CLOUDFLARE_API_TOKEN` 或 `CLOUDFLARE_ACCOUNT_ID`。
 
@@ -65,6 +65,9 @@ Cloudflare Pages 使用 Git 集成，不需要 `CLOUDFLARE_API_TOKEN` 或 `CLOUD
 
 ```bash
 pnpm install
+
+# scripts 是 TypeScript，会先编译到 dist/ 再执行
+pnpm run build:scripts
 
 # 只采集活动，验证数据结构
 pnpm run collect:activity -- --now 2026-11-12T12:00:00+08:00

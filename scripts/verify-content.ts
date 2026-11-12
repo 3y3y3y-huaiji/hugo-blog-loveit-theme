@@ -4,7 +4,9 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+
+import { ROOT } from './root.js';
+import type { FrontMatter, PostInput } from './types.js';
 
 export const STRICT_FROM = '2026-11-12';
 export const REQUIRED_KEYS = ['title', 'date', 'draft'];
@@ -15,7 +17,7 @@ const FRONT_MATTER_RE = /^(?:\uFEFF)?(\+\+\+|---)\r?\n([\s\S]*?)\r?\n\1[ \t]*(?:
 const AI_FILE_RE = /^ai-generated-(\d{4})-(\d{2})-(\d{2})-.+\.md$/;
 const WEEKLY_FILE_RE = /^weekly-(\d{4})-W(\d{2})\.md$/;
 
-export function parseFrontMatter(raw) {
+export function parseFrontMatter(raw: string): FrontMatter | null {
     const match = FRONT_MATTER_RE.exec(raw);
     if (!match) {
         return null;
@@ -27,21 +29,21 @@ export function parseFrontMatter(raw) {
     };
 }
 
-export function extractKeys(data, format) {
+export function extractKeys(data: string, format: FrontMatter['format']): Set<string> {
     const re = format === 'toml' ? /^([A-Za-z0-9_-]+)\s*=/gm : /^([A-Za-z0-9_-]+)\s*:/gm;
-    const keys = new Set();
+    const keys = new Set<string>();
     for (const match of data.matchAll(re)) {
         keys.add(match[1]);
     }
     return keys;
 }
 
-function escapeRegExp(value) {
+function escapeRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // 读取标量值：兼容 TOML 的无引号日期与带引号字符串、YAML 的 quoted/bare 值
-export function readScalar(data, format, key) {
+export function readScalar(data: string, format: FrontMatter['format'], key: string): string {
     const re =
         format === 'toml'
             ? new RegExp(`^${escapeRegExp(key)}\\s*=\\s*(.+)$`, 'm')
@@ -59,7 +61,7 @@ export function readScalar(data, format, key) {
     return value.trim();
 }
 
-export function readArray(data, key) {
+export function readArray(data: string, key: string): string[] {
     const re = new RegExp(`^${escapeRegExp(key)}\\s*=\\s*\\[([\\s\\S]*?)\\]`, 'm');
     const match = re.exec(data);
     if (!match) {
@@ -68,14 +70,17 @@ export function readArray(data, key) {
     return [...match[1].matchAll(/"([^"]*)"|'([^']*)'/g)].map((item) => item[1] ?? item[2]);
 }
 
-export function normalizeTitle(title) {
+export function normalizeTitle(title: string): string {
     return title.replace(/[^\p{Script=Han}a-zA-Z0-9]/gu, '').toLowerCase();
 }
 
-export function validatePosts(posts, { strictFrom = STRICT_FROM } = {}) {
-    const errors = [];
-    const warnings = [];
-    const seenTitles = new Map();
+export function validatePosts(
+    posts: PostInput[],
+    { strictFrom = STRICT_FROM }: { strictFrom?: string } = {},
+): { errors: string[]; warnings: string[]; stats: { total: number; ai: number; weekly: number } } {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+    const seenTitles = new Map<string, string>();
     let aiCount = 0;
     let weeklyCount = 0;
 
@@ -211,7 +216,7 @@ export function validatePosts(posts, { strictFrom = STRICT_FROM } = {}) {
     };
 }
 
-export function loadPosts(postsDir) {
+export function loadPosts(postsDir: string): PostInput[] {
     if (!fs.existsSync(postsDir)) {
         return [];
     }
@@ -226,7 +231,7 @@ export function loadPosts(postsDir) {
 }
 
 export function main() {
-    const rootDir = fileURLToPath(new URL('..', import.meta.url));
+    const rootDir = ROOT;
     const postsDir = path.join(rootDir, 'content', 'posts');
     const archiveDir = path.join(rootDir, 'content', 'archive');
     const posts = [...loadPosts(postsDir), ...loadPosts(archiveDir)];
@@ -250,7 +255,6 @@ export function main() {
     }
 }
 
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
-if (isMain) {
+if (require.main === module) {
     main();
 }

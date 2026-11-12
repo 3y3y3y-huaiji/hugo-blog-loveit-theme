@@ -53,9 +53,9 @@
 ## 4. 周报生成链路
 
 1. `getReportRange()` 取上一个完整的北京时间自然周。
-2. `collect-github-activity.mjs` 读取 `/users/{user}/events/public`，按 head 补拉 PushEvent 提交明细，并用 search API 补全 PR / issue。
-3. `select-nvidia-key.mjs` 按 `NVIDIA_API_KEY`、`NVIDIA_API_KEY_2`、`NVIDIA_API_KEY_3` 顺序探测 `stepfun-ai/step-5-preview`，把第一把可用的 key 写入 `GITHUB_ENV` 的 `NVIDIA_API_KEY`。
-4. `generate-weekly-report.mjs` 在 `.weekly-report/` 写入 `prompt.md`、`activity.json`，并在仓库根目录写临时 `opencode.json`；执行 `opencode --standalone run --agent plan -m nvidia/stepfun-ai/step-5-preview`。
+2. `collect-github-activity.ts` 读取 `/users/{user}/events/public`，按 head 补拉 PushEvent 提交明细，并用 search API 补全 PR / issue。
+3. `select-nvidia-key.ts` 按 `NVIDIA_API_KEY`、`NVIDIA_API_KEY_2`、`NVIDIA_API_KEY_3` 顺序探测 `stepfun-ai/step-5-preview`，把第一把可用的 key 写入 `GITHUB_ENV` 的 `NVIDIA_API_KEY`。
+4. `generate-weekly-report.ts` 在 `.weekly-report/` 写入 `prompt.md`、`activity.json`，并在仓库根目录写临时 `opencode.json`；执行 `opencode --standalone run --agent plan -m nvidia/stepfun-ai/step-5-preview`。
 5. OpenCode 只允许读取 `.weekly-report/` 下的临时文件；不允许 bash/edit/webfetch。
 6. 解析 `TITLE/DESCRIPTION/BODY/END_OF_REPORT`，重建 canonical front matter，校验后写入 `content/posts/weekly-YYYY-Www.md`。
 7. `weekly-report.yml` 再跑 `verify:content`，通过后 commit + push；Pages Git 集成自动构建。
@@ -69,15 +69,15 @@
 | `hugo.toml` | `baseURL` 锁定为 `https://hugo-blog-loveit-theme.pages.dev/`；站点标题、作者、搜索与语言配置直接影响线上 |
 | `config/weekly-report.json` | `githubUser`、`model`、`maxEvents`、`excludeRepos` 决定采集范围与写作模型 |
 | `prompts/weekly-report.md` | 周报语气、结构、输出标记；改标记会直接让解析器失败 |
-| `scripts/collect-github-activity.mjs` | 只采公开活动、时间窗、commit 补拉与 search 查询 |
-| `scripts/select-nvidia-key.mjs` | 多把 NVIDIA key 顺序探测，选出可用 key 写入 `GITHUB_ENV` |
-| `scripts/generate-weekly-report.mjs` | OpenCode 权限、`.weekly-report/` 临时文件、模型调用、front matter 与落盘 |
-| `scripts/verify-content.mjs` | 周报与归档文章的硬性契约 |
+| `scripts/collect-github-activity.ts` | 只采公开活动、时间窗、commit 补拉与 search 查询 |
+| `scripts/select-nvidia-key.ts` | 多把 NVIDIA key 顺序探测，选出可用 key 写入 `GITHUB_ENV` |
+| `scripts/generate-weekly-report.ts` | OpenCode 权限、`.weekly-report/` 临时文件、模型调用、front matter 与落盘 |
+| `scripts/verify-content.ts` | 周报与归档文章的硬性契约 |
 | `.github/workflows/weekly-report.yml` | 持有 `contents: write`，使用 `GH_PAT` 与 `NVIDIA_API_KEY` |
 | `.github/workflows/ci.yml` | PR 门禁；不要在多个 workflow 里重复触发部署 |
 | `themes/LoveIt/**` | 主题源码；改动后必须重新执行 `build:theme` |
 
-**单一事实来源**：站点地址只有 `hugo.toml` 的 `baseURL`；CI Node 版本只有 `.ci-node-version`；Pages Node 版本只有 `.node-version`；Hugo 版本只有 `.hugo-version`；周报范围只有 `config/weekly-report.json`；写作风格只有 `prompts/weekly-report.md`；内容契约只有 `scripts/verify-content.mjs`。
+**单一事实来源**：站点地址只有 `hugo.toml` 的 `baseURL`；CI Node 版本只有 `.ci-node-version`；Pages Node 版本只有 `.node-version`；Hugo 版本只有 `.hugo-version`；周报范围只有 `config/weekly-report.json`；写作风格只有 `prompts/weekly-report.md`；内容契约只有 `scripts/verify-content.ts`。
 
 ## 6. 环境与版本
 
@@ -94,8 +94,9 @@
 ```bash
 pnpm run format:check   # Prettier
 pnpm run lint           # ESLint（主题 + scripts）
-pnpm run typecheck      # 主题 TypeScript 类型检查
-pnpm run test           # 24 个 node:test 单测
+pnpm run build:scripts  # tsc 编译 scripts/*.ts 到 dist/
+pnpm run typecheck      # 主题 + scripts TypeScript 类型检查
+pnpm run test           # 25 个 node:test 单测（先编译 scripts）
 pnpm run verify:content # 内容契约（周报 + 归档文章）
 pnpm run env:check      # 核对本机环境与依赖版本
 pnpm run build          # build:theme + hugo --gc --minify（Hugo 0.169.0）

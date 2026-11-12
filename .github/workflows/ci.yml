@@ -82,6 +82,9 @@ jobs:
             - name: Install Dependencies
               run: pnpm install --frozen-lockfile
 
+            - name: Build Scripts
+              run: pnpm run build:scripts
+
             - name: Content Contract
               run: pnpm run verify:content
 
@@ -113,6 +116,9 @@ jobs:
 
             - name: Install Dependencies
               run: pnpm install --frozen-lockfile
+
+            - name: Build Scripts
+              run: pnpm run build:scripts
 
             - name: Build Theme Assets
               run: pnpm run build:theme

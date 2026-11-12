@@ -5,11 +5,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
 
-const ROOT = fileURLToPath(new URL('..', import.meta.url));
+import { ROOT } from './root.js';
 
-function commandVersion(commandLine) {
+function commandVersion(commandLine: string): string {
     try {
         return execSync(commandLine, {
             encoding: 'utf8',
@@ -23,7 +22,7 @@ function commandVersion(commandLine) {
     }
 }
 
-function packageVersion(name) {
+function packageVersion(name: string): string {
     const packageJson = path.join(ROOT, 'node_modules', name, 'package.json');
     if (!fs.existsSync(packageJson)) {
         return 'NOT INSTALLED';
@@ -31,12 +30,12 @@ function packageVersion(name) {
     return JSON.parse(fs.readFileSync(packageJson, 'utf8')).version;
 }
 
-function readText(fileName) {
+function readText(fileName: string): string {
     const filePath = path.join(ROOT, fileName);
     return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8').trim() : 'MISSING';
 }
 
-const rows = [
+const rows: Array<[string, string]> = [
     ['OS', `${os.type()} ${os.release()} (${os.arch()})`],
     ['PowerShell', commandVersion('pwsh -NoProfile -Command "$PSVersionTable.PSVersion.ToString()"')],
     ['Node.js', process.version],

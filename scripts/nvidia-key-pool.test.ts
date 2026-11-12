@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { collectNvidiaKeys, probeNvidiaKey, selectWorkingKey } from './nvidia-key-pool.mjs';
+import { collectNvidiaKeys, probeNvidiaKey, selectWorkingKey } from './nvidia-key-pool.js';
 
 test('collectNvidiaKeys 按顺序收集非空 key，忽略其他变量', () => {
     const keys = collectNvidiaKeys({
@@ -24,13 +24,14 @@ test('selectWorkingKey 跳过失败 key，返回第一把可用的', async () =>
         { name: 'NVIDIA_API_KEY_1', value: 'key-1' },
         { name: 'NVIDIA_API_KEY_2', value: 'key-2' },
     ];
-    const logs = [];
+    const logs: string[] = [];
     const selected = await selectWorkingKey(
         keys,
         async (key) => ({ name: key.name, status: key.name.endsWith('_1') ? 401 : 200, ok: key.name.endsWith('_2') }),
         (line) => logs.push(line),
     );
 
+    assert.ok(selected);
     assert.equal(selected.name, 'NVIDIA_API_KEY_2');
     assert.deepEqual(logs, ['NVIDIA_API_KEY_1: HTTP 401', 'NVIDIA_API_KEY_2: HTTP 200（可用）']);
 });

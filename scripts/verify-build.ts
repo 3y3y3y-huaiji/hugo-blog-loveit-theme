@@ -4,15 +4,16 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+
+import { ROOT } from './root.js';
 
 const DEFAULT_ORIGIN = 'https://hugo-blog-loveit-theme.pages.dev';
 
-function readText(filePath) {
+function readText(filePath: string): string {
     return fs.readFileSync(filePath, 'utf8');
 }
 
-function findPostPage(publicDir) {
+function findPostPage(publicDir: string): string | null {
     // permalinks 为 /:year/:month/:day/:contentbasename/，按年份目录向下找任意文章页
     for (const entry of fs.readdirSync(publicDir, { withFileTypes: true })) {
         if (!entry.isDirectory() || !/^\d{4}$/.test(entry.name)) {
@@ -22,6 +23,9 @@ function findPostPage(publicDir) {
         const stack = [yearDir];
         while (stack.length > 0) {
             const current = stack.pop();
+            if (!current) {
+                continue;
+            }
             for (const child of fs.readdirSync(current, { withFileTypes: true })) {
                 const childPath = path.join(current, child.name);
                 if (child.isDirectory()) {
@@ -35,7 +39,7 @@ function findPostPage(publicDir) {
     return null;
 }
 
-function findArchiveArticle(publicDir) {
+function findArchiveArticle(publicDir: string): string | null {
     const archiveDir = path.join(publicDir, 'archive');
     if (!fs.existsSync(archiveDir)) {
         return null;
@@ -43,6 +47,9 @@ function findArchiveArticle(publicDir) {
     const stack = [archiveDir];
     while (stack.length > 0) {
         const current = stack.pop();
+        if (!current) {
+            continue;
+        }
         for (const child of fs.readdirSync(current, { withFileTypes: true })) {
             const childPath = path.join(current, child.name);
             if (child.isDirectory()) {
@@ -55,8 +62,11 @@ function findArchiveArticle(publicDir) {
     return null;
 }
 
-export function verifyBuild(publicDir, { siteOrigin = process.env.SITE_ORIGIN || DEFAULT_ORIGIN } = {}) {
-    const errors = [];
+export function verifyBuild(
+    publicDir: string,
+    { siteOrigin = process.env.SITE_ORIGIN || DEFAULT_ORIGIN }: { siteOrigin?: string } = {},
+): { errors: string[] } {
+    const errors: string[] = [];
     const origin = siteOrigin.replace(/\/$/, '');
     const requiredFiles = ['index.html', 'index.json', 'sitemap.xml', 'index.xml', 'robots.txt', '404.html'];
 
@@ -84,7 +94,8 @@ export function verifyBuild(publicDir, { siteOrigin = process.env.SITE_ORIGIN ||
                 errors.push('public/index.json 条目缺少 objectID/uri，搜索索引结构异常');
             }
         } catch (error) {
-            errors.push(`public/index.json 不是合法 JSON：${error.message}`);
+            const message = error instanceof Error ? error.message : String(error);
+            errors.push(`public/index.json 不是合法 JSON：${message}`);
         }
 
         if (!readText(path.join(publicDir, 'sitemap.xml')).includes('<urlset')) {
@@ -114,8 +125,8 @@ export function verifyBuild(publicDir, { siteOrigin = process.env.SITE_ORIGIN ||
     return { errors };
 }
 
-export function main() {
-    const publicDir = path.join(fileURLToPath(new URL('..', import.meta.url)), 'public');
+export function main(): void {
+    const publicDir = path.join(ROOT, 'public');
     if (!fs.existsSync(publicDir)) {
         console.error('[错误] public/ 不存在，请先执行 hugo --minify');
         process.exit(1);
@@ -132,7 +143,6 @@ export function main() {
     console.log('构建产物校验通过：首页、搜索索引、Sitemap、RSS、robots.txt、文章页、归档页与旧链接别名均存在');
 }
 
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
-if (isMain) {
+if (require.main === module) {
     main();
 }
