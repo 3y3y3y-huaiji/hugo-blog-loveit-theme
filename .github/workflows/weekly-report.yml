@@ -49,18 +49,24 @@ jobs:
 
             - name: Probe NVIDIA API
               run: |
-                  echo '--- DNS'
-                  getent ahosts integrate.api.nvidia.com || true
-                  echo '--- IPv4 request'
-                  code=$(curl -4 -v --max-time 20 -o /tmp/nvidia-probe.json -w '%{http_code}' \
-                    https://integrate.api.nvidia.com/v1/chat/completions \
-                    -H "Authorization: Bearer $NVIDIA_API_KEY" \
-                    -H "Content-Type: application/json" \
-                    -d '{"model":"z-ai/glm-5.3-flash","messages":[{"role":"user","content":"Say hi in one word."}],"max_tokens":8}' || true)
-                  echo "HTTP $code"
-                  head -c 600 /tmp/nvidia-probe.json 2>/dev/null || true
+                  echo '--- integrate /v1/models'
+                  curl -4 -sS --max-time 15 -o /tmp/models.json -w 'integrate-models=%{http_code}\n' \
+                    https://integrate.api.nvidia.com/v1/models \
+                    -H "Authorization: Bearer $NVIDIA_API_KEY" || true
+                  head -c 300 /tmp/models.json 2>/dev/null || true
                   echo
-                  [ "$code" = "200" ]
+                  echo '--- ai.api /v1/models'
+                  curl -4 -sS --max-time 15 -o /tmp/ai-models.json -w 'ai-models=%{http_code}\n' \
+                    https://ai.api.nvidia.com/v1/models \
+                    -H "Authorization: Bearer $NVIDIA_API_KEY" || true
+                  head -c 300 /tmp/ai-models.json 2>/dev/null || true
+                  echo
+                  echo '--- no auth'
+                  curl -4 -sS --max-time 15 -o /tmp/noauth.json -w 'noauth=%{http_code}\n' \
+                    https://integrate.api.nvidia.com/v1/models || true
+                  head -c 200 /tmp/noauth.json 2>/dev/null || true
+                  echo
+                  exit 1
 
             - name: Install OpenCode CLI
               run: npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7
