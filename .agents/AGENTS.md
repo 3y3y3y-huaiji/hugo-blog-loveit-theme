@@ -81,7 +81,7 @@
 
 - **本机**：全局 Node v26.13.1、全局 pnpm 11.22.0（PATH 中优先使用）。
 - **CI**：Node 26.13.1（`.node-version`）、Hugo Extended 0.169.0（`.hugo-version`）、pnpm 11.22.0。
-- **Cloudflare Pages**：构建命令只有 `hugo --gc --minify`，只需要 Hugo 0.169.0；不需要 Node，也不需要 `NODE_VERSION`。
+- **Cloudflare Pages**：构建命令只有 `hugo --gc --minify`，需要 Hugo 0.169.0；Pages 检测到 `pnpm-lock.yaml` 会自动执行 `pnpm install`，`NODE_VERSION` 可选（建议保留 `24`）。
 - **Hugo**：本机未全局安装；本地跑 `check:full` 需要自行安装 0.169.0，或使用临时二进制。
 - **TypeScript**：固定 6.0.3；TypeScript 7 目前不被 typescript-eslint 支持，不要升级。
 - **OpenCode CLI**：CI 使用 2.2.7；当前 Windows 上 native binary 不兼容，本地生成周报优先用 WSL/CI。

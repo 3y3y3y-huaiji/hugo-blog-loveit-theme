@@ -20,7 +20,7 @@
 
 ### 2.1 环境要求
 
-- 本机全局 Node.js 26.13.1（CI 使用 `.node-version` 固定 26.13.1；Cloudflare Pages 只跑 Hugo，不需要 Node）
+- 本机全局 Node.js 26.13.1（CI 使用 `.node-version` 固定 26.13.1；Cloudflare Pages 会自动安装 Node 依赖，`NODE_VERSION` 建议保留 `24`）
 - 全局 pnpm 11.22.0
 - Hugo Extended 0.169.0
 - GitHub CLI（本地采集活动）
