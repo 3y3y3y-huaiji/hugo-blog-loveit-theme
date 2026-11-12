@@ -50,6 +50,8 @@ hugo server -D
 | `pnpm run build:theme` | Babel 编译主题 TS → JS |
 | `pnpm run build` | 编译主题并执行 Hugo 构建 |
 | `pnpm run smoke` | 线上冒烟（可用 `SITE_ORIGIN` 指定目标） |
+| `pnpm run e2e:install` | 安装 Playwright Chromium（首次或版本更新后） |
+| `pnpm run e2e` | 浏览器端到端检查（需先生成 `public/`） |
 | `hugo server -D` | 本地预览（包含草稿） |
 
 ---
@@ -73,6 +75,16 @@ hugo server -D
 5. CI 通过后合并到 `main`，Cloudflare Pages 自动部署。
 
 > 人工/Agent 改动禁止直推 `main`；唯一例外是 `weekly-report.yml` 的 bot 周报发布。
+
+### 3.3 浏览器 E2E
+
+`e2e/` 下是 Playwright 用例，覆盖首页、桌面导航、归档、关于、搜索、主题切换、移动端菜单和 404。CI 的 `Browser E2E` job 会先构建 `public/`，再启动 `scripts/serve-public.ts` 和 Chromium。
+
+```bash
+pnpm run e2e:install
+pnpm run build
+pnpm run e2e
+```
 
 ---
 
