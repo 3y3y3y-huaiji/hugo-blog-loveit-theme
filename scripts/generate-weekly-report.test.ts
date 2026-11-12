@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseReportOutput } from './generate-weekly-report.mjs';
+import { parseReportOutput } from './generate-weekly-report.js';
 
 const GOOD_BODY = '这周我把周报流水线接上了。'.repeat(80);
 

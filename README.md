@@ -72,13 +72,15 @@ hugo-blog-loveit-theme/
 │   ├── posts/                    # 周报与个人文章
 │   └── archive/                  # 历史 AI 自动文章归档
 ├── scripts/
-│   ├── collect-github-activity.mjs
-│   ├── generate-weekly-report.mjs
-│   ├── verify-content.mjs
-│   ├── verify-build.mjs
-│   ├── smoke.mjs
-│   ├── check-env.mjs
-│   └── *.test.mjs
+│   ├── collect-github-activity.ts
+│   ├── generate-weekly-report.ts
+│   ├── verify-content.ts
+│   ├── verify-build.ts
+│   ├── smoke.ts
+│   ├── check-env.ts
+│   └── *.test.ts
+├── dist/                         # tsc 编译输出（gitignored）
+├── tsconfig.scripts.json
 ├── themes/LoveIt/                # vendored 主题（含 TypeScript 源码）
 ├── docs/                         # 项目文档
 ├── hugo.toml
@@ -98,7 +100,7 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | Node version | `.node-version` 中的 `24`（无需设置 `NODE_VERSION`） |
 | Hugo version | 默认 `0.147.7`；模板兼容 0.140+，可设 `HUGO_VERSION=0.169.0` 与 CI 对齐 |
 
-主题 JS 已编译并提交在 `themes/LoveIt/assets/js/theme.js`，因此 Pages 构建只需要 Hugo；`pnpm run build` 用于本地或 CI 同时验证主题编译。
+主题 JS 已编译并提交在 `themes/LoveIt/assets/js/theme.js`，因此 Pages 构建只需要 Hugo；`pnpm run build` 用于本地或 CI 同时验证主题编译。自动化脚本是 TypeScript，由 `pnpm run build:scripts` 编译到 `dist/` 后运行，Pages 不依赖 `dist/`。
 
 ### GitHub Secrets
 
@@ -119,9 +121,9 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 
 | Job | 内容 |
 | --- | --- |
-| `static` | Prettier → ESLint → 主题 TypeScript 类型检查 |
-| `content` | 内容契约 → 24 个 `node:test` 单测 |
-| `build` | Babel 编译主题 → Hugo 0.169.0 构建 → 产物契约 |
+| `static` | Prettier → ESLint → 主题 + scripts TypeScript 类型检查 |
+| `content` | 编译 scripts → 内容契约 → 25 个 `node:test` 单测 |
+| `build` | 编译 scripts → Babel 编译主题 → Hugo 0.169.0 构建 → 产物契约 |
 | `audit` | 只审计生产依赖的高危漏洞 |
 | `link-check` | Lychee 死链检查（排除归档与外部站点） |
 

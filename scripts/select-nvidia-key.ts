@@ -4,17 +4,17 @@
 
 import fs from 'node:fs';
 
-import { loadConfig } from './collect-github-activity.mjs';
-import { collectNvidiaKeys, probeNvidiaKey, selectWorkingKey } from './nvidia-key-pool.mjs';
+import { loadConfig } from './collect-github-activity.js';
+import { collectNvidiaKeys, probeNvidiaKey, selectWorkingKey } from './nvidia-key-pool.js';
 
 const TIMEOUT_MS = Number(process.env.NVIDIA_KEY_PROBE_TIMEOUT_MS || 60000);
 
-function resolveProbeModel() {
+function resolveProbeModel(): string {
     const configured = process.env.WEEKLY_REPORT_NVIDIA_MODEL || loadConfig().model;
     return configured.startsWith('nvidia/') ? configured.slice('nvidia/'.length) : configured;
 }
 
-async function main() {
+async function main(): Promise<void> {
     const keys = collectNvidiaKeys(process.env);
     if (keys.length === 0) {
         console.error('缺少 NVIDIA_API_KEY（或 NVIDIA_API_KEY_2/3）');
@@ -38,7 +38,8 @@ async function main() {
     }
 }
 
-main().catch((error) => {
-    console.error(`NVIDIA key 选择失败：${error.message}`);
+main().catch((error: unknown) => {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`NVIDIA key 选择失败：${message}`);
     process.exit(1);
 });

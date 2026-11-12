@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildActivity, getReportRange, isoWeek } from './collect-github-activity.mjs';
+import { buildActivity, getReportRange, isoWeek } from './collect-github-activity.js';
 
 const RANGE = getReportRange(new Date('2026-11-16T08:00:00+08:00'));
 
@@ -19,7 +19,16 @@ test('isoWeek 处理跨年边界', () => {
     assert.deepEqual(isoWeek(2027, 0, 1), { year: 2026, week: 53 });
 });
 
-function searchPr({ number, title, url, repo, mergedAt = null, state = 'open' }) {
+interface SearchPrOptions {
+    number: number;
+    title: string;
+    url: string;
+    repo: string;
+    mergedAt?: string | null;
+    state?: string;
+}
+
+function searchPr({ number, title, url, repo, mergedAt = null, state = 'open' }: SearchPrOptions) {
     return {
         number,
         title,
@@ -147,7 +156,9 @@ test('buildActivity 归并事件与搜索数据，并过滤范围外/排除仓�
     assert.equal(activity.summary.repos, 2);
 
     const demo = activity.repos.find((repo) => repo.name === 'demo/repo');
+    assert.ok(demo);
     const mergedPr = demo.pullRequests.find((pr) => pr.number === 7);
+    assert.ok(mergedPr);
     assert.ok(mergedPr.roles.includes('opened'));
     assert.ok(mergedPr.roles.includes('merged'));
     assert.equal(demo.commits[0].message, 'feat: 第一行');

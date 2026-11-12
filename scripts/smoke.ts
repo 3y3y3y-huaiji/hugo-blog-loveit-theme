@@ -2,17 +2,25 @@
 // 线上冒烟：部署后与每日巡检共用。只依赖 Node 内置 fetch，不读 node_modules。
 // 目标可用 SITE_ORIGIN 覆盖，默认打自定义域；被 Cloudflare 机器人规则拦截时可改用 workers.dev 地址。
 
-import path from 'node:path';
-import { pathToFileURL } from 'node:url';
-
 const DEFAULT_ORIGIN = 'https://hugo-blog-loveit-theme.pages.dev';
 const TIMEOUT_MS = 15000;
 
-function getOrigin() {
+interface SmokeResponse {
+    response: Response;
+    body: string;
+}
+
+interface SmokeCheck {
+    name: string;
+    path: string;
+    validate: (result: SmokeResponse) => string | null;
+}
+
+function getOrigin(): string {
     return (process.env.SITE_ORIGIN || DEFAULT_ORIGIN).replace(/\/$/, '');
 }
 
-async function request(origin, pathname) {
+async function request(origin: string, pathname: string): Promise<SmokeResponse> {
     const response = await fetch(`${origin}${pathname}`, {
         redirect: 'follow',
         signal: AbortSignal.timeout(TIMEOUT_MS),
@@ -22,8 +30,8 @@ async function request(origin, pathname) {
     return { response, body };
 }
 
-export async function runSmoke(origin = getOrigin()) {
-    const checks = [
+export async function runSmoke(origin: string = getOrigin()): Promise<{ origin: string; errors: string[] }> {
+    const checks: SmokeCheck[] = [
         {
             name: '首页',
             path: '/',
@@ -76,7 +84,7 @@ export async function runSmoke(origin = getOrigin()) {
         },
     ];
 
-    const errors = [];
+    const errors: string[] = [];
     for (const check of checks) {
         try {
             const result = await request(origin, check.path);
@@ -88,15 +96,16 @@ export async function runSmoke(origin = getOrigin()) {
                 console.log(`[通过] ${check.name} ${check.path} -> HTTP ${result.response.status}`);
             }
         } catch (error) {
-            errors.push(`${check.name} (${check.path})：${error.message}`);
-            console.error(`[失败] ${check.name} ${check.path} -> ${error.message}`);
+            const message = error instanceof Error ? error.message : String(error);
+            errors.push(`${check.name} (${check.path})：${message}`);
+            console.error(`[失败] ${check.name} ${check.path} -> ${message}`);
         }
     }
 
     return { origin, errors };
 }
 
-export async function main() {
+export async function main(): Promise<void> {
     const origin = getOrigin();
     console.log(`冒烟目标：${origin}`);
     const { errors } = await runSmoke(origin);
@@ -107,7 +116,6 @@ export async function main() {
     console.log('冒烟通过');
 }
 
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
-if (isMain) {
+if (require.main === module) {
     main();
 }

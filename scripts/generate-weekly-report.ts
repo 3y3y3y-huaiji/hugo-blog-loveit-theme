@@ -6,23 +6,23 @@ import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import { collectActivity, getReportRange, loadConfig } from './collect-github-activity.mjs';
-import { validatePosts } from './verify-content.mjs';
+import { collectActivity, getReportRange, loadConfig } from './collect-github-activity.js';
+import { validatePosts } from './verify-content.js';
+import { ROOT } from './root.js';
+import type { ReportOutput } from './types.js';
 
-const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const MODEL_DISPLAY = 'Step 5 Preview';
 const AUTHOR = '安卓人';
 const TAGS = ['周报', 'GitHub', 'AI Generated', MODEL_DISPLAY];
 const CATEGORIES = ['周报', '工程复盘'];
 const ANSI_RE = /\x1b\[[0-9;?]*[ -/]*[@-~]/g;
 
-function escapeToml(value) {
+function escapeToml(value: string): string {
     return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, ' ').trim();
 }
 
-function cleanModelOutput(output) {
+function cleanModelOutput(output: string): string {
     let cleaned = output.replace(ANSI_RE, '').trim();
     if (cleaned.startsWith('```')) {
         cleaned = cleaned
@@ -34,7 +34,7 @@ function cleanModelOutput(output) {
     return cleaned.replace(/^\*\*(TITLE|DESCRIPTION|BODY):\*\*\s*/gm, '$1: ');
 }
 
-export function parseReportOutput(output) {
+export function parseReportOutput(output: string): ReportOutput {
     const cleaned = cleanModelOutput(output);
     const titleMatch = /^TITLE:\s*(.+)$/m.exec(cleaned);
     const descriptionMatch = /^DESCRIPTION:\s*(.+)$/m.exec(cleaned);
@@ -75,7 +75,15 @@ export function parseReportOutput(output) {
     return { title, description, body };
 }
 
-function runOpenCode({ promptContent, activity, model }) {
+function runOpenCode({
+    promptContent,
+    activity,
+    model,
+}: {
+    promptContent: string;
+    activity: unknown;
+    model: string;
+}): string {
     // OpenCode 的 server 以仓库根目录为 workspace，不跟随 spawn 的 cwd；
     // 因此把临时文件放在仓库内的 .weekly-report/，并把临时 opencode.json 写到根目录。
     const workDir = path.join(ROOT, '.weekly-report');
@@ -109,7 +117,7 @@ function runOpenCode({ promptContent, activity, model }) {
             '读取.weekly-report/prompt.md和.weekly-report/activity.json，严格按prompt.md的格式写周报。只使用这两个文件，不要调用其他工具。';
         const options = {
             cwd: ROOT,
-            encoding: 'utf8',
+            encoding: 'utf8' as const,
             timeout: 20 * 60 * 1000,
             maxBuffer: 50 * 1024 * 1024,
             env: process.env,
@@ -154,7 +162,7 @@ function runOpenCode({ promptContent, activity, model }) {
             .slice(-20)
             .join('\n');
         if (result.error) {
-            if (result.error.code === 'ENOENT') {
+            if ((result.error as NodeJS.ErrnoException).code === 'ENOENT') {
                 throw new Error(
                     '找不到 opencode 命令。请先安装：npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7；Windows 本地建议在 WSL/Git Bash 或 CI 中运行。',
                 );
@@ -178,7 +186,7 @@ function runOpenCode({ promptContent, activity, model }) {
     }
 }
 
-function buildPost({ title, description, body, publishDate }) {
+function buildPost({ title, description, body, publishDate }: ReportOutput & { publishDate: string }): string {
     return `+++
 title = "${escapeToml(title)}"
 date = ${publishDate}
@@ -197,7 +205,7 @@ ${body}
 `;
 }
 
-export function main() {
+export function main(): void {
     const config = loadConfig();
     const now = process.env.WEEKLY_REPORT_NOW ? new Date(process.env.WEEKLY_REPORT_NOW) : new Date();
     const range = getReportRange(now);
@@ -240,7 +248,6 @@ export function main() {
     console.log(`标题：${report.title}`);
 }
 
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
-if (isMain) {
+if (require.main === module) {
     main();
 }

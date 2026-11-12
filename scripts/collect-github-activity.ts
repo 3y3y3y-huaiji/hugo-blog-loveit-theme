@@ -5,48 +5,95 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+
+import { ROOT } from './root.js';
+import type { ApiRecord, ReportRange, WeeklyConfig } from './types.js';
 
 const BEIJING_OFFSET_MS = 8 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const API_REPO_PREFIX = 'https://api.github.com/repos/';
 
-export const DEFAULT_CONFIG = {
+interface RepoBucket {
+    name: string;
+    url: string;
+    commits: ApiRecord[];
+    pushEvents: ApiRecord[];
+    pullRequests: ApiRecord[];
+    issues: ApiRecord[];
+    releases: ApiRecord[];
+    other: ApiRecord[];
+}
+
+interface IgnoredCounter {
+    count: number;
+}
+
+interface BuildActivityOptions {
+    user: string;
+    range: ReportRange;
+    events?: ApiRecord[];
+    createdPrs?: ApiRecord[];
+    mergedPrs?: ApiRecord[];
+    reviewedPrs?: ApiRecord[];
+    issues?: ApiRecord[];
+    maxEvents?: number;
+    excludeRepos?: string[];
+    warnings?: string[];
+}
+
+interface CollectActivityOptions {
+    user: string;
+    range: ReportRange;
+    maxEvents?: number;
+    excludeRepos?: string[];
+}
+
+interface GhApiOptions {
+    paginate?: boolean;
+    slurp?: boolean;
+}
+
+interface CliArgs {
+    output: string;
+    user: string;
+    now: string;
+    maxEvents: number;
+}
+
+export const DEFAULT_CONFIG: WeeklyConfig = {
     githubUser: process.env.GITHUB_USER || '3y3y3y-huaiji',
     maxEvents: 300,
     excludeRepos: [],
     model: process.env.WEEKLY_REPORT_MODEL || 'nvidia/stepfun-ai/step-5-preview',
 };
 
-export function loadConfig(
-    configPath = path.join(fileURLToPath(new URL('..', import.meta.url)), 'config', 'weekly-report.json'),
-) {
+export function loadConfig(configPath = path.join(ROOT, 'config', 'weekly-report.json')): WeeklyConfig {
     if (!fs.existsSync(configPath)) {
         return { ...DEFAULT_CONFIG };
     }
     return { ...DEFAULT_CONFIG, ...JSON.parse(fs.readFileSync(configPath, 'utf8')) };
 }
 
-export function isoWeek(year, month, day) {
+export function isoWeek(year: number, month: number, day: number): { year: number; week: number } {
     // month 为 0-based；返回 { year, week }
     const date = new Date(Date.UTC(year, month, day));
     const dayNumber = date.getUTCDay() || 7;
     date.setUTCDate(date.getUTCDate() + 4 - dayNumber);
     const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-    const week = Math.ceil(((date - yearStart) / DAY_MS + 1) / 7);
+    const week = Math.ceil(((date.getTime() - yearStart.getTime()) / DAY_MS + 1) / 7);
     return { year: date.getUTCFullYear(), week };
 }
 
-function formatBeijing(ms) {
+function formatBeijing(ms: number): string {
     return new Date(ms + BEIJING_OFFSET_MS).toISOString().replace(/\.\d{3}Z$/, '+08:00');
 }
 
-function formatDate(ms) {
+function formatDate(ms: number): string {
     return new Date(ms + BEIJING_OFFSET_MS).toISOString().slice(0, 10);
 }
 
 // 周报周期：上一个完整的自然周（周一 00:00 至本周一 00:00，北京时间）
-export function getReportRange(now = new Date()) {
+export function getReportRange(now = new Date()): ReportRange {
     const beijing = new Date(now.getTime() + BEIJING_OFFSET_MS);
     const year = beijing.getUTCFullYear();
     const month = beijing.getUTCMonth();
@@ -73,20 +120,20 @@ export function getReportRange(now = new Date()) {
     };
 }
 
-function repoNameFromApiUrl(url = '') {
+function repoNameFromApiUrl(url = ''): string {
     return url.startsWith(API_REPO_PREFIX) ? url.slice(API_REPO_PREFIX.length) : '';
 }
 
-function firstLine(message = '') {
+function firstLine(message = ''): string {
     return message.split('\n')[0].trim();
 }
 
-function toMs(value) {
+function toMs(value: string): number | null {
     const time = Date.parse(value);
     return Number.isFinite(time) ? time : null;
 }
 
-function ensureRepo(repos, name) {
+function ensureRepo(repos: Map<string, RepoBucket>, name: string): RepoBucket {
     if (!repos.has(name)) {
         repos.set(name, {
             name,
@@ -99,10 +146,10 @@ function ensureRepo(repos, name) {
             other: [],
         });
     }
-    return repos.get(name);
+    return repos.get(name) as RepoBucket;
 }
 
-function upsertByUrl(items, item) {
+function upsertByUrl(items: ApiRecord[], item: ApiRecord): void {
     const existing = items.find((entry) => entry.url === item.url);
     if (!existing) {
         items.push(item);
@@ -113,7 +160,7 @@ function upsertByUrl(items, item) {
     }
 }
 
-function normalizeSearchPr(item, role) {
+function normalizeSearchPr(item: ApiRecord, role: string): ApiRecord {
     return {
         number: item.number,
         title: item.title,
@@ -129,7 +176,7 @@ function normalizeSearchPr(item, role) {
     };
 }
 
-function normalizeSearchIssue(item) {
+function normalizeSearchIssue(item: ApiRecord): ApiRecord {
     return {
         number: item.number,
         title: item.title,
@@ -143,7 +190,7 @@ function normalizeSearchIssue(item) {
     };
 }
 
-function normalizeEvent(event, repos, ignored) {
+function normalizeEvent(event: ApiRecord, repos: Map<string, RepoBucket>, ignored: IgnoredCounter): void {
     const repoName = event.repo?.name;
     if (!repoName) {
         return;
@@ -299,9 +346,9 @@ export function buildActivity({
     maxEvents = 300,
     excludeRepos = [],
     warnings = [],
-}) {
-    const repos = new Map();
-    const ignored = { count: 0 };
+}: BuildActivityOptions) {
+    const repos = new Map<string, RepoBucket>();
+    const ignored: IgnoredCounter = { count: 0 };
     const excluded = new Set(excludeRepos);
 
     const filteredEvents = events
@@ -318,7 +365,7 @@ export function buildActivity({
         normalizeEvent(event, repos, ignored);
     }
 
-    const addPr = (item, role) => {
+    const addPr = (item: ApiRecord, role: string): void => {
         if (!item.repo || excluded.has(item.repo)) {
             return;
         }
@@ -364,7 +411,7 @@ export function buildActivity({
         ...new Set(
             filteredEvents
                 .map((event) => toMs(event.created_at))
-                .filter((time) => time !== null)
+                .filter((time): time is number => time !== null)
                 .map((time) => formatDate(time)),
         ),
     ].sort();
@@ -405,7 +452,7 @@ export function buildActivity({
     };
 }
 
-function ghApi(apiPath, { paginate = false, slurp = false } = {}) {
+function ghApi(apiPath: string, { paginate = false, slurp = false }: GhApiOptions = {}): any {
     const args = ['api', apiPath];
     if (paginate) {
         args.push('--paginate');
@@ -426,12 +473,12 @@ function ghApi(apiPath, { paginate = false, slurp = false } = {}) {
         }
         return parsed;
     } catch (error) {
-        const stderr = error.stderr?.toString().trim();
+        const stderr = (error as { stderr?: Buffer | string }).stderr?.toString().trim();
         throw new Error(`gh api ${apiPath} 失败${stderr ? `：${stderr}` : ''}`);
     }
 }
 
-function searchIssues(query, perPage = 100) {
+function searchIssues(query: string, perPage = 100): ApiRecord[] {
     const apiPath = `search/issues?q=${encodeURIComponent(query)}&per_page=${perPage}&sort=updated&order=desc`;
     const result = ghApi(apiPath);
     return Array.isArray(result?.items) ? result.items : [];
@@ -439,8 +486,8 @@ function searchIssues(query, perPage = 100) {
 
 // events/public 的 PushEvent 不带 commits 明细，按分支 head + 时间窗补拉。
 // compare API 在 rebase/force-push 时会返回成百上千条历史提交，不适合周报。
-function enrichPushEvents(events, user, range, warnings) {
-    const cache = new Map();
+function enrichPushEvents(events: ApiRecord[], user: string, range: ReportRange, warnings: string[]): void {
+    const cache = new Map<string, ApiRecord[]>();
     for (const event of events) {
         if (event.type !== 'PushEvent') {
             continue;
@@ -469,7 +516,8 @@ function enrichPushEvents(events, user, range, warnings) {
                         .map((commit) => ({ sha: commit.sha, message: commit.commit?.message || '' })),
                 );
             } catch (error) {
-                warnings.push(`${repoName} 提交明细拉取失败：${error.message}`);
+                const message = error instanceof Error ? error.message : String(error);
+                warnings.push(`${repoName} 提交明细拉取失败：${message}`);
                 cache.set(key, []);
             }
         }
@@ -477,8 +525,8 @@ function enrichPushEvents(events, user, range, warnings) {
     }
 }
 
-export function collectActivity({ user, range, maxEvents = 300, excludeRepos = [] }) {
-    const warnings = [];
+export function collectActivity({ user, range, maxEvents = 300, excludeRepos = [] }: CollectActivityOptions) {
+    const warnings: string[] = [];
     const rawEvents = ghApi(`users/${encodeURIComponent(user)}/events/public?per_page=100`, {
         paginate: true,
         slurp: true,
@@ -517,8 +565,8 @@ export function collectActivity({ user, range, maxEvents = 300, excludeRepos = [
     return activity;
 }
 
-function parseArgs(argv) {
-    const args = { output: '', user: '', now: '', maxEvents: 0 };
+function parseArgs(argv: string[]): CliArgs {
+    const args: CliArgs = { output: '', user: '', now: '', maxEvents: 0 };
     for (let index = 0; index < argv.length; index += 1) {
         const current = argv[index];
         const next = argv[index + 1];
@@ -539,7 +587,7 @@ function parseArgs(argv) {
     return args;
 }
 
-export function main() {
+export function main(): void {
     const args = parseArgs(process.argv.slice(2));
     const config = loadConfig();
     const user = args.user || process.env.GITHUB_USER || config.githubUser;
@@ -560,7 +608,6 @@ export function main() {
     }
 }
 
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
-if (isMain) {
+if (require.main === module) {
     main();
 }
