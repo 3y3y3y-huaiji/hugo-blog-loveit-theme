@@ -17,7 +17,9 @@ jobs:
         permissions:
             contents: write # 周报生成后需要提交回 main
         env:
-            NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+            NVIDIA_API_KEY_1: ${{ secrets.NVIDIA_API_KEY }}
+            NVIDIA_API_KEY_2: ${{ secrets.NVIDIA_API_KEY_2 }}
+            NVIDIA_API_KEY_3: ${{ secrets.NVIDIA_API_KEY_3 }}
             GH_TOKEN: ${{ secrets.GH_PAT }}
             GITHUB_USER: 3y3y3y-huaiji
 
@@ -41,26 +43,18 @@ jobs:
             - name: Install Dependencies
               run: pnpm install --frozen-lockfile
 
-            # 密钥缺失时直接失败，避免周报任务长期「绿色空转」。
+            # 至少配置一把 NVIDIA key；多把 key 时由下一步按顺序探测。
             - name: Check Secrets
               run: |
-                  [ -n "$NVIDIA_API_KEY" ] || { echo "缺少 NVIDIA_API_KEY"; exit 1; }
+                  found=0
+                  for name in NVIDIA_API_KEY_1 NVIDIA_API_KEY_2 NVIDIA_API_KEY_3; do
+                    if [ -n "${!name}" ]; then found=1; fi
+                  done
+                  [ "$found" = "1" ] || { echo "缺少 NVIDIA_API_KEY（或 NVIDIA_API_KEY_2/3）"; exit 1; }
                   [ -n "$GH_TOKEN" ] || { echo "缺少 GH_PAT（公开仓库只读 PAT）"; exit 1; }
 
-            - name: Check GLM 5.3 Flash Availability
-              run: |
-                  code=$(curl -4 -sS --max-time 30 -o /tmp/glm-probe.json -w '%{http_code}' \
-                    https://integrate.api.nvidia.com/v1/chat/completions \
-                    -H "Authorization: Bearer $NVIDIA_API_KEY" \
-                    -H "Content-Type: application/json" \
-                    -d '{"model":"z-ai/glm-5.3-flash","stream":false,"messages":[{"role":"user","content":"ping"}],"max_tokens":1}' || true)
-                  echo "GLM 5.3 Flash probe HTTP: $code"
-                  head -c 300 /tmp/glm-probe.json 2>/dev/null || true
-                  echo
-                  if [ "$code" != "200" ]; then
-                    echo "NVIDIA GLM 5.3 Flash 当前无响应（HTTP $code），本次跳过周报；等 NVIDIA 恢复后下次自动重试。"
-                    exit 1
-                  fi
+            - name: Select Available NVIDIA Key
+              run: node scripts/select-nvidia-key.mjs
 
             - name: Install OpenCode CLI
               run: npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7

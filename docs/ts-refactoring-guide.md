@@ -47,7 +47,7 @@ pnpm run build:theme
 1. Prettier 格式检查
 2. ESLint 检测
 3. 主题 TypeScript 类型检查
-4. 内容契约校验与 20 个单测
+4. 内容契约校验与 24 个单测
 5. Babel 编译主题 JS
 6. 使用 Hugo 0.169.0 构建并校验产物
 7. 生产依赖审计与 Lychee 死链检查

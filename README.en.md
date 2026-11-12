@@ -32,7 +32,7 @@ Run `pnpm run env:check` to reproduce the local environment.
 - **OpenCode + GLM 5.3 Flash**: calls `nvidia/z-ai/glm-5.3-flash` through OpenCode's built-in `nvidia` provider. The model only writes; collection, validation, and publishing are deterministic scripts.
 - **Casual style**: voice, structure, and output markers live in [`prompts/weekly-report.md`](prompts/weekly-report.md).
 - **Explicit failure semantics**: model errors, malformed output, or a too-short body fail the job. An empty week is skipped instead of hallucinated.
-- **Quality gates**: Prettier, ESLint, theme typecheck, content contract, 20 `node:test` tests, Hugo build artifact checks, production dependency audit, Lychee link check, and online smoke.
+- **Quality gates**: Prettier, ESLint, theme typecheck, content contract, 24 `node:test` tests, Hugo build artifact checks, production dependency audit, Lychee link check, and online smoke.
 - **Archive**: early `ai-generated-*` posts live in `content/archive/` and are no longer generated.
 
 ## Pipeline
@@ -98,8 +98,12 @@ Theme JS is committed at `themes/LoveIt/assets/js/theme.js`, so Pages only needs
 
 | Secret | Purpose |
 | --- | --- |
-| `NVIDIA_API_KEY` | NVIDIA NIM key (`nvapi-...`) for GLM 5.3 Flash |
+| `NVIDIA_API_KEY` | NVIDIA NIM key (`nvapi-...`) for GLM 5.3 Flash (primary) |
+| `NVIDIA_API_KEY_2` | Optional second key; used automatically when the primary probe fails |
+| `NVIDIA_API_KEY_3` | Optional third key |
 | `GH_PAT` | Public-repo read-only PAT for cross-repository activity; do not grant private repo access |
+
+> Key rotation only switches keys for the same `glm-5.3-flash` model. If the model backend is down, all keys fail; the workflow reports each key's HTTP status.
 
 Optional repository variable: `SITE_ORIGIN` (default `https://hugo-blog-loveit-theme.pages.dev`) for post-deploy smoke.
 
@@ -108,7 +112,7 @@ Optional repository variable: `SITE_ORIGIN` (default `https://hugo-blog-loveit-t
 | Job | Content |
 | --- | --- |
 | `static` | Prettier → ESLint → theme TypeScript typecheck |
-| `content` | content contract → 20 `node:test` tests |
+| `content` | content contract → 24 `node:test` tests |
 | `build` | Babel theme build → Hugo 0.169.0 build → artifact contract |
 | `audit` | production dependency audit |
 | `link-check` | Lychee link check (archive and external sites excluded) |
@@ -133,6 +137,7 @@ hugo server -D
 
 ```env
 NVIDIA_API_KEY=nvapi-your-real-key
+NVIDIA_API_KEY_2=nvapi-your-backup-key
 GH_TOKEN=github_pat_public_read_only
 ```
 
