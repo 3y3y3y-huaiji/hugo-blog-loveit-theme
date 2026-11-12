@@ -1,0 +1,73 @@
+name: Weekly GitHub Report
+
+on:
+    schedule:
+        # 每周一 08:00 北京时间（周一 00:00 UTC），汇总上一个完整自然周
+        - cron: '0 0 * * 1'
+    workflow_dispatch:
+
+concurrency:
+    group: weekly-report
+    cancel-in-progress: false
+
+jobs:
+    report:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        permissions:
+            contents: write # 周报生成后需要提交回 main
+        env:
+            NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+            GH_TOKEN: ${{ secrets.GH_PAT }}
+            GITHUB_USER: 3y3y3y-huaiji
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11.22.0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .node-version
+                  cache: pnpm
+
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
+
+            # 密钥缺失时直接失败，避免周报任务长期「绿色空转」。
+            - name: Check Secrets
+              run: |
+                  [ -n "$NVIDIA_API_KEY" ] || { echo "缺少 NVIDIA_API_KEY"; exit 1; }
+                  [ -n "$GH_TOKEN" ] || { echo "缺少 GH_PAT（公开仓库只读 PAT）"; exit 1; }
+
+            - name: Install OpenCode CLI
+              run: npm install -g @opencode/cli@2.2.7
+
+            - name: Generate Weekly Report
+              run: pnpm run report:weekly
+
+            # 周报必须满足 TOML front matter、周报标签、非空描述与正文等契约。
+            - name: Verify Generated Content
+              run: pnpm run verify:content
+
+            - name: Commit and Push
+              run: |
+                  git config --global user.name "github-actions[bot]"
+                  git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+                  if [ -n "$(git status --porcelain content/posts/)" ]; then
+                    echo "检测到新周报，准备提交并推送..."
+                    git add content/posts/
+                    git commit -m "chore: add weekly GitHub report"
+                    git pull --rebase origin ${{ github.ref_name }}
+                    git push origin HEAD:${{ github.ref_name }}
+                  else
+                    echo "本周没有新周报，跳过提交。"
+                  fi

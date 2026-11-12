@@ -1,0 +1,29 @@
+name: Smoke
+
+on:
+    workflow_dispatch:
+        inputs:
+            origin:
+                description: 目标站点
+                required: false
+                # 默认打自定义域；被 Cloudflare 机器人规则拦截时改填 workers.dev 地址。
+                default: https://hugo-blog-loveit-theme.pages.dev
+    schedule:
+        # 每天 01:00 UTC 巡检一次，捕捉证书、路由、静态资源的静默回归。
+        - cron: '0 1 * * *'
+
+permissions:
+    contents: read
+
+jobs:
+    smoke:
+        name: 线上冒烟
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v6
+            # 不依赖 node_modules：脚本只用 Node 内置模块，runner 自带 Node。
+            - name: 探测主站
+              run: node scripts/smoke.mjs
+              env:
+                  SITE_ORIGIN: ${{ inputs.origin || 'https://hugo-blog-loveit-theme.pages.dev' }}

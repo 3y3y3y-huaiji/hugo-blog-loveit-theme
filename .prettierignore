@@ -1,0 +1,10 @@
+node_modules/
+public/
+resources/
+themes/
+content/
+docs/
+pnpm-lock.yaml
+.hugo_build.lock
+README.md
+README.en.md

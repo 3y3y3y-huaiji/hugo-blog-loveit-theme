@@ -1,110 +1,185 @@
 name: CI & Code Quality
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+    workflow_dispatch:
+    workflow_run:
+        # GITHUB_TOKEN 发起的 push 不会触发 push workflow；周报任务完成后显式接上 CI。
+        workflows: ['Weekly GitHub Report']
+        types: [completed]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
 
 jobs:
-  theme-check:
-    name: Theme Lint & Typecheck
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-        with:
-          submodules: true
-          fetch-depth: 1
+    static:
+        name: Format / Lint / Typecheck
+        runs-on: ubuntu-latest
+        if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+        timeout-minutes: 10
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+                  fetch-depth: 1
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.22.0
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11.22.0
 
-      - name: Setup Node.js (Latest LTS)
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: 'pnpm'
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .node-version
+                  cache: 'pnpm'
 
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
 
-      - name: ESLint
-        run: pnpm run lint
+            - name: Prettier
+              run: pnpm run format:check
 
-      - name: TypeScript Typecheck
-        run: pnpm run typecheck
+            - name: ESLint
+              run: pnpm run lint
 
-      - name: Build Theme Assets
-        run: pnpm run build:theme
+            - name: TypeScript Typecheck
+              run: pnpm run typecheck
 
-  hugo-build-check:
-    name: Hugo Site Build Test
-    runs-on: ubuntu-latest
-    needs: theme-check
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-        with:
-          submodules: true
-          fetch-depth: 0
+    content:
+        name: Content Contract & Tests
+        runs-on: ubuntu-latest
+        if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+        timeout-minutes: 10
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+                  fetch-depth: 1
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.22.0
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11.22.0
 
-      - name: Setup Node.js (Latest LTS)
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: 'pnpm'
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .node-version
+                  cache: 'pnpm'
 
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
 
-      - name: Build Theme Assets
-        run: pnpm run build:theme
+            - name: Content Contract
+              run: pnpm run verify:content
 
-      - name: Setup Hugo Extended (matches Cloudflare Pages)
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: '0.140.0'
-          extended: true
+            - name: Unit Tests
+              run: pnpm run test
 
-      - name: Verify Hugo Build
-        run: hugo --gc --minify
+    build:
+        name: Hugo Build & Artifact Contract
+        runs-on: ubuntu-latest
+        if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+        timeout-minutes: 15
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+                  fetch-depth: 1
 
-  link-check:
-    name: Site Link Integrity
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11.22.0
 
-      - name: Setup Hugo Extended (matches Cloudflare Pages)
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: '0.140.0'
-          extended: true
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: .node-version
+                  cache: 'pnpm'
 
-      - name: Build Site
-        run: hugo --gc --minify
+            - name: Install Dependencies
+              run: pnpm install --frozen-lockfile
 
-      - name: Set Lychee Root Directory
-        run: echo "LYCHEE_ROOT=$GITHUB_WORKSPACE/public" >> "$GITHUB_ENV"
+            - name: Build Theme Assets
+              run: pnpm run build:theme
 
-      - name: Check Links with Lychee
-        uses: lycheeverse/lychee-action@v2
-        with:
-          args: --exclude-all-private --exclude "mailto:" --exclude "sumingkai.de5.net" --exclude "openai.com" --exclude "website-datenbank.de" --exclude "archive" --exclude-path "public/archive" --exclude-path "public/robots.txt" --max-retries 3 --retry-wait-time 2 --timeout 20 --root-dir "${{ env.LYCHEE_ROOT }}" public
-          fail: true
+            - name: Read Hugo Version
+              run: echo "HUGO_VERSION=$(cat .hugo-version)" >> "$GITHUB_ENV"
+
+            - name: Setup Hugo Extended
+              uses: peaceiris/actions-hugo@v3
+              with:
+                  hugo-version: ${{ env.HUGO_VERSION }}
+                  extended: true
+
+            - name: Build Site
+              run: hugo --gc --minify
+
+            - name: Verify Build Artifacts
+              run: pnpm run verify:build
+
+    audit:
+        name: Production Dependency Audit
+        runs-on: ubuntu-latest
+        if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+        timeout-minutes: 10
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+                  fetch-depth: 1
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11.22.0
+
+            - name: Audit Production Dependencies
+              run: pnpm run audit
+
+    link-check:
+        name: Site Link Integrity
+        runs-on: ubuntu-latest
+        if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+        timeout-minutes: 10
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v6
+              with:
+                  ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+
+            - name: Read Hugo Version
+              run: echo "HUGO_VERSION=$(cat .hugo-version)" >> "$GITHUB_ENV"
+
+            - name: Setup Hugo Extended (matches Cloudflare Pages)
+              uses: peaceiris/actions-hugo@v3
+              with:
+                  hugo-version: ${{ env.HUGO_VERSION }}
+                  extended: true
+
+            - name: Build Site
+              run: hugo --gc --minify
+
+            - name: Set Lychee Root Directory
+              run: echo "LYCHEE_ROOT=$GITHUB_WORKSPACE/public" >> "$GITHUB_ENV"
+
+            - name: Check Links with Lychee
+              uses: lycheeverse/lychee-action@v2
+              with:
+                  args: --exclude-all-private --exclude "mailto:" --exclude "hugo-blog-loveit-theme.pages.dev" --exclude "openai.com" --exclude "website-datenbank.de" --exclude "archive" --exclude-path "public/archive" --exclude-path "public/robots.txt" --max-retries 3 --retry-wait-time 2 --timeout 20 --root-dir "${{ env.LYCHEE_ROOT }}" public
+                  fail: true
