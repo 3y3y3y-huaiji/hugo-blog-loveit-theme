@@ -23,7 +23,7 @@ tags = ["关于"]
 graph TD
     A[周一 08:00 北京时间] --> B[gh 采集公开 GitHub 活动]
     B --> C[补拉 PushEvent 的提交明细]
-    C --> D[OpenCode CLI 调用 GLM 5.3 Flash]
+    C --> D[OpenCode CLI 调用 Step 5 Preview]
     D --> E[按 prompts/weekly-report.md 写作]
     E --> F[内容契约校验]
     F --> G[提交回 main]
@@ -34,17 +34,17 @@ graph TD
 几个我比较在意的点：
 
 1. **只看公开仓库。** 采集的是 GitHub 的公开 events 和 search API，不碰私有仓库，也不抓代码 diff。周报里出现的链接都来自公开数据。
-2. **事实和写作分开。** 采集脚本负责把 commits、PR、issue、release 整理成结构化摘要；GLM 5.3 Flash 只负责按我的语气写，不能编造活动。
+2. **事实和写作分开。** 采集脚本负责把 commits、PR、issue、release 整理成结构化摘要；Step 5 Preview 只负责按我的语气写，不能编造活动。
 3. **写作风格是单独的文件。** 语气、结构、输出格式都在 `prompts/weekly-report.md` 里。想改风格就改那一份，不用动代码。
 4. **失败就失败。** 模型超时、输出不合约、正文太短，任务都会直接失败，不会硬凑一篇水文。
 5. **本周没活动就跳过。** 没东西写的时候，承认没东西写，比让模型编一个“本周总结”更诚实。
 
-## 为什么用 OpenCode + GLM 5.3 Flash
+## 为什么用 OpenCode + Step 5 Preview
 
 我想要的是“一个会读我活动数据的写作搭子”，不是“一个自动生成 SEO 文章的流水线”。
 
 - OpenCode CLI 负责把模型、工具权限和输出收在一个可控的 agent 里；周报任务里它只被允许读 `activity.json` 和 `prompt.md`，不能执行命令、不能改仓库。
-- NVIDIA NIM 上的 `z-ai/glm-5.3-flash` 支持长上下文和工具调用，用来读一周的活动摘要刚好。
+- NVIDIA NIM 上的 `stepfun-ai/step-5-preview` 支持长上下文和工具调用，用来读一周的活动摘要刚好。
 - 模型只负责写，采集、校验、落盘、发布都由确定性脚本和 CI 完成。
 
 ## 历史文章

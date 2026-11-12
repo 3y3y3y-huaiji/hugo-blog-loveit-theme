@@ -3,11 +3,11 @@
 [![CI](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml)
 [![Hugo Version](https://badgen.net/badge/Hugo/v0.169.0/blue)](https://gohugo.io/)
 [![Theme LoveIt](https://badgen.net/badge/Theme/LoveIt/orange)](https://github.com/dillonzq/LoveIt)
-[![Model GLM 5.3 Flash](https://badgen.net/badge/Model/GLM%205.3%20Flash/blueviolet)](https://build.nvidia.com/z-ai/glm-5-3-flash)
+[![Model Step 5 Preview](https://badgen.net/badge/Model/Step%205%20Preview/blueviolet)](https://build.nvidia.com/stepfun-ai/step-5-preview)
 [![Hosting](https://badgen.net/badge/Hosting/Cloudflare%20Pages/F38020)](https://pages.cloudflare.com/)
 [![License MIT](https://badgen.net/badge/License/MIT/green)](LICENSE)
 
-> 一个个人技术周记：每周一 08:00（北京时间），GitHub Actions 用 `gh` 采集我过去一周的**公开 GitHub 活动**，交给 **OpenCode CLI + GLM 5.3 Flash** 写成轻松随笔型周报，校验后提交回 `main`，由 Cloudflare Pages Git 集成自动构建发布。
+> 一个个人技术周记：每周一 08:00（北京时间），GitHub Actions 用 `gh` 采集我过去一周的**公开 GitHub 活动**，交给 **OpenCode CLI + Step 5 Preview** 写成轻松随笔型周报，校验后提交回 `main`，由 Cloudflare Pages Git 集成自动构建发布。
 
 🌐 **在线站点**：[https://hugo-blog-loveit-theme.pages.dev/](https://hugo-blog-loveit-theme.pages.dev/)
 
@@ -29,7 +29,7 @@
 
 - **只记录自己的事**：采集 commits、PR、issue、release；不再抓 RSS 热点，不再批量生成通用 AI 资讯。
 - **公开数据优先**：只读 `/users/{user}/events/public` 与 GitHub search API；不采集私有仓库、代码 diff、token 或邮箱。
-- **OpenCode + GLM 5.3 Flash**：通过 OpenCode CLI 的 `nvidia` provider 调用 `nvidia/z-ai/glm-5.3-flash`；模型只负责写作，采集、校验、发布由确定性脚本完成。
+- **OpenCode + Step 5 Preview**：通过 OpenCode CLI 的 `nvidia` provider 调用 `nvidia/stepfun-ai/step-5-preview`；模型只负责写作，采集、校验、发布由确定性脚本完成。
 - **轻松随笔型风格**：语气、结构、输出格式都在 [`prompts/weekly-report.md`](prompts/weekly-report.md)。
 - **明确的失败语义**：模型超时、输出不合约、正文太短都会让任务失败；本周没有公开活动时跳过，不编造内容。
 - **完整质量门禁**：Prettier、ESLint、主题类型检查、内容契约、24 个 `node:test` 单测、Hugo 构建产物契约、生产依赖审计、Lychee 死链检查、线上冒烟。
@@ -43,7 +43,7 @@ graph TD
     B --> C[按 head 补拉 PushEvent 提交明细]
     C --> D[search API 补全 PR / issue]
     D --> E[生成 activity.json]
-    E --> F[OpenCode CLI 调用 GLM 5.3 Flash]
+    E --> F[OpenCode CLI 调用 Step 5 Preview]
     F --> G[按 prompts/weekly-report.md 写作]
     G --> H[TITLE/DESCRIPTION/BODY 解析]
     H --> I[重建 front matter + 内容校验]
@@ -109,7 +109,7 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | `NVIDIA_API_KEY_3` | 可选，第 3 把备用 key |
 | `GH_PAT` | 只读公开仓库的 PAT（classic `public_repo` 或 fine-grained 公开仓库只读）；用于跨仓库采集 |
 
-> 多把 NVIDIA key 只会在同一个 `glm-5.3-flash` 模型内轮换。如果是 NVIDIA 模型后端整体无响应，换 key 也无法恢复；工作流会逐把探测并给出每把 key 的 HTTP 状态。
+> 多把 NVIDIA key 只会在同一个 `step-5-preview` 模型内轮换。如果是 NVIDIA 模型后端整体无响应，换 key 也无法恢复；工作流会逐把探测并给出每把 key 的 HTTP 状态。
 
 可选仓库变量 `SITE_ORIGIN` 用于部署后冒烟，默认 `https://hugo-blog-loveit-theme.pages.dev`。
 

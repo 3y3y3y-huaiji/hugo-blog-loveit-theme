@@ -40,7 +40,7 @@ function makeWeekly(fileName, overrides = {}) {
         title = '这周我把周报流水线接上了',
         date = '2026-11-16T08:00:00+08:00',
         draft = false,
-        tags = ['周报', 'GitHub', 'AI Generated', 'GLM 5.3 Flash'],
+        tags = ['周报', 'GitHub', 'AI Generated', 'Step 5 Preview'],
         categories = ['周报', '工程复盘'],
         description = '这周主要在处理 GitHub 活动采集和周报生成。',
         body = '这是一段足够长的周报正文。'.repeat(80),
@@ -128,15 +128,22 @@ test('合规的周报没有错误', () => {
 
 test('周报缺少必需标签或分类会报错', () => {
     const noWeeklyTag = validatePosts([
-        makeWeekly('weekly-2026-W47.md', { tags: ['GitHub', 'AI Generated', 'GLM 5.3 Flash'] }),
+        makeWeekly('weekly-2026-W47.md', { tags: ['GitHub', 'AI Generated', 'Step 5 Preview'] }),
     ]);
     assert.ok(noWeeklyTag.errors.some((error) => error.includes('"周报"')));
 
     const noModelTag = validatePosts([makeWeekly('weekly-2026-W48.md', { tags: ['周报', 'GitHub', 'AI Generated'] })]);
-    assert.ok(noModelTag.errors.some((error) => error.includes('GLM 5.3 Flash')));
+    assert.ok(noModelTag.errors.some((error) => error.includes('模型标签')));
 
     const noCategory = validatePosts([makeWeekly('weekly-2026-W49.md', { categories: ['工程复盘'] })]);
     assert.ok(noCategory.errors.some((error) => error.includes('categories 缺少 "周报"')));
+});
+
+test('旧版 GLM 模型标签仍然兼容', () => {
+    const result = validatePosts([
+        makeWeekly('weekly-2026-W52.md', { tags: ['周报', 'GitHub', 'AI Generated', 'GLM 5.3 Flash'] }),
+    ]);
+    assert.deepEqual(result.errors, []);
 });
 
 test('周报必须是 draft = false 且正文足够长', () => {

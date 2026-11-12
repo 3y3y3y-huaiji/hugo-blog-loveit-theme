@@ -1,6 +1,6 @@
 # 周报自动生成配置
 
-本项目每周一 08:00（北京时间）自动生成一篇个人技术周报，流程是：公开 GitHub 活动采集 → OpenCode CLI + GLM 5.3 Flash 写作 → 内容契约校验 → 提交回 `main` → Cloudflare Pages Git 集成构建。
+本项目每周一 08:00（北京时间）自动生成一篇个人技术周报，流程是：公开 GitHub 活动采集 → OpenCode CLI + Step 5 Preview 写作 → 内容契约校验 → 提交回 `main` → Cloudflare Pages Git 集成构建。
 
 ---
 
@@ -8,7 +8,7 @@
 
 ### 1.1 写作模型
 
-- `nvidia/z-ai/glm-5.3-flash`（GLM 5.3 Flash）
+- `nvidia/stepfun-ai/step-5-preview`（Step 5 Preview）
 - 通过 OpenCode CLI 的内置 `nvidia` provider 调用，读取 `NVIDIA_API_KEY`
 - 模型只负责写作；采集、校验、落盘、发布都是确定性脚本
 - 模型失败或输出不合约时任务直接失败，不回退到其他模型
@@ -42,7 +42,7 @@
 | `NVIDIA_API_KEY_3` | 可选，第 3 把备用 key |
 | `GH_PAT` | 公开仓库只读 PAT（classic `public_repo` 或 fine-grained 公开仓库只读）；不要授予私有仓库权限 |
 
-多把 key 由 `scripts/select-nvidia-key.mjs` 逐把探测；只有 key 级故障（额度、失效、限流）能通过轮换解决。如果 `glm-5.3-flash` 模型后端整体无响应，所有 key 都会超时，本次周报会跳过。
+多把 key 由 `scripts/select-nvidia-key.mjs` 逐把探测；只有 key 级故障（额度、失效、限流）能通过轮换解决。如果 `step-5-preview` 模型后端整体无响应，所有 key 都会超时，本次周报会跳过。
 
 Cloudflare Pages 使用 Git 集成，不需要 `CLOUDFLARE_API_TOKEN` 或 `CLOUDFLARE_ACCOUNT_ID`。
 

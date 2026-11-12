@@ -3,11 +3,11 @@
 [![CI](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml)
 [![Hugo Version](https://badgen.net/badge/Hugo/v0.169.0/blue)](https://gohugo.io/)
 [![Theme LoveIt](https://badgen.net/badge/Theme/LoveIt/orange)](https://github.com/dillonzq/LoveIt)
-[![Model GLM 5.3 Flash](https://badgen.net/badge/Model/GLM%205.3%20Flash/blueviolet)](https://build.nvidia.com/z-ai/glm-5-3-flash)
+[![Model Step 5 Preview](https://badgen.net/badge/Model/Step%205%20Preview/blueviolet)](https://build.nvidia.com/stepfun-ai/step-5-preview)
 [![Hosting](https://badgen.net/badge/Hosting/Cloudflare%20Pages/F38020)](https://pages.cloudflare.com/)
 [![License MIT](https://badgen.net/badge/License/MIT/green)](LICENSE)
 
-> A personal tech weekly. Every Monday at 08:00 Beijing time, GitHub Actions collects my **public GitHub activity** with `gh`, asks **OpenCode CLI + GLM 5.3 Flash** to write a casual retro-style report, verifies it, commits it to `main`, and lets Cloudflare Pages Git integration build and publish the Hugo site.
+> A personal tech weekly. Every Monday at 08:00 Beijing time, GitHub Actions collects my **public GitHub activity** with `gh`, asks **OpenCode CLI + Step 5 Preview** to write a casual retro-style report, verifies it, commits it to `main`, and lets Cloudflare Pages Git integration build and publish the Hugo site.
 
 Live site: <https://hugo-blog-loveit-theme.pages.dev/>
 
@@ -29,7 +29,7 @@ Run `pnpm run env:check` to reproduce the local environment.
 
 - **Personal, not a news feed**: tracks commits, PRs, issues, and releases instead of generating generic AI news from RSS.
 - **Public data only**: reads `/users/{user}/events/public` and GitHub search APIs; no private repos, code diffs, tokens, or emails.
-- **OpenCode + GLM 5.3 Flash**: calls `nvidia/z-ai/glm-5.3-flash` through OpenCode's built-in `nvidia` provider. The model only writes; collection, validation, and publishing are deterministic scripts.
+- **OpenCode + Step 5 Preview**: calls `nvidia/stepfun-ai/step-5-preview` through OpenCode's built-in `nvidia` provider. The model only writes; collection, validation, and publishing are deterministic scripts.
 - **Casual style**: voice, structure, and output markers live in [`prompts/weekly-report.md`](prompts/weekly-report.md).
 - **Explicit failure semantics**: model errors, malformed output, or a too-short body fail the job. An empty week is skipped instead of hallucinated.
 - **Quality gates**: Prettier, ESLint, theme typecheck, content contract, 24 `node:test` tests, Hugo build artifact checks, production dependency audit, Lychee link check, and online smoke.
@@ -43,7 +43,7 @@ Monday 00:00 UTC (Beijing 08:00)
   -> enrich PushEvent commits by head ref
   -> search PRs / issues
   -> activity.json
-  -> OpenCode CLI with nvidia/z-ai/glm-5.3-flash
+  -> OpenCode CLI with nvidia/stepfun-ai/step-5-preview
   -> TITLE / DESCRIPTION / BODY parsing
   -> canonical front matter + content contract
   -> content/posts/weekly-YYYY-Www.md
@@ -98,12 +98,12 @@ Theme JS is committed at `themes/LoveIt/assets/js/theme.js`, so Pages only needs
 
 | Secret | Purpose |
 | --- | --- |
-| `NVIDIA_API_KEY` | NVIDIA NIM key (`nvapi-...`) for GLM 5.3 Flash (primary) |
+| `NVIDIA_API_KEY` | NVIDIA NIM key (`nvapi-...`) for Step 5 Preview (primary) |
 | `NVIDIA_API_KEY_2` | Optional second key; used automatically when the primary probe fails |
 | `NVIDIA_API_KEY_3` | Optional third key |
 | `GH_PAT` | Public-repo read-only PAT for cross-repository activity; do not grant private repo access |
 
-> Key rotation only switches keys for the same `glm-5.3-flash` model. If the model backend is down, all keys fail; the workflow reports each key's HTTP status.
+> Key rotation only switches keys for the same `step-5-preview` model. If the model backend is down, all keys fail; the workflow reports each key's HTTP status.
 
 Optional repository variable: `SITE_ORIGIN` (default `https://hugo-blog-loveit-theme.pages.dev`) for post-deploy smoke.
 

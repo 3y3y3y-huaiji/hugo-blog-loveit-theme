@@ -1,7 +1,7 @@
 {
     "name": "hugo-blog-loveit-theme",
     "version": "1.0.0",
-    "description": "安卓人的个人技术周记，基于 Hugo 与 LoveIt 构建，由 OpenCode + GLM 5.3 Flash 生成周报，托管于 Cloudflare Pages。",
+    "description": "安卓人的个人技术周记，基于 Hugo 与 LoveIt 构建，由 OpenCode + Step 5 Preview 生成周报，托管于 Cloudflare Pages。",
     "packageManager": "pnpm@11.22.0",
     "scripts": {
         "lint": "eslint themes/LoveIt/src/js scripts",

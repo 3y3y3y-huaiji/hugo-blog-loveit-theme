@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import { loadConfig } from './collect-github-activity.mjs';
 import { collectNvidiaKeys, probeNvidiaKey, selectWorkingKey } from './nvidia-key-pool.mjs';
 
-const TIMEOUT_MS = Number(process.env.NVIDIA_KEY_PROBE_TIMEOUT_MS || 20000);
+const TIMEOUT_MS = Number(process.env.NVIDIA_KEY_PROBE_TIMEOUT_MS || 60000);
 
 function resolveProbeModel() {
     const configured = process.env.WEEKLY_REPORT_NVIDIA_MODEL || loadConfig().model;

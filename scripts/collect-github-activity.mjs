@@ -15,7 +15,7 @@ export const DEFAULT_CONFIG = {
     githubUser: process.env.GITHUB_USER || '3y3y3y-huaiji',
     maxEvents: 300,
     excludeRepos: [],
-    model: process.env.WEEKLY_REPORT_MODEL || 'nvidia/z-ai/glm-5.3-flash',
+    model: process.env.WEEKLY_REPORT_MODEL || 'nvidia/stepfun-ai/step-5-preview',
 };
 
 export function loadConfig(

@@ -17,7 +17,7 @@ hasCJKLanguage = true
   fingerprint = "sha256"
   mainSections = ["posts"]
   title = "安卓人的技术周记"
-  description = "记录我每周在 GitHub 上的代码、PR、踩坑与思考，由 OpenCode CLI 接入 NVIDIA GLM 5.3 Flash 协助整理。"
+  description = "记录我每周在 GitHub 上的代码、PR、踩坑与思考，由 OpenCode CLI 接入 NVIDIA Step 5 Preview 协助整理。"
   keywords = ["个人博客", "技术周报", "GitHub", "开源", "工程复盘", "GLM"]
   images = ["images/og-cover.png"]
   
@@ -83,7 +83,7 @@ hasCJKLanguage = true
       gravatarEmail = ""
       avatarURL = "images/avatar.webp"
       title = "安卓人的技术周记"
-      subtitle = "记录代码、PR 与每周折腾 | 由 GLM 5.3 Flash 协助整理"
+      subtitle = "记录代码、PR 与每周折腾 | 由 Step 5 Preview 协助整理"
       typeit = false
       social = true
       disclaimer = ""

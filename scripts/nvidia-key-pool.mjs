@@ -22,7 +22,7 @@ export function collectNvidiaKeys(env = process.env) {
         .map(({ name, value }) => ({ name, value }));
 }
 
-export async function probeNvidiaKey(key, { model, fetchImpl = fetch, timeoutMs = 20000 } = {}) {
+export async function probeNvidiaKey(key, { model, fetchImpl = fetch, timeoutMs = 60000 } = {}) {
     try {
         const response = await fetchImpl(CHAT_COMPLETIONS_URL, {
             method: 'POST',

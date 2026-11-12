@@ -49,7 +49,7 @@ test('probeNvidiaKey 返回 HTTP 状态，失败时状态为 0', async () => {
     const ok = await probeNvidiaKey(
         { name: 'NVIDIA_API_KEY', value: 'key-1' },
         {
-            model: 'z-ai/glm-5.3-flash',
+            model: 'stepfun-ai/step-5-preview',
             fetchImpl: async () => ({ status: 200, ok: true }),
         },
     );
@@ -60,7 +60,7 @@ test('probeNvidiaKey 返回 HTTP 状态，失败时状态为 0', async () => {
     const failed = await probeNvidiaKey(
         { name: 'NVIDIA_API_KEY', value: 'key-1' },
         {
-            model: 'z-ai/glm-5.3-flash',
+            model: 'stepfun-ai/step-5-preview',
             fetchImpl: async () => {
                 throw timeout;
             },

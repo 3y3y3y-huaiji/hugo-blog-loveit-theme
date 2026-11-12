@@ -9,7 +9,7 @@
 * **静态站点生成器：** Hugo Extended 0.169.0（CI 验证版本；Cloudflare Pages 未设 `HUGO_VERSION` 时使用默认 0.147.7，模板兼容 0.140+）
 * **主题：** LoveIt（局部 TypeScript 重写，Babel 编译）
 * **周报脚本：** Node.js + `.mjs` + GitHub CLI
-* **写作 agent：** OpenCode CLI 2.2.7 + GLM 5.3 Flash（`nvidia/z-ai/glm-5.3-flash`）
+* **写作 agent：** OpenCode CLI 2.2.7 + Step 5 Preview（`nvidia/stepfun-ai/step-5-preview`）
 * **CI：** GitHub Actions（Node.js 26.13.1、pnpm 11.22.0）
 * **托管部署：** Cloudflare Pages Git 集成（不需要 API Token）
 * **站点域名：** https://hugo-blog-loveit-theme.pages.dev/
@@ -45,7 +45,7 @@ hugo server -D
 | `pnpm run verify:content` | 周报与归档文章 front matter 校验 |
 | `pnpm run test` | 内容、活动采集、周报解析单测 |
 | `pnpm run collect:activity` | 采集公开 GitHub 活动，输出 JSON |
-| `pnpm run report:weekly` | 调用 OpenCode + GLM 5.3 Flash 生成周报 |
+| `pnpm run report:weekly` | 调用 OpenCode + Step 5 Preview 生成周报 |
 | `pnpm run build:theme` | Babel 编译主题 TS → JS |
 | `pnpm run build` | 编译主题并执行 Hugo 构建 |
 | `pnpm run smoke` | 线上冒烟（可用 `SITE_ORIGIN` 指定目标） |
@@ -58,7 +58,7 @@ hugo server -D
 ### 3.1 周报
 
 1. 每周一 00:00 UTC（北京 08:00），`weekly-report.yml` 采集公开 GitHub 活动。
-2. `generate-weekly-report.mjs` 在临时目录调用 OpenCode CLI + GLM 5.3 Flash，只允许读取 `prompt.md` 与 `activity.json`。
+2. `generate-weekly-report.mjs` 在临时目录调用 OpenCode CLI + Step 5 Preview，只允许读取 `prompt.md` 与 `activity.json`。
 3. 脚本重建 front matter、校验正文与标签，写入 `content/posts/weekly-YYYY-Www.md`。
 4. workflow 再跑 `verify:content`，通过后提交并 push `main`。
 5. Cloudflare Pages Git 集成自动构建并发布。
