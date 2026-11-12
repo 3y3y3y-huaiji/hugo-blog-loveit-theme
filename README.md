@@ -21,7 +21,7 @@
 | CI Hugo | Extended 0.169.0（`.hugo-version`）；Pages 默认 0.147.7，模板兼容 0.140+ |
 | OpenCode CLI | CI 使用 2.2.7；本机 Windows 上 native binary 不兼容，周报生成以 CI/WSL 为准 |
 | npm registry | 本机为华为云镜像；`pnpm audit` 已内置 npmjs registry 覆盖 |
-| 主要依赖 | Babel 8.1 / TypeScript 6.0.3 / ESLint 10.14 / Prettier 3.9 / typescript-eslint 8.72 / dotenv 18 |
+| 主要依赖 | Babel 8.1 / TypeScript 6.0.3 / ESLint 10.14 / Prettier 3.10 / typescript-eslint 8.72 / dotenv 18 |
 
 可用 `pnpm run env:check` 复核本机环境。
 

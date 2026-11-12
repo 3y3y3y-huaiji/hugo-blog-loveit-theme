@@ -21,7 +21,7 @@ Live site: <https://hugo-blog-loveit-theme.pages.dev/>
 | CI Hugo | Extended 0.169.0 (`.hugo-version`); Pages defaults to 0.147.7, templates support 0.140+ |
 | OpenCode CLI | CI uses 2.2.7; the native Windows binary is incompatible on this machine — use CI/WSL |
 | npm registry | Huawei Cloud mirror locally; `pnpm audit` overrides it with npmjs |
-| Main deps | Babel 8.1 / TypeScript 6.0.3 / ESLint 10.14 / Prettier 3.9 / typescript-eslint 8.72 / dotenv 18 |
+| Main deps | Babel 8.1 / TypeScript 6.0.3 / ESLint 10.14 / Prettier 3.10 / typescript-eslint 8.72 / dotenv 18 |
 
 Run `pnpm run env:check` to reproduce the local environment.
 
