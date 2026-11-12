@@ -6,7 +6,7 @@
 
 - **站长**：安卓人
 - **定位**：个人技术周记。每周记录我在 GitHub 上的公开活动、代码决策、踩坑和下周打算。
-- **技术栈**：Hugo Extended 0.169.0 + LoveIt 主题（TypeScript 构建）+ OpenCode CLI + GLM 5.3 Flash
+- **技术栈**：Hugo Extended 0.169.0 + LoveIt 主题（TypeScript 构建）+ OpenCode CLI + Step 5 Preview
 - **站点地址**：https://hugo-blog-loveit-theme.pages.dev/
 - **部署方式**：Cloudflare Pages Git 集成（push `main` 触发构建，零 API Token）
 - **CI 质量体系**：`.github/workflows/ci.yml`（Prettier、ESLint、TypeScript 类型检查、内容契约、单测、Hugo 构建、产物契约、生产依赖审计、Lychee 死链检查）
@@ -35,7 +35,7 @@
 
 - 文件：`content/posts/weekly-YYYY-Www.md`
 - Front Matter：TOML（`+++`），必须包含 `title`、`date`、`draft = false`、`description`、`author = "安卓人"`。
-- 标签：必须包含 `周报`、`AI Generated`、`GLM 5.3 Flash`。
+- 标签：必须包含 `周报`、`AI Generated`、`Step 5 Preview`；历史 `GLM 5.3 Flash` 标签仍兼容。
 - 分类：必须包含 `周报`。
 - 正文：≥ 500 字符；第一人称、轻松随笔型；事实只来自 `activity.json`；引用公开 commit/PR 链接。
 - 写作风格：只改 `prompts/weekly-report.md`，不要改 `TITLE/DESCRIPTION/BODY/END_OF_REPORT` 标记。
@@ -54,8 +54,8 @@
 
 1. `getReportRange()` 取上一个完整的北京时间自然周。
 2. `collect-github-activity.mjs` 读取 `/users/{user}/events/public`，按 head 补拉 PushEvent 提交明细，并用 search API 补全 PR / issue。
-3. `select-nvidia-key.mjs` 按 `NVIDIA_API_KEY`、`NVIDIA_API_KEY_2`、`NVIDIA_API_KEY_3` 顺序探测 `z-ai/glm-5.3-flash`，把第一把可用的 key 写入 `GITHUB_ENV` 的 `NVIDIA_API_KEY`。
-4. `generate-weekly-report.mjs` 在 `.weekly-report/` 写入 `prompt.md`、`activity.json`，并在仓库根目录写临时 `opencode.json`；执行 `opencode --standalone run --agent plan -m nvidia/z-ai/glm-5.3-flash`。
+3. `select-nvidia-key.mjs` 按 `NVIDIA_API_KEY`、`NVIDIA_API_KEY_2`、`NVIDIA_API_KEY_3` 顺序探测 `stepfun-ai/step-5-preview`，把第一把可用的 key 写入 `GITHUB_ENV` 的 `NVIDIA_API_KEY`。
+4. `generate-weekly-report.mjs` 在 `.weekly-report/` 写入 `prompt.md`、`activity.json`，并在仓库根目录写临时 `opencode.json`；执行 `opencode --standalone run --agent plan -m nvidia/stepfun-ai/step-5-preview`。
 5. OpenCode 只允许读取 `.weekly-report/` 下的临时文件；不允许 bash/edit/webfetch。
 6. 解析 `TITLE/DESCRIPTION/BODY/END_OF_REPORT`，重建 canonical front matter，校验后写入 `content/posts/weekly-YYYY-Www.md`。
 7. `weekly-report.yml` 再跑 `verify:content`，通过后 commit + push；Pages Git 集成自动构建。
@@ -116,7 +116,7 @@ pnpm run report:weekly  # 本地生成周报（需要 NVIDIA_API_KEY、GH_TOKEN�
 - **`GITHUB_TOKEN` 只能读当前仓库。** 跨仓库公开分析需要 `GH_PAT`（公开仓库只读）。
 - **events API 只覆盖最近 90 天、最多 300 条事件。** 采集上限到达时会给出 warning。
 - **Search API 有独立的每分钟限额。** 每周一次 4 个查询足够，不要循环翻页。
-- **多把 NVIDIA key 只解决 key 级问题。** 如果 `glm-5.3-flash` 模型后端整体无响应，所有 key 都会超时；不要把它当成模型级回退。
+- **多把 NVIDIA key 只解决 key 级问题。** 如果 `step-5-preview` 模型后端整体无响应，所有 key 都会超时；不要把它当成模型级回退。
 - **OpenCode 的 Windows 原生二进制在当前机器上不兼容。** 本地用 WSL/Docker；CI 用 `ubuntu-latest`。
 - **`weekly-report.yml` 用 `GITHUB_TOKEN` push 不会触发 `push` workflow。** 因此 `ci.yml` 声明了 `workflow_run` 触发；删掉它周报就不会过 CI。
 - **`workflow_run` 的 checkout 必须显式使用 `github.event.workflow_run.head_branch || github.ref`。** 否则可能检出上游触发提交而不是最新 `main`。

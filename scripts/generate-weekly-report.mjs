@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// 周报生成：采集公开 GitHub 活动 -> 交给 OpenCode CLI（GLM 5.3 Flash）写作 -> 校验并写入 content/posts。
+// 周报生成：采集公开 GitHub 活动 -> 交给 OpenCode CLI（Step 5 Preview）写作 -> 校验并写入 content/posts。
 // OpenCode 只允许读取 .weekly-report/ 里的 prompt.md 与 activity.json，不能执行命令或修改仓库。
 
 import 'dotenv/config';
@@ -12,7 +12,7 @@ import { collectActivity, getReportRange, loadConfig } from './collect-github-ac
 import { validatePosts } from './verify-content.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const MODEL_DISPLAY = 'GLM 5.3 Flash';
+const MODEL_DISPLAY = 'Step 5 Preview';
 const AUTHOR = '安卓人';
 const TAGS = ['周报', 'GitHub', 'AI Generated', MODEL_DISPLAY];
 const CATEGORIES = ['周报', '工程复盘'];
@@ -110,8 +110,8 @@ function runOpenCode({ promptContent, activity, model }) {
         const options = {
             cwd: ROOT,
             encoding: 'utf8',
-            timeout: 5 * 60 * 1000,
-            maxBuffer: 20 * 1024 * 1024,
+            timeout: 20 * 60 * 1000,
+            maxBuffer: 50 * 1024 * 1024,
             env: process.env,
         };
         // --standalone 是全局 flag，必须放在 run 前面；否则会连到仓库根目录的共享 server。

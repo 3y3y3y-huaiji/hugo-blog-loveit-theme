@@ -9,6 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 export const STRICT_FROM = '2026-11-12';
 export const REQUIRED_KEYS = ['title', 'date', 'draft'];
 export const MIN_BODY_LENGTH = 500;
+export const WEEKLY_MODEL_TAGS = ['Step 5 Preview', 'GLM 5.3 Flash'];
 
 const FRONT_MATTER_RE = /^(?:\uFEFF)?(\+\+\+|---)\r?\n([\s\S]*?)\r?\n\1[ \t]*(?:\r?\n|$)/;
 const AI_FILE_RE = /^ai-generated-(\d{4})-(\d{2})-(\d{2})-.+\.md$/;
@@ -127,8 +128,8 @@ export function validatePosts(posts, { strictFrom = STRICT_FROM } = {}) {
             if (!tags.includes('AI Generated')) {
                 errors.push(`${fileName}: tags 缺少 "AI Generated"`);
             }
-            if (!tags.includes('GLM 5.3 Flash')) {
-                errors.push(`${fileName}: tags 缺少 "GLM 5.3 Flash"`);
+            if (!WEEKLY_MODEL_TAGS.some((tag) => tags.includes(tag))) {
+                errors.push(`${fileName}: tags 缺少模型标签（${WEEKLY_MODEL_TAGS.join(' 或 ')}）`);
             }
             if (!categories.includes('周报')) {
                 errors.push(`${fileName}: categories 缺少 "周报"`);
