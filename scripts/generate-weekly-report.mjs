@@ -124,7 +124,7 @@ function runOpenCode({ promptContent, activity, model }) {
                           '/d',
                           '/s',
                           '/c',
-                          `opencode.cmd --log-level DEBUG --standalone run --auto --print-logs --agent plan -m ${model} ${prompt}`,
+                          `opencode.cmd --log-level debug --standalone run --auto --print-logs --agent plan -m ${model} ${prompt}`,
                       ],
                       options,
                   )
@@ -132,7 +132,7 @@ function runOpenCode({ promptContent, activity, model }) {
                       'opencode',
                       [
                           '--log-level',
-                          'DEBUG',
+                          'debug',
                           '--standalone',
                           'run',
                           '--auto',
