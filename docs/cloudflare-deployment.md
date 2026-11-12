@@ -12,7 +12,7 @@
 | Build command | `hugo --gc --minify` |
 | Build output directory | `public` |
 | Root directory | 仓库根目录 |
-| `HUGO_VERSION` | `0.169.0` |
+| `HUGO_VERSION` | 可选；不设置时使用 Pages 默认 `0.147.7`。模板兼容 0.140+，如需与 CI 对齐可设为 `0.169.0` |
 | `NODE_VERSION` | `24`（可选；Pages 检测到 `pnpm-lock.yaml` 会自动执行 `pnpm install`） |
 
 主题 JS 已编译并提交在 `themes/LoveIt/assets/js/theme.js`，构建命令本身只需要 Hugo，不需要手动执行 `pnpm install`；但 Pages 构建环境仍会自动安装 Node 依赖。
@@ -66,7 +66,7 @@ hugo --gc --minify
 
 ### 构建失败
 
-- 确认 Pages 环境变量 `HUGO_VERSION=0.169.0` 未被修改（`NODE_VERSION` 可保留 `24`）；
+- 若设置了 `HUGO_VERSION`，确认其未被改回旧版本（模板兼容 0.140+，但 CI 使用 0.169.0 验证）；
 - 在本地执行 `hugo --gc --minify` 复现错误；
 - 检查 `hugo.toml` 的 `baseURL` 是否为 `https://hugo-blog-loveit-theme.pages.dev/`。
 

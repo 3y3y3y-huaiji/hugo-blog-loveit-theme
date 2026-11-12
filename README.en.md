@@ -90,7 +90,7 @@ Pages uses Git integration; no `wrangler deploy` and no Cloudflare API token are
 | Build command | `hugo --gc --minify` |
 | Output directory | `public` |
 | Node version | `24` (optional; Pages still runs `pnpm install` automatically) |
-| Hugo version | `0.169.0` |
+| Hugo version | defaults to `0.147.7`; templates support 0.140+, set `HUGO_VERSION=0.169.0` to match CI |
 
 Theme JS is committed at `themes/LoveIt/assets/js/theme.js`, so Pages only needs Hugo; `pnpm run build` is used locally/CI to verify the theme build too.
 

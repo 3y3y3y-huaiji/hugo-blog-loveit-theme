@@ -96,7 +96,7 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | Build command | `hugo --gc --minify` |
 | Output directory | `public` |
 | Node version | `24`（可选；Pages 会自动执行 `pnpm install`） |
-| Hugo version | `0.169.0`（与 `.hugo-version` 一致） |
+| Hugo version | 默认 `0.147.7`；模板兼容 0.140+，可设 `HUGO_VERSION=0.169.0` 与 CI 对齐 |
 
 主题 JS 已编译并提交在 `themes/LoveIt/assets/js/theme.js`，因此 Pages 构建只需要 Hugo；`pnpm run build` 用于本地或 CI 同时验证主题编译。
 

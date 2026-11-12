@@ -66,13 +66,13 @@
                             {{- range .Sites -}}
                                 {{- $link := printf "%v/404.html" .LanguagePrefix -}}
                                 <option value="{{ $link }}"{{ if eq . $.Site }} selected{{ end }}>
-                                    {{- .Language.Label -}}
+                                    {{- .Language.LanguageName -}}
                                 </option>
                             {{- end -}}
                         {{- else -}}
                             {{- range .AllTranslations -}}
                                 <option value="{{ .RelPermalink }}"{{ if eq .Lang $.Lang }} selected{{ end }}>
-                                    {{- .Language.Label -}}
+                                    {{- .Language.LanguageName -}}
                                 </option>
                             {{- end -}}
                         {{- end -}}
@@ -159,13 +159,13 @@
                             {{- range .Sites -}}
                                 {{- $link := printf "%v/404.html" .LanguagePrefix -}}
                                 <option value="{{ $link }}"{{ if eq . $.Site }} selected{{ end }}>
-                                    {{- .Language.Label -}}
+                                    {{- .Language.LanguageName -}}
                                 </option>
                             {{- end -}}
                         {{- else -}}
                             {{- range .AllTranslations -}}
                                 <option value="{{ .RelPermalink }}"{{ if eq .Lang $.Lang }} selected{{ end }}>
-                                    {{- .Language.Label -}}
+                                    {{- .Language.LanguageName -}}
                                 </option>
                             {{- end -}}
                         {{- end -}}

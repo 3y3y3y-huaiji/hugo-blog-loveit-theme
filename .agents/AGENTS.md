@@ -81,7 +81,7 @@
 
 - **本机**：全局 Node v26.13.1、全局 pnpm 11.22.0（PATH 中优先使用）。
 - **CI**：Node 26.13.1（`.node-version`）、Hugo Extended 0.169.0（`.hugo-version`）、pnpm 11.22.0。
-- **Cloudflare Pages**：构建命令只有 `hugo --gc --minify`，需要 Hugo 0.169.0；Pages 检测到 `pnpm-lock.yaml` 会自动执行 `pnpm install`，`NODE_VERSION` 可选（建议保留 `24`）。
+- **Cloudflare Pages**：构建命令只有 `hugo --gc --minify`；未设置 `HUGO_VERSION` 时使用 Pages 默认 `0.147.7`，模板兼容 0.140+，如需与 CI 对齐可设为 `0.169.0`；Pages 检测到 `pnpm-lock.yaml` 会自动执行 `pnpm install`，`NODE_VERSION` 可选（建议保留 `24`）。
 - **Hugo**：本机未全局安装；本地跑 `check:full` 需要自行安装 0.169.0，或使用临时二进制。
 - **TypeScript**：固定 6.0.3；TypeScript 7 目前不被 typescript-eslint 支持，不要升级。
 - **OpenCode CLI**：CI 使用 2.2.7；当前 Windows 上 native binary 不兼容，本地生成周报优先用 WSL/CI。
@@ -117,7 +117,7 @@ pnpm run report:weekly  # 本地生成周报（需要 NVIDIA_API_KEY、GH_TOKEN�
 - **OpenCode 的 Windows 原生二进制在当前机器上不兼容。** 本地用 WSL/Docker；CI 用 `ubuntu-latest`。
 - **`weekly-report.yml` 用 `GITHUB_TOKEN` push 不会触发 `push` workflow。** 因此 `ci.yml` 声明了 `workflow_run` 触发；删掉它周报就不会过 CI。
 - **`workflow_run` 的 checkout 必须显式使用 `github.event.workflow_run.head_branch || github.ref`。** 否则可能检出上游触发提交而不是最新 `main`。
-- **Pages 使用 Hugo 0.169.0。** 本地验证请对齐 `.hugo-version`；不要用其他 Hugo 版本的结果替代 Pages 结果。
+- **Pages 使用 Hugo 默认 0.147.7（未设 HUGO_VERSION 时）。** 模板同时兼容 0.140+；本地验证建议对齐 `.hugo-version` 的 0.169.0，但不要假定 Pages 一定运行 0.169.0。
 - **`pnpm audit` 在华为云镜像返回 405。** 使用 `pnpm run audit` 内置的 npmjs registry。
 - **历史内容不满足新契约。** 归档文章存在空 `description`、YAML front matter、正文极短等情况；校验脚本只告警，不要批量改写。
 - **`pages.dev` 可能拦截 CI 机房 IP。** 冒烟返回 403 不一定是站点坏了；用 `SITE_ORIGIN` 指向可达的预览地址复核。

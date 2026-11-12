@@ -6,7 +6,7 @@
 
 ## 1. 技术栈概述
 
-* **静态站点生成器：** Hugo Extended 0.169.0（CI 与 Cloudflare Pages 同版本）
+* **静态站点生成器：** Hugo Extended 0.169.0（CI 验证版本；Cloudflare Pages 未设 `HUGO_VERSION` 时使用默认 0.147.7，模板兼容 0.140+）
 * **主题：** LoveIt（局部 TypeScript 重写，Babel 编译）
 * **周报脚本：** Node.js + `.mjs` + GitHub CLI
 * **写作 agent：** OpenCode CLI 2.2.7 + GLM 5.3 Flash（`nvidia/z-ai/glm-5.3-flash`）
