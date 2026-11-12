@@ -1,7 +1,7 @@
 # 安卓人的技术周记
 
 [![CI](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/3y3y3y-huaiji/hugo-blog-loveit-theme/actions/workflows/ci.yml)
-[![Hugo Version](https://badgen.net/badge/Hugo/v0.140.0/blue)](https://gohugo.io/)
+[![Hugo Version](https://badgen.net/badge/Hugo/v0.169.0/blue)](https://gohugo.io/)
 [![Theme LoveIt](https://badgen.net/badge/Theme/LoveIt/orange)](https://github.com/dillonzq/LoveIt)
 [![Model GLM 5.3 Flash](https://badgen.net/badge/Model/GLM%205.3%20Flash/blueviolet)](https://build.nvidia.com/z-ai/glm-5-3-flash)
 [![Hosting](https://badgen.net/badge/Hosting/Cloudflare%20Pages/F38020)](https://pages.cloudflare.com/)
@@ -17,11 +17,11 @@
 | --- | --- |
 | 本机全局 Node.js | v26.13.1（`C:\Program Files\nodejs\node.exe`，PATH 中优先使用） |
 | 本机全局 pnpm | 11.22.0（`C:\Users\安卓人\AppData\Local\pnpm\bin\pnpm`，PATH 中优先使用） |
-| CI / Pages Node.js | 24（`.node-version`，与 Pages 构建环境一致） |
-| CI / Pages Hugo | Extended 0.140.0（`.hugo-version`，与 Pages 构建环境一致） |
+| CI Node.js | 26.13.1（`.node-version`；Pages 构建只用 Hugo，不需要 Node） |
+| CI / Pages Hugo | Extended 0.169.0（`.hugo-version`） |
 | OpenCode CLI | CI 使用 2.2.7；本机 Windows 上 native binary 不兼容，周报生成以 CI/WSL 为准 |
 | npm registry | 本机为华为云镜像；`pnpm audit` 已内置 npmjs registry 覆盖 |
-| 主要依赖 | Babel 8 / TypeScript 6 / ESLint 10 / Prettier 3.9 / dotenv 17 |
+| 主要依赖 | Babel 8.1 / TypeScript 6.0.3 / ESLint 10.14 / Prettier 3.9 / typescript-eslint 8.72 / dotenv 18 |
 
 可用 `pnpm run env:check` 复核本机环境。
 
@@ -95,8 +95,8 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | Production branch | `main` |
 | Build command | `hugo --gc --minify` |
 | Output directory | `public` |
-| Node version | `24`（与 `.node-version` 一致） |
-| Hugo version | `0.140.0`（与 `.hugo-version` 一致） |
+| Node version | `24`（可选；Pages 会自动执行 `pnpm install`） |
+| Hugo version | 默认 `0.147.7`；模板兼容 0.140+，可设 `HUGO_VERSION=0.169.0` 与 CI 对齐 |
 
 主题 JS 已编译并提交在 `themes/LoveIt/assets/js/theme.js`，因此 Pages 构建只需要 Hugo；`pnpm run build` 用于本地或 CI 同时验证主题编译。
 
@@ -117,7 +117,7 @@ Pages 项目使用 Git 集成，不需要 `wrangler deploy`，也不需要 Cloud
 | --- | --- |
 | `static` | Prettier → ESLint → 主题 TypeScript 类型检查 |
 | `content` | 内容契约 → 20 个 `node:test` 单测 |
-| `build` | Babel 编译主题 → Hugo 0.140.0 构建 → 产物契约 |
+| `build` | Babel 编译主题 → Hugo 0.169.0 构建 → 产物契约 |
 | `audit` | 只审计生产依赖的高危漏洞 |
 | `link-check` | Lychee 死链检查（排除归档与外部站点） |
 
@@ -125,7 +125,7 @@ PR 与 push 都会跑；Cloudflare Pages 负责部署。`weekly-report.yml` 用 
 
 ## 本地开发
 
-前置：全局 Node v26.13.1、全局 pnpm 11.22.0、Hugo Extended 0.140.0（本机未全局安装，需自行安装）、GitHub CLI、OpenCode CLI 2.2.7（本机 Windows 上不可用，建议 WSL/CI）。
+前置：全局 Node v26.13.1、全局 pnpm 11.22.0、Hugo Extended 0.169.0（本机未全局安装，需自行安装）、GitHub CLI、OpenCode CLI 2.2.7（本机 Windows 上不可用，建议 WSL/CI）。
 
 ```bash
 pnpm install
@@ -138,7 +138,7 @@ pnpm run report:weekly
 
 # 本地门禁
 pnpm run check       # 格式 + ESLint + 类型检查 + 单测 + 内容契约
-pnpm run check:full  # check + Hugo 构建 + 产物契约（需 Hugo 0.140.0）
+pnpm run check:full  # check + Hugo 构建 + 产物契约（需 Hugo 0.169.0）
 
 # 本地预览
 pnpm run build:theme

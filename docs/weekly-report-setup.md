@@ -56,7 +56,7 @@ Cloudflare Pages 使用 Git 集成，不需要 `CLOUDFLARE_API_TOKEN` 或 `CLOUD
 
 ## 4. 本地测试
 
-前置：本机全局 Node 26.13.1、全局 pnpm 11.22.0；CI/Pages 使用 Node 24 与 Hugo Extended 0.140.0。GitHub CLI 已登录，OpenCode CLI 2.2.7（当前 Windows 上 native binary 不兼容，建议 WSL/CI）。
+前置：本机全局 Node 26.13.1、全局 pnpm 11.22.0；CI 使用 Node 26.13.1 与 Hugo Extended 0.169.0。GitHub CLI 已登录，OpenCode CLI 2.2.7（当前 Windows 上 native binary 不兼容，建议 WSL/CI）。
 
 ```bash
 pnpm install

@@ -6,11 +6,11 @@
 
 ## 1. 技术栈概述
 
-* **静态站点生成器：** Hugo Extended 0.140.0（CI 与 Cloudflare Pages 同版本）
+* **静态站点生成器：** Hugo Extended 0.169.0（CI 验证版本；Cloudflare Pages 未设 `HUGO_VERSION` 时使用默认 0.147.7，模板兼容 0.140+）
 * **主题：** LoveIt（局部 TypeScript 重写，Babel 编译）
 * **周报脚本：** Node.js + `.mjs` + GitHub CLI
 * **写作 agent：** OpenCode CLI 2.2.7 + GLM 5.3 Flash（`nvidia/z-ai/glm-5.3-flash`）
-* **CI：** GitHub Actions（Node.js 24、pnpm 11.22.0）
+* **CI：** GitHub Actions（Node.js 26.13.1、pnpm 11.22.0）
 * **托管部署：** Cloudflare Pages Git 集成（不需要 API Token）
 * **站点域名：** https://hugo-blog-loveit-theme.pages.dev/
 
@@ -20,9 +20,9 @@
 
 ### 2.1 环境要求
 
-- 本机全局 Node.js 26.13.1（CI/Pages 使用 `.node-version` 的 Node 24）
+- 本机全局 Node.js 26.13.1（CI 使用 `.node-version` 固定 26.13.1；Cloudflare Pages 会自动安装 Node 依赖，`NODE_VERSION` 建议保留 `24`）
 - 全局 pnpm 11.22.0
-- Hugo Extended 0.140.0
+- Hugo Extended 0.169.0
 - GitHub CLI（本地采集活动）
 - OpenCode CLI 2.2.7（本机 Windows 上 native binary 不兼容，建议 WSL/CI）
 
@@ -81,7 +81,7 @@ hugo server -D
 
 1. **Format / Lint / Typecheck**：Prettier → ESLint → 主题 TypeScript 类型检查
 2. **Content Contract & Tests**：内容契约 → 20 个 `node:test` 单测
-3. **Hugo Build & Artifact Contract**：编译主题 → Hugo 0.140.0 构建 → 产物契约
+3. **Hugo Build & Artifact Contract**：编译主题 → Hugo 0.169.0 构建 → 产物契约
 4. **Production Dependency Audit**：仅审计生产依赖的高危漏洞
 5. **Site Link Integrity**：Lychee 检查 `public/` 中的站内与站外链接
 
@@ -93,7 +93,7 @@ hugo server -D
 
 ### 本地找不到 `hugo`
 
-安装 Hugo Extended 0.140.0 并加入 PATH，或使用与 CI/Pages 相同的版本。
+安装 Hugo Extended 0.169.0 并加入 PATH，或使用与 CI/Pages 相同的版本。
 
 ### 周报任务提示缺少 GH_PAT
 

@@ -1,5 +1,4 @@
 baseURL = 'https://hugo-blog-loveit-theme.pages.dev/'
-languageCode = 'zh-CN'
 locale = 'zh-CN'
 defaultContentLanguage = 'zh-CN'
 title = '安卓人的技术周记'
@@ -9,8 +8,8 @@ hasCJKLanguage = true
 
 [languages]
   [languages.zh-CN]
-    languageCode = 'zh-CN'
-    languageName = '简体中文'
+    locale = 'zh-CN'
+    label = '简体中文'
     weight = 1
 
 [params]

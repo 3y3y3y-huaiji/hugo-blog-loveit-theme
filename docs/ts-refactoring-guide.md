@@ -49,7 +49,7 @@ pnpm run build:theme
 3. 主题 TypeScript 类型检查
 4. 内容契约校验与 20 个单测
 5. Babel 编译主题 JS
-6. 使用 Hugo 0.140.0 构建并校验产物
+6. 使用 Hugo 0.169.0 构建并校验产物
 7. 生产依赖审计与 Lychee 死链检查
 
 任一步骤失败，流水线即时终止，防止缺陷代码合并。合并到 `main` 后由 Cloudflare Pages 自动构建并部署。
