@@ -47,6 +47,18 @@ jobs:
                   [ -n "$NVIDIA_API_KEY" ] || { echo "缺少 NVIDIA_API_KEY"; exit 1; }
                   [ -n "$GH_TOKEN" ] || { echo "缺少 GH_PAT（公开仓库只读 PAT）"; exit 1; }
 
+            - name: Probe NVIDIA API
+              run: |
+                  code=$(curl -sS --max-time 30 -o /tmp/nvidia-probe.json -w '%{http_code}' \
+                    https://integrate.api.nvidia.com/v1/chat/completions \
+                    -H "Authorization: Bearer $NVIDIA_API_KEY" \
+                    -H "Content-Type: application/json" \
+                    -d '{"model":"z-ai/glm-5.3-flash","messages":[{"role":"user","content":"Say hi in one word."}],"max_tokens":8}')
+                  echo "HTTP $code"
+                  head -c 600 /tmp/nvidia-probe.json
+                  echo
+                  [ "$code" = "200" ]
+
             - name: Install OpenCode CLI
               run: npm install -g --allow-scripts=@opencode/cli @opencode/cli@2.2.7
 
