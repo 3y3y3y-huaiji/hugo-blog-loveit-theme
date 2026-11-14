@@ -452,7 +452,7 @@ export function buildActivity({
     };
 }
 
-function ghApi(apiPath: string, { paginate = false, slurp = false }: GhApiOptions = {}): any {
+function ghApi<T = ApiRecord>(apiPath: string, { paginate = false, slurp = false }: GhApiOptions = {}): T {
     const args = ['api', apiPath];
     if (paginate) {
         args.push('--paginate');
@@ -469,9 +469,9 @@ function ghApi(apiPath: string, { paginate = false, slurp = false }: GhApiOption
         });
         const parsed = JSON.parse(output || 'null');
         if (paginate && slurp && Array.isArray(parsed)) {
-            return parsed.flat();
+            return parsed.flat() as T;
         }
-        return parsed;
+        return parsed as T;
     } catch (error) {
         const stderr = (error as { stderr?: Buffer | string }).stderr?.toString().trim();
         throw new Error(`gh api ${apiPath} 失败${stderr ? `：${stderr}` : ''}`);

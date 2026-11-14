@@ -4,7 +4,9 @@
     "description": "安卓人的个人技术周记，基于 Hugo 与 LoveIt 构建，由 OpenCode + Step 5 Preview 生成周报，托管于 Cloudflare Pages。",
     "packageManager": "pnpm@11.22.0",
     "scripts": {
-        "lint": "eslint themes/LoveIt/src/js scripts e2e playwright.config.ts",
+        "lint:scripts": "eslint scripts e2e playwright.config.ts --max-warnings 0",
+        "lint:theme": "eslint themes/LoveIt/src/js",
+        "lint": "pnpm run lint:scripts && pnpm run lint:theme",
         "build:scripts": "tsc -p tsconfig.scripts.json",
         "typecheck:theme": "tsc --project themes/LoveIt/tsconfig.json --noEmit",
         "typecheck:scripts": "tsc -p tsconfig.scripts.json --noEmit",
@@ -12,7 +14,7 @@
         "typecheck": "pnpm run typecheck:theme && pnpm run typecheck:scripts && pnpm run typecheck:e2e",
         "format": "prettier --write \"scripts/**/*.ts\" \"e2e/**/*.ts\" \"playwright.config.ts\" \"config/**/*.json\" \"*.{js,json,jsonc}\" \".github/**/*.yml\"",
         "format:check": "prettier --check \"scripts/**/*.ts\" \"e2e/**/*.ts\" \"playwright.config.ts\" \"config/**/*.json\" \"*.{js,json,jsonc}\" \".github/**/*.yml\"",
-        "test": "pnpm run build:scripts && node --test dist/verify-content.test.js dist/collect-github-activity.test.js dist/generate-weekly-report.test.js dist/nvidia-key-pool.test.js",
+        "test": "pnpm run build:scripts && node --test dist/verify-content.test.js dist/verify-build.test.js dist/smoke.test.js dist/serve-public.test.js dist/collect-github-activity.test.js dist/generate-weekly-report.test.js dist/nvidia-key-pool.test.js",
         "verify:content": "pnpm run build:scripts && node dist/verify-content.js",
         "verify:build": "pnpm run build:scripts && node dist/verify-build.js",
         "audit": "pnpm audit --prod --audit-level high --registry=https://registry.npmjs.org",
@@ -39,7 +41,6 @@
         "weekly-report",
         "github-actions",
         "opencode",
-        "glm",
         "cloudflare-pages"
     ],
     "author": "安卓人",
