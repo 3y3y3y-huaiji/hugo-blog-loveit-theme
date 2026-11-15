@@ -15,7 +15,7 @@ on:
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
-    cancel-in-progress: true
+    cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 permissions:
     contents: read
@@ -138,6 +138,13 @@ jobs:
             - name: Verify Build Artifacts
               run: pnpm run verify:build
 
+            - name: Upload Built Site Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: site-public
+                  path: public/
+                  retention-days: 1
+
     audit:
         name: Production Dependency Audit
         runs-on: ubuntu-latest
@@ -160,6 +167,7 @@ jobs:
 
     link-check:
         name: Site Link Integrity
+        needs: build
         runs-on: ubuntu-latest
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 10
@@ -168,18 +176,13 @@ jobs:
               uses: actions/checkout@v6
               with:
                   ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+                  fetch-depth: 1
 
-            - name: Read Hugo Version
-              run: echo "HUGO_VERSION=$(cat .hugo-version)" >> "$GITHUB_ENV"
-
-            - name: Setup Hugo Extended (matches Cloudflare Pages)
-              uses: peaceiris/actions-hugo@v3
+            - name: Download Built Site Artifact
+              uses: actions/download-artifact@v4
               with:
-                  hugo-version: ${{ env.HUGO_VERSION }}
-                  extended: true
-
-            - name: Build Site
-              run: hugo --gc --minify
+                  name: site-public
+                  path: public/
 
             - name: Set Lychee Root Directory
               run: echo "LYCHEE_ROOT=$GITHUB_WORKSPACE/public" >> "$GITHUB_ENV"
@@ -192,6 +195,7 @@ jobs:
 
     e2e:
         name: Browser E2E
+        needs: build
         runs-on: ubuntu-latest
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 20
@@ -219,20 +223,11 @@ jobs:
             - name: Build Scripts
               run: pnpm run build:scripts
 
-            - name: Build Theme Assets
-              run: pnpm run build:theme
-
-            - name: Read Hugo Version
-              run: echo "HUGO_VERSION=$(cat .hugo-version)" >> "$GITHUB_ENV"
-
-            - name: Setup Hugo Extended
-              uses: peaceiris/actions-hugo@v3
+            - name: Download Built Site Artifact
+              uses: actions/download-artifact@v4
               with:
-                  hugo-version: ${{ env.HUGO_VERSION }}
-                  extended: true
-
-            - name: Build Site
-              run: hugo --gc --minify
+                  name: site-public
+                  path: public/
 
             - name: Install Playwright Chromium
               run: pnpm exec playwright install --with-deps chromium

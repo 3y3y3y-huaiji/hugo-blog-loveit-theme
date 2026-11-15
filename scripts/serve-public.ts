@@ -25,7 +25,7 @@ const MIME_TYPES: Record<string, string> = {
     '.ico': 'image/x-icon',
 };
 
-function resolveFile(pathname: string): string | null {
+export function resolveFile(pathname: string, publicDir: string = PUBLIC_DIR): string | null {
     let decoded: string;
     try {
         decoded = decodeURIComponent(pathname.split('?')[0]);
@@ -38,8 +38,9 @@ function resolveFile(pathname: string): string | null {
         return null;
     }
 
-    const base = path.resolve(PUBLIC_DIR, relative);
-    if (base !== PUBLIC_DIR && !base.startsWith(`${PUBLIC_DIR}${path.sep}`)) {
+    const rootDir = path.resolve(publicDir);
+    const base = path.resolve(rootDir, relative);
+    if (base !== rootDir && !base.startsWith(`${rootDir}${path.sep}`)) {
         return null;
     }
 
@@ -68,44 +69,57 @@ function sendFile(response: http.ServerResponse, filePath: string, statusCode = 
     response.end(fs.readFileSync(filePath));
 }
 
-const server = http.createServer((request, response) => {
-    if (request.method !== 'GET' && request.method !== 'HEAD') {
-        response.writeHead(405, { 'Content-Type': 'text/plain; charset=utf-8' });
-        response.end('Method Not Allowed');
-        return;
-    }
-
-    const filePath = resolveFile(request.url || '/');
-    if (filePath) {
-        if (request.method === 'HEAD') {
-            const ext = path.extname(filePath).toLowerCase();
-            response.writeHead(200, {
-                'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
-                'Cache-Control': 'no-store',
-            });
-            response.end();
+export function createPublicServer(publicDir: string = PUBLIC_DIR): http.Server {
+    return http.createServer((request, response) => {
+        if (request.method !== 'GET' && request.method !== 'HEAD') {
+            response.writeHead(405, { 'Content-Type': 'text/plain; charset=utf-8' });
+            response.end('Method Not Allowed');
             return;
         }
-        sendFile(response, filePath);
-        return;
-    }
 
-    const notFoundPage = path.join(PUBLIC_DIR, '404.html');
-    if (fs.existsSync(notFoundPage)) {
-        sendFile(response, notFoundPage, 404);
-        return;
-    }
+        const filePath = resolveFile(request.url || '/', publicDir);
+        if (filePath) {
+            if (request.method === 'HEAD') {
+                const ext = path.extname(filePath).toLowerCase();
+                response.writeHead(200, {
+                    'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
+                    'Cache-Control': 'no-store',
+                });
+                response.end();
+                return;
+            }
+            sendFile(response, filePath);
+            return;
+        }
 
-    response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    response.end('Not Found');
-});
+        const notFoundPage = path.join(publicDir, '404.html');
+        if (fs.existsSync(notFoundPage)) {
+            if (request.method === 'HEAD') {
+                response.writeHead(404, {
+                    'Content-Type': 'text/html; charset=utf-8',
+                    'Cache-Control': 'no-store',
+                });
+                response.end();
+                return;
+            }
+            sendFile(response, notFoundPage, 404);
+            return;
+        }
 
-server.listen(PORT, HOST, () => {
-    console.log(`Serving ${PUBLIC_DIR} at http://${HOST}:${PORT}`);
-});
-
-for (const signal of ['SIGINT', 'SIGTERM'] as const) {
-    process.on(signal, () => {
-        server.close(() => process.exit(0));
+        response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        response.end('Not Found');
     });
+}
+
+if (require.main === module) {
+    const server = createPublicServer(PUBLIC_DIR);
+    server.listen(PORT, HOST, () => {
+        console.log(`Serving ${PUBLIC_DIR} at http://${HOST}:${PORT}`);
+    });
+
+    for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+        process.on(signal, () => {
+            server.close(() => process.exit(0));
+        });
+    }
 }

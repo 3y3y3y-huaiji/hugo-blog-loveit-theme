@@ -35,4 +35,6 @@ export interface ReportOutput {
     body: string;
 }
 
+// GitHub REST/Search API 返回结构动态，集中在此处隔离 any。
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ApiRecord = Record<string, any>;
