@@ -10,7 +10,110 @@ import { spawnSync } from 'node:child_process';
 import { collectActivity, getReportRange, loadConfig } from './collect-github-activity.js';
 import { validatePosts } from './verify-content.js';
 import { ROOT } from './root.js';
-import type { ReportOutput } from './types.js';
+import type { ApiRecord, ReportOutput } from './types.js';
+
+export interface DedupedCommit {
+    sha: string;
+    message: string;
+    url: string;
+    date: string;
+    repeatCount: number;
+}
+
+export interface RankedRepoDigest {
+    name: string;
+    url: string;
+    tier: 'primary' | 'secondary';
+    score: number;
+    rawCommitCount: number;
+    dedupedCommits: DedupedCommit[];
+    pullRequests: ApiRecord[];
+    issues: ApiRecord[];
+    releases: ApiRecord[];
+}
+
+export interface ActivityDigest {
+    range: { since: string; until: string; label: string };
+    summary: ApiRecord;
+    rankedRepos: RankedRepoDigest[];
+    reviews: ApiRecord[];
+    warnings: string[];
+}
+
+export function buildActivityDigest(activity: {
+    range: { since: string; until: string; label: string };
+    summary: ApiRecord;
+    repos: Array<{
+        name: string;
+        url: string;
+        commits: ApiRecord[];
+        pullRequests: ApiRecord[];
+        issues: ApiRecord[];
+        releases: ApiRecord[];
+    }>;
+    reviews: ApiRecord[];
+    warnings: string[];
+}): ActivityDigest {
+    const scored = activity.repos.map((repo) => {
+        const commitMap = new Map<string, DedupedCommit>();
+        for (const commit of repo.commits || []) {
+            const message = String(commit.message || '').trim();
+            const key = message.toLowerCase();
+            if (!key) {
+                continue;
+            }
+            const existing = commitMap.get(key);
+            if (!existing) {
+                commitMap.set(key, {
+                    sha: String(commit.sha || ''),
+                    message,
+                    url: String(commit.url || ''),
+                    date: String(commit.date || ''),
+                    repeatCount: 1,
+                });
+            } else {
+                existing.repeatCount += 1;
+                if (String(commit.date || '') >= existing.date) {
+                    existing.sha = String(commit.sha || '');
+                    existing.url = String(commit.url || '');
+                    existing.date = String(commit.date || '');
+                }
+            }
+        }
+
+        const dedupedCommits = [...commitMap.values()];
+        const pullRequests = repo.pullRequests || [];
+        const issues = repo.issues || [];
+        const releases = repo.releases || [];
+        const score = dedupedCommits.length * 2 + pullRequests.length * 4 + issues.length * 2 + releases.length * 3;
+
+        return {
+            name: repo.name,
+            url: repo.url,
+            score,
+            rawCommitCount: (repo.commits || []).length,
+            dedupedCommits,
+            pullRequests,
+            issues,
+            releases,
+        };
+    });
+
+    scored.sort((a, b) => b.score - a.score || b.rawCommitCount - a.rawCommitCount);
+
+    const rankedRepos: RankedRepoDigest[] = scored.map((item, index) => ({
+        ...item,
+        tier: index < 2 && item.score > 0 ? 'primary' : 'secondary',
+    }));
+
+    return {
+        range: activity.range,
+        summary: activity.summary,
+        rankedRepos,
+        reviews: activity.reviews,
+        warnings: activity.warnings,
+    };
+}
 
 const MODEL_DISPLAY = 'Step 5 Preview';
 const AUTHOR = '安卓人';
@@ -86,12 +189,12 @@ function parseReportOutputWithContext(output: string): ReportOutput {
 }
 
 function runOpenCode({
-    promptContent,
-    activity,
+    files,
+    prompt,
     model,
 }: {
-    promptContent: string;
-    activity: unknown;
+    files: Record<string, string>;
+    prompt: string;
     model: string;
 }): string {
     // OpenCode 的 server 以仓库根目录为 workspace，不跟随 spawn 的 cwd；
@@ -103,8 +206,9 @@ function runOpenCode({
     fs.mkdirSync(workDir, { recursive: true });
 
     try {
-        fs.writeFileSync(path.join(workDir, 'prompt.md'), promptContent, 'utf8');
-        fs.writeFileSync(path.join(workDir, 'activity.json'), `${JSON.stringify(activity, null, 2)}\n`, 'utf8');
+        for (const [fileName, content] of Object.entries(files)) {
+            fs.writeFileSync(path.join(workDir, fileName), content, 'utf8');
+        }
         fs.writeFileSync(
             configPath,
             `${JSON.stringify(
@@ -122,9 +226,6 @@ function runOpenCode({
             'utf8',
         );
 
-        // prompt 保持无空格短句，避免 Windows cmd 把它拆成多个参数。
-        const prompt =
-            '读取.weekly-report/prompt.md和.weekly-report/activity.json，严格按prompt.md的格式写周报。只使用这两个文件，不要调用其他工具。';
         const options = {
             cwd: ROOT,
             encoding: 'utf8' as const,
@@ -215,7 +316,7 @@ ${body}
 
 ---
 
-*本文由 ${MODEL_DISPLAY} 根据我本周的 GitHub 公开活动自动整理，数据和链接均来自 GitHub。*
+*基于公开 GitHub 活动自动整理，所有链接均来自公开数据。*
 `;
 }
 
@@ -237,16 +338,47 @@ export function main(): void {
         return;
     }
 
+    const digest = buildActivityDigest(activity);
     const styleGuide = fs.readFileSync(path.join(ROOT, 'prompts', 'weekly-report.md'), 'utf8');
-    const promptContent = `${styleGuide.replaceAll('`activity.json`', '`.weekly-report/activity.json`')}\n\n## 本次数据文件\n\n\`.weekly-report/activity.json\` 是本次周报的唯一事实来源。\n`;
-    console.log(`调用 OpenCode CLI，模型：${config.model}`);
-    const output = runOpenCode({
-        promptContent,
-        activity,
+    const activityJson = `${JSON.stringify(activity, null, 2)}\n`;
+    const digestJson = `${JSON.stringify(digest, null, 2)}\n`;
+
+    console.log(`Stage 1：生成初稿，模型：${config.model}`);
+    // prompt 保持无空格短句，避免 Windows cmd 把它拆成多个参数。
+    const stage1Output = runOpenCode({
+        files: {
+            'prompt.md': styleGuide,
+            'activity-digest.json': digestJson,
+            'activity.json': activityJson,
+        },
+        prompt: '读取.weekly-report/prompt.md和.weekly-report/activity-digest.json，严格按prompt.md的格式写周报。只使用.weekly-report下的文件，不要调用其他工具。',
         model: config.model,
     });
 
-    const report = parseReportOutputWithContext(output);
+    let report = parseReportOutputWithContext(stage1Output);
+
+    const editorPromptPath = path.join(ROOT, 'prompts', 'weekly-editor.md');
+    if (process.env.WEEKLY_PIPELINE_MODE !== 'single-stage' && fs.existsSync(editorPromptPath)) {
+        try {
+            console.log('Stage 2：去 AI 腔审校与事实核对...');
+            const editorGuide = fs.readFileSync(editorPromptPath, 'utf8');
+            const draftText = `TITLE: ${report.title}\nDESCRIPTION: ${report.description}\nBODY:\n${report.body}\nEND_OF_REPORT\n`;
+            const stage2Output = runOpenCode({
+                files: {
+                    'editor-prompt.md': editorGuide,
+                    'draft.md': draftText,
+                    'activity-digest.json': digestJson,
+                },
+                prompt: '读取.weekly-report/editor-prompt.md、.weekly-report/draft.md和.weekly-report/activity-digest.json，严格按格式输出审校后的周报。只使用.weekly-report下的文件，不要调用其他工具。',
+                model: config.model,
+            });
+            report = parseReportOutputWithContext(stage2Output);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.warn(`[警告] Stage 2 审校未通过，回退使用 Stage 1 初稿：${message}`);
+        }
+    }
+
     const fileName = `weekly-${range.label}.md`;
     const raw = buildPost({ ...report, publishDate: range.publishDate });
     const { errors } = validatePosts([{ fileName, raw }]);

@@ -16,9 +16,10 @@
             {{- end -}}
         </h2>
 
-        {{- /* Paginate */ -}}
-        {{- if .Pages -}}
-            {{- $pages := .Pages.GroupByDate "2006" -}}
+        {{- /* Paginate（排除 archive 归档文章） */ -}}
+        {{- $filteredPages := where .Pages "Section" "!=" "archive" -}}
+        {{- if $filteredPages -}}
+            {{- $pages := $filteredPages.GroupByDate "2006" -}}
             {{- with .Site.Params.list.paginate | default .Site.Params.paginate -}}
                 {{- $pages = $.Paginate $pages . -}}
             {{- else -}}

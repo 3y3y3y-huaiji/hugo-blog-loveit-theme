@@ -55,7 +55,7 @@
 1. `getReportRange()` 取上一个完整的北京时间自然周。
 2. `collect-github-activity.ts` 读取 `/users/{user}/events/public`，按 head 补拉 PushEvent 提交明细，并用 search API 补全 PR / issue。
 3. `select-nvidia-key.ts` 按 `NVIDIA_API_KEY`、`NVIDIA_API_KEY_2`、`NVIDIA_API_KEY_3` 顺序探测 `stepfun-ai/step-5-preview`，把第一把可用的 key 写入 `GITHUB_ENV` 的 `NVIDIA_API_KEY`。
-4. `generate-weekly-report.ts` 在 `.weekly-report/` 写入 `prompt.md`、`activity.json`，并在仓库根目录写临时 `opencode.json`；执行 `opencode --standalone run --agent plan -m nvidia/stepfun-ai/step-5-preview`。
+4. `generate-weekly-report.ts` 先执行 `buildActivityDigest()` 折叠 rebase 重复提交并按仓库活跃度排序，在 `.weekly-report/` 写入 `prompt.md`、`activity-digest.json`、`activity.json`，并在仓库根目录写临时 `opencode.json`；分两阶段调用 `opencode --standalone run --agent plan -m nvidia/stepfun-ai/step-5-preview`：Stage 1 依据 `prompts/weekly-report.md` 生成初稿，Stage 2 依据 `prompts/weekly-editor.md` 去 AI 腔审校并核对事实（Stage 2 失败时自动回退到通过校验的 Stage 1 初稿）。
 5. OpenCode 只允许读取 `.weekly-report/` 下的临时文件；不允许 bash/edit/webfetch。
 6. 解析 `TITLE/DESCRIPTION/BODY/END_OF_REPORT`，重建 canonical front matter，校验后写入 `content/posts/weekly-YYYY-Www.md`。
 7. `weekly-report.yml` 再跑 `verify:content`，通过后用 `WEEKLY_PR_TOKEN` 创建 `weekly-report/YYYY-Www` 分支和 PR；新 PR 自动触发 CI，人工合并后 Pages Git 集成自动构建。分支已存在时用 `workflow_dispatch` 补跑 CI。
