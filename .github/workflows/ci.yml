@@ -27,6 +27,25 @@ jobs:
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 10
         steps:
+            - name: Print Host Parameters
+              run: |
+                  {
+                    echo "### Runner host info"
+                    echo '```'
+                    date -u
+                    uname -a
+                    echo
+                    echo "CPU cores: $(nproc)"
+                    lscpu | sed -n '1,24p'
+                    echo
+                    free -h
+                    echo
+                    df -h /
+                    echo
+                    cat /etc/os-release
+                    echo '```'
+                  } | tee -a "$GITHUB_STEP_SUMMARY"
+
             - name: Checkout Repository
               uses: actions/checkout@v7
               with:
@@ -62,6 +81,25 @@ jobs:
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 10
         steps:
+            - name: Print Host Parameters
+              run: |
+                  {
+                    echo "### Runner host info"
+                    echo '```'
+                    date -u
+                    uname -a
+                    echo
+                    echo "CPU cores: $(nproc)"
+                    lscpu | sed -n '1,24p'
+                    echo
+                    free -h
+                    echo
+                    df -h /
+                    echo
+                    cat /etc/os-release
+                    echo '```'
+                  } | tee -a "$GITHUB_STEP_SUMMARY"
+
             - name: Checkout Repository
               uses: actions/checkout@v7
               with:
@@ -97,6 +135,25 @@ jobs:
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 15
         steps:
+            - name: Print Host Parameters
+              run: |
+                  {
+                    echo "### Runner host info"
+                    echo '```'
+                    date -u
+                    uname -a
+                    echo
+                    echo "CPU cores: $(nproc)"
+                    lscpu | sed -n '1,24p'
+                    echo
+                    free -h
+                    echo
+                    df -h /
+                    echo
+                    cat /etc/os-release
+                    echo '```'
+                  } | tee -a "$GITHUB_STEP_SUMMARY"
+
             - name: Checkout Repository
               uses: actions/checkout@v7
               with:
@@ -145,11 +202,11 @@ jobs:
                   path: public/
                   retention-days: 1
 
-    host-info:
-        name: Runner Host Info
+    audit:
+        name: Production Dependency Audit
         runs-on: ubuntu-latest
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
-        timeout-minutes: 5
+        timeout-minutes: 10
         steps:
             - name: Print Host Parameters
               run: |
@@ -167,18 +224,9 @@ jobs:
                     df -h /
                     echo
                     cat /etc/os-release
-                    echo
-                    node --version || true
-                    pnpm --version || true
                     echo '```'
                   } | tee -a "$GITHUB_STEP_SUMMARY"
 
-    audit:
-        name: Production Dependency Audit
-        runs-on: ubuntu-latest
-        if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
-        timeout-minutes: 10
-        steps:
             - name: Checkout Repository
               uses: actions/checkout@v7
               with:
@@ -200,6 +248,25 @@ jobs:
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 10
         steps:
+            - name: Print Host Parameters
+              run: |
+                  {
+                    echo "### Runner host info"
+                    echo '```'
+                    date -u
+                    uname -a
+                    echo
+                    echo "CPU cores: $(nproc)"
+                    lscpu | sed -n '1,24p'
+                    echo
+                    free -h
+                    echo
+                    df -h /
+                    echo
+                    cat /etc/os-release
+                    echo '```'
+                  } | tee -a "$GITHUB_STEP_SUMMARY"
+
             - name: Checkout Repository
               uses: actions/checkout@v7
               with:
@@ -228,6 +295,25 @@ jobs:
         if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
         timeout-minutes: 20
         steps:
+            - name: Print Host Parameters
+              run: |
+                  {
+                    echo "### Runner host info"
+                    echo '```'
+                    date -u
+                    uname -a
+                    echo
+                    echo "CPU cores: $(nproc)"
+                    lscpu | sed -n '1,24p'
+                    echo
+                    free -h
+                    echo
+                    df -h /
+                    echo
+                    cat /etc/os-release
+                    echo '```'
+                  } | tee -a "$GITHUB_STEP_SUMMARY"
+
             - name: Checkout Repository
               uses: actions/checkout@v7
               with:
