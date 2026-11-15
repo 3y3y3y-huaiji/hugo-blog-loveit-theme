@@ -28,18 +28,18 @@ jobs:
         timeout-minutes: 10
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   ref: ${{ github.event.workflow_run.head_branch || github.ref }}
                   fetch-depth: 1
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v6
               with:
                   version: 11.22.0
 
             - name: Setup Node.js
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version-file: .ci-node-version
                   cache: 'pnpm'
@@ -63,18 +63,18 @@ jobs:
         timeout-minutes: 10
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   ref: ${{ github.event.workflow_run.head_branch || github.ref }}
                   fetch-depth: 1
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v6
               with:
                   version: 11.22.0
 
             - name: Setup Node.js
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version-file: .ci-node-version
                   cache: 'pnpm'
@@ -98,18 +98,18 @@ jobs:
         timeout-minutes: 15
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   ref: ${{ github.event.workflow_run.head_branch || github.ref }}
                   fetch-depth: 1
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v6
               with:
                   version: 11.22.0
 
             - name: Setup Node.js
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version-file: .ci-node-version
                   cache: 'pnpm'
@@ -139,7 +139,7 @@ jobs:
               run: pnpm run verify:build
 
             - name: Upload Built Site Artifact
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: site-public
                   path: public/
@@ -180,13 +180,13 @@ jobs:
         timeout-minutes: 10
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   ref: ${{ github.event.workflow_run.head_branch || github.ref }}
                   fetch-depth: 1
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v6
               with:
                   version: 11.22.0
 
@@ -201,13 +201,13 @@ jobs:
         timeout-minutes: 10
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   ref: ${{ github.event.workflow_run.head_branch || github.ref }}
                   fetch-depth: 1
 
             - name: Download Built Site Artifact
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v8
               with:
                   name: site-public
                   path: public/
@@ -229,18 +229,18 @@ jobs:
         timeout-minutes: 20
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
               with:
                   ref: ${{ github.event.workflow_run.head_branch || github.ref }}
                   fetch-depth: 1
 
             - name: Setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v6
               with:
                   version: 11.22.0
 
             - name: Setup Node.js
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
                   node-version-file: .ci-node-version
                   cache: 'pnpm'
@@ -252,7 +252,7 @@ jobs:
               run: pnpm run build:scripts
 
             - name: Download Built Site Artifact
-              uses: actions/download-artifact@v4
+              uses: actions/download-artifact@v8
               with:
                   name: site-public
                   path: public/
@@ -265,7 +265,7 @@ jobs:
 
             - name: Upload Playwright Report
               if: failure()
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: playwright-report
                   path: playwright-report/
